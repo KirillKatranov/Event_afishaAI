@@ -1,0 +1,16 @@
+Django==4.2
+Pillow==10.0.0
+aiogram==3.11.0
+django-storages==1.14.3
+boto3==1.26.84
+minio==7.2.8
+psycopg2-binary
+django-timescaledb==0.2.13
+aioredis[hiredis]
+celery==5.4.0
+redis==5.0.7
+django-celery-beat
+django-cors-headers
+django-ninja-extra
+gunicorn
+yandexgptlite

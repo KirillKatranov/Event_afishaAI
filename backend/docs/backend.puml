@@ -1,0 +1,63 @@
+@startuml admin_component
+title Архитектура сервиса "Афиша событий"
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+!include <tupadr3/common>
+!include <tupadr3/font-awesome/server>
+!include <tupadr3/font-awesome/database>
+
+skinparam linetype ortho
+LAYOUT_WITH_LEGEND()
+
+package "Источник изображений" {
+  [РЛС Су-35] as su_35
+  [РЛС КА-35] as ka_35
+  [РЛС МФТИ] as rls_mipt
+  [ОЭС Суперкам] as supercam
+}
+System_Boundary(srli, "СРЛИ") {
+    Component(source_processing1, "Handler Source Image SU-35", "HTTP", "Processing data")
+    Component(source_processing2, "Handler Source Image KA-35", "HTTP", "Processing data")
+    Component(source_processing3, "Handler Source Image RLS", "HTTP", "Processing data")
+    Component(source_processing4, "Handler Source Image SUPERCAM", "HTTP", "Processing data")
+    Component(rabbit_mq, "Rabbit-mq", "aiopika", "Send\push messages \n\n QUEUE: SU_35, KA_35, RLS, SUPERCAM, GTIFF_IMAGE_RESULT")
+    Component(celery, "Celery", "Celery", "Create GTIFF images")
+    Component(minio, "Minio", "minio", "Get or put data")
+    FA_DATABASE(db, Postgres, database, white) #RoyalBlue
+    Component(web, "Rabbit consumer", "Python", "Send data to celery task")
+}
+System_Boundary(srli_monitoring, "СРЛИ-Мониторинг")  {
+    Component(prometheus, "Prometheus", "HTTP", "Collect metrics")
+    Component(loki, "Loki", "HTTP", "Collect logs")
+    Component(grafana, "Grafana", "HTTP", "Show logs")
+}
+
+Rel(su_35, source_processing1, "bin файл")
+Rel(rls_mipt, source_processing3, "tif файл")
+Rel(ka_35, source_processing2, "tif файл")
+Rel(supercam, source_processing4, "creenshot")
+
+Rel(web, celery, "Create celery task")
+
+
+Rel(source_processing1, rabbit_mq, "Ссылка в minio")
+Rel(source_processing2, rabbit_mq, "Ссылка в minio")
+Rel(source_processing3, rabbit_mq, "Ссылка в minio")
+Rel(source_processing4, rabbit_mq, "Ссылка в minio")
+
+Rel(source_processing1, minio, "Сохранение файла")
+Rel(source_processing2, minio, "Сохранение файла")
+Rel(source_processing3, minio, "Сохранение файла")
+Rel(source_processing4, minio, "Сохранение файла")
+
+
+Rel(celery, minio, "Сохранение .gtiff изображения")
+Rel(celery, rabbit_mq, "Отправка ссылки на .gtiff изображение")
+Rel(celery, prometheus, "Сохранение метрик")
+Rel(celery, loki, "Сохранение логов")
+Rel(celery, db, "Сохранение метаданных")
+Rel(rabbit_mq, web, "Входные данные")
+Rel(web, rabbit_mq, "Отдаем json c телеметрией")
+Rel(prometheus, grafana, "Отдача метрик")
+Rel(loki, grafana, "Отдача логов")
+@enduml

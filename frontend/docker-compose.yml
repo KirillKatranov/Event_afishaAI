@@ -1,0 +1,39 @@
+version: "3.4"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/app/app
+      - ./pages:/app/pages
+      - ./widgets:/app/widgets
+      - ./features:/app/features
+      - ./entities:/app/entities
+      - ./shared:/app/shared
+      - ./server.js:/app/server.js
+    networks:
+      - afisha
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/afishabot.conf:/etc/nginx/conf.d/afishabot.conf:ro
+      - ./nginx/certificates:/etc/nginx/certificates:ro
+      - ../backend/src/staticfiles/:/var/html/static/
+    depends_on:
+      - frontend
+    networks:
+      - afisha
+    restart: always
+
+networks:
+  afisha:
+    external:
+      name: afisha
