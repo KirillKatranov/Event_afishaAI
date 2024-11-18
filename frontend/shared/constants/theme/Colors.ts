@@ -1,0 +1,15 @@
+export const Colors = {
+  cardBGColor: "rgba(30,30,30,0.7)",
+  cardMainTextColor: "#FFFFFF",
+  cardSubtextColor: "#D8DFE9",
+  lime: "#E1F44B",
+  black: "#393939",
+  totalBlack: "#000000",
+  gray: "#ECEBE8",
+  toxicBlue: "#5352EB",
+  blue: "#6361DD",
+  lightblue: "#B4C9FE",
+  white: "#FFFFFF",
+  transparent: "transparent",
+  red: "#F44B4B",
+}
