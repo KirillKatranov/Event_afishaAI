@@ -11,7 +11,7 @@ export const TagChip: React.FC<TagChipProps> = ({
 }) => {
   return (
     <Box
-      height={40}
+      height={36}
       borderRadius={"l"}
       backgroundColor={"cardBGColor"}
       alignItems={"center"}

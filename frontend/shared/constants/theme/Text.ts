@@ -9,7 +9,7 @@ export const Text = {
   },
   cardHeader: {
     fontFamily: 'MontserratBold',
-    fontSize: 28,
+    fontSize: 22,
   },
   cardSubheader: {
     fontFamily: 'MontserratRegular',
@@ -45,7 +45,7 @@ export const Text = {
   },
   tagChip: {
     fontFamily: 'MontserratSemiBold',
-    fontSize: 16,
+    fontSize: 14,
   },
   defaults: {},
 }

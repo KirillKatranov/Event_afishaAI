@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Image, ImageBackground, Platform, Pressable, ScrollView} from "react-native";
+import {Image, ImageBackground, Platform, Pressable} from "react-native";
 import Animated, {useSharedValue, useAnimatedStyle, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
 import {Hyperlink} from "react-native-hyperlink";
@@ -12,7 +12,7 @@ import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {ActionButton, TagChip} from "@/shared/ui";
-import {Gesture, GestureDetector, GestureHandlerRootView} from "react-native-gesture-handler";
+import {Gesture, GestureDetector, GestureHandlerRootView, ScrollView} from "react-native-gesture-handler";
 
 const DraggableScrollView = Platform.select({
   web: () => require('@/shared/providers/DraggableScroll').DraggableScrollView,
@@ -43,6 +43,8 @@ export const EventCard: React.FC<EventCardProps> = ({
   const [titleHeight, setTitleHeight] = useState(200);
 
   const {
+    descriptionScrolling, setDescriptionScrolling,
+    descriptionScrollOnTop, setDescriptionScrollOnTop,
     descriptionSwiping, setDescriptionSwiping,
     descriptionExpanded, setDescriptionExpanded,
   } = useEventCardStore();
@@ -59,7 +61,8 @@ export const EventCard: React.FC<EventCardProps> = ({
   }));
 
   const panGesture = Gesture.Pan().runOnJS(true)
-    .onStart(() => {
+    .enabled((!descriptionScrolling || descriptionScrollOnTop))
+    .onBegin(() => {
       setDescriptionSwiping(true);
     })
     .onUpdate((event) => {
@@ -172,9 +175,10 @@ export const EventCard: React.FC<EventCardProps> = ({
                 <Text
                   variant={"cardHeader"}
                   color={"cardMainTextColor"}
+                  textAlign={"center"}
                   onLayout={(event) => {
                     const { height } = event.nativeEvent.layout;
-                    setTitleHeight(height + 84);
+                    setTitleHeight(height + 88);
                   }}
                 >
                   { event.name }
@@ -186,7 +190,7 @@ export const EventCard: React.FC<EventCardProps> = ({
                     <DraggableScrollView
                       showsHorizontalScrollIndicator={false}
                       horizontal={true}
-                      contentContainerStyle={{ gap: 4 }}
+                      contentContainerStyle={{ gap: 4, flexGrow: 1, justifyContent: "center", alignItems: "center" }}
                     >
                       {
                         event.tags.map((tag) => (
@@ -291,7 +295,20 @@ export const EventCard: React.FC<EventCardProps> = ({
                           paddingHorizontal={"m"}
                           paddingVertical={"m"}
                         >
-                          <ScrollView overScrollMode={"never"} style={{ flex: 1 }} contentContainerStyle={{ gap: 10 }}>
+                          <ScrollView
+                            onScroll={(event) => {
+                              if (event.nativeEvent.contentOffset.y == 0) {
+                                setDescriptionScrollOnTop(true);
+                              } else if (descriptionScrollOnTop && event.nativeEvent.contentOffset.y != 0) {
+                                setDescriptionScrollOnTop(false);
+                              }
+                            }}
+                            onTouchStart={() => setDescriptionScrolling(true)}
+                            onTouchEnd={() => setDescriptionScrolling(false)}
+                            overScrollMode={"never"}
+                            style={{ flex: 1 }}
+                            contentContainerStyle={{ gap: 10 }}
+                          >
                             <Text
                               variant={"cardSubheader"}
                               color={"cardMainTextColor"}
