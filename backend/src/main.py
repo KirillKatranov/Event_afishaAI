@@ -12,6 +12,7 @@ from django.core.files import File
 import time
 import uuid
 import string
+import re
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "event_afisha.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -53,8 +54,9 @@ async def any_message(message: types.Message):
         for entity in caption_entities:
             if entity.type == 'text_link':
                 link_name = llm_text_analysis.create_name_for_link(entity.url)
-                links.append({link_name: entity.url})
-                time.sleep(1)
+                if entity.url.find('https://t.me') == -1:
+                    links.append({link_name: entity.url})
+                    time.sleep(1)
 
     print(f'{links=}')
     file_tg = await bot.get_file(file.file_id)
@@ -77,6 +79,46 @@ async def any_message(message: types.Message):
     description = llm_text_analysis.shorten_text(message.caption).replace("*", "")
     print(f'{description=}')
     time.sleep(1)
+
+    pattern = r'(https?://[^\s]+)'
+    links = re.findall(pattern, message.caption)
+
+    print(f"{links=}")
+
+    location = llm_text_analysis.get_location(message.caption)
+
+    time.sleep(1)
+
+    is_location = llm_text_analysis.is_location(location)
+    print(f"{is_location=}")
+
+    if is_location not in ('Да', 'да'):
+        location = None
+
+    print(f"{location=}")
+    time.sleep(1)
+
+    cost = llm_text_analysis.get_cost(message.caption)
+
+    try:
+        cost = int(cost)
+    except Exception:
+        cost = None
+
+    print(f"{cost=}")
+    time.sleep(1)
+
+    time_event = llm_text_analysis.get_time(message.caption)
+    time.sleep(1)
+
+    is_time = llm_text_analysis.is_time(time_event)
+    print(f"{time_event=}")
+
+    if is_time not in ('Да', 'да'):
+        time_event = None
+
+    print(f"{time_event=}")
+
     name = llm_text_analysis.extract_name_event(message.caption).replace('"', "").replace("*", "")
     print(f'{name=}')
     content = Content(

@@ -32,6 +32,9 @@ class Content(GenericModel):
     image = models.ImageField(upload_to="images", max_length=300)
     contact = models.JSONField(default={}, null=True, blank=True)
     date = models.DateField(null=True, blank=True)
+    time = models.CharField(max_length=250, null=True, blank=True, default=None)
+    location = models.CharField(max_length=250, null=True, blank=True, default=None)
+    cost = models.IntegerField(null=True, blank=True, default=None)
 
     def get_tags(self):
         return "\n".join([t.name for t in self.tags.all()])

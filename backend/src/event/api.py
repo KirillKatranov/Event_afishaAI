@@ -37,6 +37,16 @@ class TagsController:
         result = [tag for tag in tags if tag.contents.count() > 0]
         return result
 
+    @route.get(
+        path="/tags/count",
+        response={
+            200: int,
+        },
+    )
+    def get_count_content_in_tag(self, tag: str) -> int:
+        count_content = Content.objects.filter(tags__name=tag).count()
+        return count_content
+
 
 @api_controller(
     prefix_or_class="/api/v1",

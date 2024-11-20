@@ -26,7 +26,37 @@ class LLMTextAnalysis:
         return self.account.create_completion(task_extract_datetime, temperature='0', system_prompt='Отвечай на русском')
 
     def shorten_text(self, text: str) -> str:
-        extract_datetime_query = "Оформи текст по структуре дата, место, время, адрес, краткое описание. Выровни текст по левому краю. Если нет данных для одного из полей, то пропусти это поле. Между полями оставь пустые строки."
+        extract_datetime_query = "Оформи текст по структуре дата, место, время, адрес, краткое описание. Выровни текст по левому краю.  Убери из текста все ссылки. Если нет данных для одного из полей, то пропусти это поле. Между полями оставь пустые строки."
+        task_extract_datetime = extract_datetime_query + text
+        return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
+
+    def get_time(self, text: str) -> str:
+        extract_datetime_query = "Выдели из текста время начало мероприятия. В ответе укажите только время."
+        task_extract_datetime = extract_datetime_query + text
+        return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
+
+    def get_location(self, text: str) -> str:
+        extract_datetime_query = "Выдели из текста адрес местоположения мероприятия."
+        task_extract_datetime = extract_datetime_query + text
+        return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
+
+    def get_cost(self, text: str) -> str:
+        extract_datetime_query = "Выдели из текста стомость мероприятия. Если стоимость не указана верни число 0. Ответь дай в виде числа и больше ничего."
+        task_extract_datetime = extract_datetime_query + text
+        return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
+
+    def shorten_text_second(self, text: str) -> str:
+        extract_datetime_query = "Сформулируй из этого текста короткий текст для объялвения в афише"
+        task_extract_datetime = extract_datetime_query + text
+        return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
+
+    def is_location(self, text: str) -> str:
+        extract_datetime_query = "Это адрес или название места? дай односложный ответ да или нет:"
+        task_extract_datetime = extract_datetime_query + text
+        return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
+
+    def is_time(self, text: str) -> str:
+        extract_datetime_query = "Это часы и минуты? дай односложный ответ да или нет "
         task_extract_datetime = extract_datetime_query + text
         return self.account.create_completion(task_extract_datetime, temperature="0", system_prompt='Отвечай на русском')
 

@@ -25,6 +25,9 @@ class ContentSchema(Schema):
     contact: list[dict] | None = None
     date: date
     tags: list[TagSchema]
+    time: str | None = None
+    cost: int | None = None
+    location: str | None = None
 
     @field_validator('image')
     @classmethod
