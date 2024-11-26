@@ -47,5 +47,21 @@ export const Text = {
     fontFamily: 'MontserratSemiBold',
     fontSize: 14,
   },
+  calendarMonth: {
+    fontFamily: 'MontserratBold',
+    fontSize: 20,
+  },
+  calendarHeaderDay: {
+    fontFamily: 'MontserratMedium',
+    fontSize: 14,
+  },
+  calendarDay: {
+    fontFamily: 'MontserratMedium',
+    fontSize: 16,
+  },
+  calendarAcceptButton: {
+    fontFamily: 'MontserratMedium',
+    fontSize: 14,
+  },
   defaults: {},
 }

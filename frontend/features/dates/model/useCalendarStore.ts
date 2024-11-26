@@ -7,12 +7,14 @@ import {getDatesInRange} from "@/shared/scripts/date";
 
 interface CalendarState {
   isCalendarVisible: boolean;
+  tempSelectedDays: MarkedDates;
   selectedDays: MarkedDates;
   likesDays: MarkedDates;
   displayDays: MarkedDates;
   updateSelectedDays: (day: DateData) => void;
   updateLikesDays: (days: Event[]) => void;
   updateDisplayDays: () => void;
+  submitSelectedDays: () => void;
   clearSelectedDays: () => void;
   fetchAllLikes: (username: string) => void;
   setCalendarVisible: (visible: boolean) => void;
@@ -20,13 +22,14 @@ interface CalendarState {
 
 export const useCalendarStore = create<CalendarState>((set, get) => ({
   isCalendarVisible: false,
+  tempSelectedDays: {},
   selectedDays: {},
   likesDays: {},
   displayDays: {},
 
   updateSelectedDays: (day: DateData) => {
     set((state) => {
-      const newSelectedDays = { ...state.selectedDays };
+      const newSelectedDays = { ...state.tempSelectedDays };
 
       if (!newSelectedDays[day.dateString]) {
         newSelectedDays[day.dateString] = { selected: true };
@@ -55,8 +58,8 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
         });
       }
 
-      console.log("selected", updatedSelectedDays);
-      return { selectedDays: updatedSelectedDays };
+      console.log("temp selected", updatedSelectedDays);
+      return { tempSelectedDays: updatedSelectedDays };
     });
 
     get().updateDisplayDays();
@@ -85,7 +88,7 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
 
   updateDisplayDays: () => {
     set((state) => {
-      const updatedDisplayDays = { ...state.selectedDays };
+      const updatedDisplayDays = { ...state.tempSelectedDays };
 
       Object.keys(state.likesDays).forEach((day) => {
         if (updatedDisplayDays[day]) {
@@ -101,8 +104,12 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
     });
   },
 
+  submitSelectedDays: () => {
+    set((state) => ({ selectedDays: state.tempSelectedDays }))
+  },
+
   clearSelectedDays: () => {
-    set({ selectedDays: {} });
+    set({ selectedDays: {}, tempSelectedDays: {} });
 
     get().updateDisplayDays();
   },

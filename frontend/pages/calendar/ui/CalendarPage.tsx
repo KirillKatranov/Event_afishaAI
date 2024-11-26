@@ -8,7 +8,6 @@ export const CalendarPage: React.FC = () => {
       flex={1}
       backgroundColor={"bg_color"}
       justifyContent={"center"}
-      padding={"m"}
     >
       <DatePicker/>
     </Box>

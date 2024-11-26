@@ -5,4 +5,5 @@ export const BorderRadii = {
   l: 24,
   xl: 40,
   eventCard: 50,
+  calendarDay: 6
 }

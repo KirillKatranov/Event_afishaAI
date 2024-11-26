@@ -5,6 +5,11 @@ export const formatDate = (dateString: string) => {
   return format(date, "dd.MM.yyyy");
 };
 
+export const formatDay = (day: string) => {
+  if (day.length >= 2) { return day }
+  else return "0" + day;
+};
+
 export const getDatesInRange = (startDate: string, endDate: string): string[] => {
   const date = new Date(startDate);
   const dates = [];

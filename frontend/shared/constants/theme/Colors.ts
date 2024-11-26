@@ -12,4 +12,9 @@ export const Colors = {
   white: "#FFFFFF",
   transparent: "transparent",
   red: "#F44B4B",
+  calendarDisabledDay: "#DADADA",
+  calendarTodayDay: "#D8DFE9",
+  calendarStartingEndingDay: "#6361DD",
+  calendarSelectedDay: "#B4C9FE",
+  calendarAcceptButton: "#E1F44B"
 }
