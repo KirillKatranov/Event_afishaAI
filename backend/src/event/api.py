@@ -35,17 +35,9 @@ class TagsController:
     def get_tags(self):
         tags = Tags.objects.all()
         result = [tag for tag in tags if tag.contents.count() > 0]
+        for res in result:
+            res.count = res.contents.count()
         return result
-
-    @route.get(
-        path="/tags/count",
-        response={
-            200: int,
-        },
-    )
-    def get_count_content_in_tag(self, tag: str) -> int:
-        count_content = Content.objects.filter(tags__name=tag).count()
-        return count_content
 
 
 @api_controller(
@@ -65,7 +57,8 @@ class ContentController:
             q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
         if date_start and not date_end:
             q_filter &= Q(date=date_start)
-        content = Content.objects.filter(q_filter)
+        q_filter_like_false = ~Q(likes__value=False)
+        content = Content.objects.filter(q_filter & q_filter_like_false)
         return content
 
     @route.get(

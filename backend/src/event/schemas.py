@@ -7,6 +7,7 @@ class TagSchema(Schema):
     name: str
     description: str
     image: str | None = None
+    count: int | None = None
 
     @field_validator('image')
     @classmethod
