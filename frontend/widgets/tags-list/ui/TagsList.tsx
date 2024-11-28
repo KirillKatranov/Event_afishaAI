@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import {FlatList} from "react-native";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
 import {useTagsStore} from "@/widgets/tags-list/model/store/useTagsStore";
@@ -7,19 +6,15 @@ import {useSelectedTagStore} from "@/features/tag-selected";
 import {TagCard} from "@/entities/tag";
 import {Theme} from "@/shared/providers/Theme";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
+import Animated, {useSharedValue} from "react-native-reanimated";
 
 export const TagsList = () => {
-  const {
-    tags,
-    isLoading,
-    hasError,
-    fetchTags,
-  } = useTagsStore();
-
+  const { tags, isLoading, hasError, fetchTags } = useTagsStore();
   const { setTag } = useSelectedTagStore();
-
   const theme = useTheme<Theme>();
   const router = useRouter();
+
+  const scrollY = useSharedValue(0);
 
   useEffect(() => {
     fetchTags();
@@ -27,24 +22,27 @@ export const TagsList = () => {
 
   if (isLoading) {
     return (
-      <FlatList
+      <Animated.FlatList
         overScrollMode={"never"}
         showsVerticalScrollIndicator={false}
-        data={ Array(10) }
+        data={Array(10)}
         renderItem={({ index }) => (
-          <LoadingCard key={index} style={{ height: 150, flex: 1, borderRadius: 16 }}/>
+          <LoadingCard
+            key={index}
+            style={{ height: 186, width: "100%", marginBottom: -62, borderRadius: 40 }}
+            index={index}
+          />
         )}
-        numColumns={2}
-        style={{width: "100%"}}
+        style={{
+          width: "100%",
+          paddingHorizontal: 10,
+        }}
         contentContainerStyle={{
           backgroundColor: theme.colors.bg_color,
-          paddingHorizontal: theme.spacing.m,
-          paddingVertical: theme.spacing.s,
-          gap: 12
+          gap: 12,
         }}
-        columnWrapperStyle={{gap: 12}}
       />
-    )
+    );
   }
 
   if (hasError) {
@@ -56,39 +54,40 @@ export const TagsList = () => {
   }
 
   return (
-    <FlatList
+    <Animated.FlatList
       scrollEnabled={true}
       showsVerticalScrollIndicator={false}
       overScrollMode={"never"}
-      data={ tags }
-      renderItem={({ item }) => (
+      data={tags}
+      renderItem={({item, index}) => (
         <TagCard
-          name={ item.name }
-          description={ item.description }
-          image={ item.image }
-          onPress={ () => {
+          index={index}
+          tag={item}
+          onPress={() => {
             setTag(item.name);
-            router.replace("/feed") ;
+            router.replace("/feed");
           }}
+          scrollY={scrollY}
         />
       )}
-      keyExtractor={item => item.name}
-      numColumns={2}
+      keyExtractor={(item) => item.name}
       style={{
         flex: 1,
         backgroundColor: theme.colors.bg_color,
-        paddingHorizontal: theme.spacing.m,
-        paddingVertical: theme.spacing.s,
-        width: "100%"
+        paddingHorizontal: 10,
+        paddingBottom: 62,
+        width: "100%",
       }}
       contentContainerStyle={{
         flex: 1,
         backgroundColor: theme.colors.bg_color,
-        gap: 12
+        gap: 0,
       }}
-      columnWrapperStyle={{
-        gap: 12
+      // Track scroll position
+      onScroll={(event) => {
+        scrollY.value = event.nativeEvent.contentOffset.y;
+        console.log(scrollY.value);
       }}
     />
-  )
-}
+  );
+};

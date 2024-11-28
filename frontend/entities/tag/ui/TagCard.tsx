@@ -1,60 +1,151 @@
 import React from "react";
-import {ImageBackground, Pressable} from "react-native";
+import {Pressable} from "react-native";
 import {useTheme} from "@shopify/restyle";
 import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
+import {Tag} from "@/entities/tag";
+import Icon from "@/shared/ui/Icons/Icon";
+import DropShadow from "react-native-drop-shadow";
+import Animated, {SharedValue, useAnimatedStyle, interpolate} from "react-native-reanimated";
 
 interface TagCardProps {
-  name: string,
-  description: string,
-  image: string | null,
+  index: number;
+  tag: Tag;
   onPress: () => void;
+  scrollY: SharedValue<number>;
 }
 
 export const TagCard: React.FC<TagCardProps> = ({
-  name,
-  description,
-  image,
-  onPress
+  index,
+  tag,
+  onPress,
+  scrollY
 }) => {
   const theme = useTheme<Theme>();
 
+  const inputRange = [
+    (index - 1) * 124 + 325,
+    index * 124 + 325,
+  ];
+
+  const opacity = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      scrollY.value,
+      inputRange,
+      [1, 0],
+      "clamp"
+    ),
+    transform: [
+      {
+        scale: interpolate(
+          scrollY.value,
+          inputRange,
+          [1, 0.8],
+          "clamp"
+        ),
+      },
+      {
+        translateY: interpolate(
+          scrollY.value,
+          inputRange,
+          [0, 30],
+          "clamp"
+        ),
+      },
+    ],
+  }));
+
+
   return (
     <Pressable
-      style={{
-        flex: 1
-      }}
       onPress={ onPress }
     >
-      <ImageBackground
-        source={{ uri: image ? image : undefined }}
-        alt={description}
-        resizeMode="cover"
-        style={{
-          minHeight: 150,
-          backgroundColor: theme.colors.secondary_bg_color,
-          justifyContent: "flex-end",
-          alignItems: "center",
-          borderRadius: 16,
-          overflow: "hidden"
-        }}
+      <Animated.View
+        style={opacity}
       >
-        <Box
-          width="100%"
-          backgroundColor="secondary_bg_color"
-          alignItems="center"
-          justifyContent="center"
-          padding="s"
+        <DropShadow
+          style={{
+            borderRadius: 40,
+            shadowOffset: {width: 0, height: -2},
+            shadowColor: "rgba(0,0,0,0.15)",
+            shadowRadius: 8,
+          }}
         >
-          <Text
-            variant="body"
-            color="text_color"
+          <Box
+            minHeight={186}
+            borderRadius={"xl"}
+            overflow={"hidden"}
+            style={{
+              padding: 20,
+              backgroundColor: theme.colors.tagsCardColors[index % 4],
+              marginBottom: -62
+            }}
           >
-            { name + " "}
-          </Text>
-        </Box>
-      </ImageBackground>
+            <Box
+              width="100%"
+              flexDirection={"row"}
+              gap={"s"}
+            >
+              <Box
+                flex={1}
+                flexDirection={"column"}
+                gap={"xs"}
+              >
+                {/* Events count chip */}
+                <Box
+                  paddingHorizontal={"s"}
+                  paddingVertical={"xs"}
+                  borderWidth={1}
+                  borderColor={"black"}
+                  alignSelf={"flex-start"}
+                  style={{
+                    borderRadius: 20
+                  }}
+                >
+                  <Text
+                    variant={"tagCardEventsCount"}
+                    color={"black"}
+                  >
+                    { tag.count }
+                  </Text>
+                </Box>
+
+                {/* Tag description */}
+                <Text
+                  variant={"tagCardDescription"}
+                  color={"black"}
+                  textTransform={"lowercase"}
+                >
+                  { tag.description }
+                </Text>
+
+                {/* Tag name */}
+                <Text
+                  variant={"tagCardName"}
+                  color={"black"}
+                  textTransform={"uppercase"}
+                  numberOfLines={1}
+                  style={{ marginTop: -8 }}
+                >
+                  { tag.name }
+                </Text>
+              </Box>
+
+              <Box
+                height={"100%"}
+                justifyContent={"center"}
+              >
+                <Icon
+                  name={"diagonalArrow"}
+                  color={theme.colors.black}
+                  size={36}
+                />
+              </Box>
+            </Box>
+          </Box>
+        </DropShadow>
+      </Animated.View>
     </Pressable>
   )
 }

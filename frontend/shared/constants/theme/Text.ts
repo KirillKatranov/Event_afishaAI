@@ -63,5 +63,25 @@ export const Text = {
     fontFamily: 'MontserratMedium',
     fontSize: 14,
   },
+  tagsHeaderQuestion: {
+    fontFamily: 'MontserratLight',
+    fontSize: 20,
+  },
+  tagsHeader: {
+    fontFamily: 'MontserratLight',
+    fontSize: 48,
+  },
+  tagCardName: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 42,
+  },
+  tagCardDescription: {
+    fontFamily: 'MontserratLight',
+    fontSize: 14,
+  },
+  tagCardEventsCount: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 12,
+  },
   defaults: {},
 }

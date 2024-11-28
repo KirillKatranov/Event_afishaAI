@@ -104,7 +104,6 @@ export const DatePicker: React.FC = () => {
           onDayPress={updateSelectedDays}
           calendarHeight={244}
           contentContainerStyle={{ gap: 40 }}
-          hideExtraDays={false}
           hideDayNames={true}
           theme={{
             calendarBackground: theme.colors.bg_color,

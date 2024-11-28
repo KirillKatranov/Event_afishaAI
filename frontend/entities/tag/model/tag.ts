@@ -4,5 +4,6 @@
 export type Tag = {
   name: string;
   description: string;
-  image: string | null;
+  image?: string | null;
+  count: number;
 }

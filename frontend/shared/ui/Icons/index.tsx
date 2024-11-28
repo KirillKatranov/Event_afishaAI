@@ -10,3 +10,4 @@ export { default as Dislike } from "./svgs/Dislike";
 export { default as Location } from "./svgs/Location";
 export { default as Tags } from "./svgs/Tags";
 export { default as User } from "./svgs/User";
+export { default as DiagonalArrow } from "./svgs/DiagonalArrow";
