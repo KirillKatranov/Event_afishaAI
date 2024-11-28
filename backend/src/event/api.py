@@ -92,6 +92,8 @@ class LikeController:
     )
     def set_like(self, request_data: LikeRequestSchema):
         user = User.objects.filter(username=request_data.username).first()
+        if not user:
+            user = User.objects.create(username=request_data.username)
         # todo: создавать пользователя если такого нет.
         content = Content.objects.filter(id=request_data.content_id).first()
         Like.objects.update_or_create(user=user, content=content, defaults={"value": True})
@@ -105,6 +107,8 @@ class LikeController:
     )
     def set_dislike(self, request_data: LikeRequestSchema):
         user = User.objects.filter(username=request_data.username).first()
+        if not user:
+            user = User.objects.create(username=request_data.username)
         content = Content.objects.filter(id=request_data.content_id).first()
         Like.objects.update_or_create(user=user, content=content, defaults={"value": False})
         return {'user': request_data.username, 'content': request_data.content_id, 'value': False}
@@ -122,6 +126,8 @@ class FeedbackController:
     )
     def create_feedback(self, request_data: FeedbackRequestSchema) -> dict:
         user = User.objects.filter(username=request_data.username).first()
+        if not user:
+            user = User.objects.create(username=request_data.username)
         Feedback.objects.create(user=user, message=request_data.message)
         return {"status": "ok"}
 
