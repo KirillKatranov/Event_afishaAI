@@ -81,7 +81,13 @@ async def any_message(message: types.Message):
     time.sleep(1)
 
     pattern = r'(https?://[^\s]+)'
-    links = re.findall(pattern, message.caption)
+    links_re = re.findall(pattern, message.caption)
+
+    print(f"{links_re=}")
+
+    for link in links_re:
+        link_name = llm_text_analysis.create_name_for_link(link)
+        links.append({link_name: link})
 
     print(f"{links=}")
 
