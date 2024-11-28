@@ -57,8 +57,7 @@ class ContentController:
             q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
         if date_start and not date_end:
             q_filter &= Q(date=date_start)
-        q_filter_like_false = ~Q(likes__value=False)
-        content = Content.objects.filter(q_filter & q_filter_like_false)
+        content = Content.objects.filter(q_filter)
         return content
 
     @route.get(
@@ -71,6 +70,25 @@ class ContentController:
             list[ContentSchema]:
         current_user = User.objects.filter(username=username).first()
         likes = Like.objects.filter(user=current_user, value=True)
+        q_filter = Q()
+        if date_start and date_end:
+            q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
+        if date_start and not date_end:
+            q_filter &= Q(date=date_start)
+        q_filter &= Q(likes__in=likes)
+        content = Content.objects.filter(q_filter)
+        return content
+
+    @route.get(
+        path="/contents/disliked",
+        response={
+            200: list[ContentSchema],
+        },
+    )
+    def get_liked_content(self, username: str, date_start: date | None = None, date_end: date | None = None) -> \
+            list[ContentSchema]:
+        current_user = User.objects.filter(username=username).first()
+        likes = Like.objects.filter(user=current_user, value=False)
         q_filter = Q()
         if date_start and date_end:
             q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
