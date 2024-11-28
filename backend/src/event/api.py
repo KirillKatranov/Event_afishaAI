@@ -69,6 +69,8 @@ class ContentController:
     def get_liked_content(self, username: str, date_start: date | None = None, date_end: date | None = None) -> \
             list[ContentSchema]:
         current_user = User.objects.filter(username=username).first()
+        if not current_user:
+            current_user = User.objects.create(username=username)
         likes = Like.objects.filter(user=current_user, value=True)
         q_filter = Q()
         if date_start and date_end:
