@@ -86,7 +86,6 @@ export const TagsList = () => {
       // Track scroll position
       onScroll={(event) => {
         scrollY.value = event.nativeEvent.contentOffset.y;
-        console.log(scrollY.value);
       }}
     />
   );

@@ -70,9 +70,8 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
       const updatedLikesDays: MarkedDates = {};
 
       likes.forEach((event) => {
-        updatedLikesDays[event.date] = { marked: true, dotColor: "red" }
+        updatedLikesDays[event.date] = { marked: true }
       })
-
 
       console.log("liked", updatedLikesDays);
       return { likesDays: updatedLikesDays };

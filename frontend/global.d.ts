@@ -52,6 +52,7 @@ type TelegramWebapp = {
   disableVerticalSwipes: () => void;
   openLink: (url: string, options?: { try_instant_view?: boolean }) => void;
   close: () => void;
+  safeAreaInset?: { top?: number; bottom?: number; left?: number; right?: number };
   HapticFeedback?: TelegramHapticFeedback;
 };
 

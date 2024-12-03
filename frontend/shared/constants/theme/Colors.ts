@@ -17,5 +17,4 @@ export const Colors = {
   calendarStartingEndingDay: "#6361DD",
   calendarSelectedDay: "#B4C9FE",
   calendarAcceptButton: "#E1F44B",
-  tagsCardColors: ["#EDF3C3", "#E1F44B", "#B4C9FE", "#7775E7"]
 }

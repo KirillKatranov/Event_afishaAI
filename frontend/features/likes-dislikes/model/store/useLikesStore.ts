@@ -18,15 +18,19 @@ export const useLikesStore = create<LikesState>((set) => ({
   isLoading: true,
   hasError: false,
 
-  addLikedEvent: (event) =>
+  addLikedEvent: (event: Event) =>
     set((state) => {
+      const eventExists = state.likes.some((likedEvent) => likedEvent.id === event.id);
+
+      if (eventExists) { return state }
+
       const updatedLikedEvents = [...state.likes, event];
       updatedLikedEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
       return { likes: updatedLikedEvents };
     }),
 
-  removeLikedEvent: (eventId) =>
+  removeLikedEvent: (eventId: number) =>
     set((state) => ({
       likes: state.likes.filter((event) => event.id !== eventId),
     })),

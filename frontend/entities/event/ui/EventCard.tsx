@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Image, ImageBackground, Platform, Pressable} from "react-native";
+import {Image, ImageBackground, Platform} from "react-native";
 import Animated, {useSharedValue, useAnimatedStyle, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
 import {Hyperlink} from "react-native-hyperlink";
@@ -21,8 +21,6 @@ const DraggableScrollView = Platform.select({
 
 interface EventCardProps {
   event: Event;
-  tag?: string | undefined;
-  onBackPressed?: () => void;
   onLike: () => void;
   onDislike: () => void;
 }
@@ -30,8 +28,6 @@ interface EventCardProps {
 export const EventCard: React.FC<EventCardProps> = ({
   event,
   onLike,
-  tag,
-  onBackPressed = () => console.log("Back Pressed"),
   onDislike
 }) => {
   const theme = useTheme<Theme>();
@@ -43,6 +39,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   const [titleHeight, setTitleHeight] = useState(200);
 
   const {
+    tagsScrolling, setTagsScrolling,
     descriptionScrolling, setDescriptionScrolling,
     descriptionScrollOnTop, setDescriptionScrollOnTop,
     descriptionSwiping, setDescriptionSwiping,
@@ -61,7 +58,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   }));
 
   const panGesture = Gesture.Pan().runOnJS(true)
-    .enabled((!descriptionScrolling || descriptionScrollOnTop))
+    .enabled(!tagsScrolling && (!descriptionScrolling || descriptionScrollOnTop))
     .onBegin(() => {
       setDescriptionSwiping(true);
     })
@@ -123,25 +120,6 @@ export const EventCard: React.FC<EventCardProps> = ({
           }}
         />
 
-        {/* Back button */}
-        {
-          tag && (
-            <Pressable
-              onPress={onBackPressed}
-              style={{
-                backgroundColor: theme.colors.cardBGColor,
-                width: 36, height: 36,
-                position: "absolute",
-                top: 16, left: 16,
-                borderRadius: 50,
-                zIndex: 1, alignItems: "center", justifyContent: "center"
-              }}
-            >
-              <Icon name={"chevronLeft"} color={theme.colors.gray} size={24}/>
-            </Pressable>
-          )
-        }
-
         {/* Card content */}
         <Box
           flex={1}
@@ -190,6 +168,9 @@ export const EventCard: React.FC<EventCardProps> = ({
                     <DraggableScrollView
                       showsHorizontalScrollIndicator={false}
                       horizontal={true}
+                      scrollEnabled={true}
+                      onTouchStart={() => setTagsScrolling(true)}
+                      onTouchEnd={() => setTagsScrolling(false)}
                       contentContainerStyle={{ gap: 4, flexGrow: 1, justifyContent: "center", alignItems: "center" }}
                     >
                       {

@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {Pressable, ScrollView} from "react-native";
+import {Pressable} from "react-native";
 import { useFocusEffect } from "expo-router";
 import { useTheme } from "@shopify/restyle";
 import {CalendarList, LocaleConfig} from "react-native-calendars";
@@ -81,55 +81,49 @@ export const DatePicker: React.FC = () => {
       gap={"m"}
       paddingBottom={"m"}
     >
-      <ScrollView
+      <CalendarList
+        pastScrollRange={0}
+        futureScrollRange={1}
+        current={minDate.toISOString().split("T")[0]}
+        minDate={minDate.toISOString().split("T")[0]}
+        markingType={"period"}
+        markedDates={displayDays}
+        onDayPress={updateSelectedDays}
+        calendarHeight={244}
+        contentContainerStyle={{
+          gap: 40,
+          flexGrow: 1,
+          marginVertical: 30,
+          justifyContent: "center"
+        }}
         scrollEnabled
         showsVerticalScrollIndicator={false}
-        style={{
+        hideDayNames={true}
+        theme={{
+          calendarBackground: theme.colors.bg_color,
+          weekVerticalMargin: 2,
+          contentStyle: { width: "100%"},
+        }}
+
+        style={{ flex: 1 }}
+
+        calendarStyle={{
           flex: 1,
+          paddingHorizontal: 40,
+          width: "100%",
         }}
-        contentContainerStyle={{
-          flexGrow: 1,
-          gap: 40,
-          justifyContent: "center",
-          marginVertical: 30,
+
+        dayComponent={(day) => {
+          return <CalendarDay day={day} onPress={() => updateSelectedDays(day.date!)}/>
         }}
-      >
-        <CalendarList
-          pastScrollRange={0}
-          futureScrollRange={1}
-          current={minDate.toISOString().split("T")[0]}
-          minDate={minDate.toISOString().split("T")[0]}
-          markingType={"period"}
-          markedDates={displayDays}
-          onDayPress={updateSelectedDays}
-          calendarHeight={244}
-          contentContainerStyle={{ gap: 40 }}
-          hideDayNames={true}
-          theme={{
-            calendarBackground: theme.colors.bg_color,
-            weekVerticalMargin: 2,
-            contentStyle: { width: "100%"},
-          }}
 
-          style={{ justifyContent: "center" }}
+        customHeader={(date: { month: any; }) => {
+          return (<CalendarHeader month={monthNames[date.month.getMonth()]}/>)
+        }}
 
-          calendarStyle={{
-            paddingHorizontal: 40,
-            width: "100%",
-          }}
-
-          dayComponent={(day) => {
-            return <CalendarDay day={day} onPress={() => updateSelectedDays(day.date!)}/>
-          }}
-
-          customHeader={(date: { month: any; }) => {
-            return (<CalendarHeader month={monthNames[date.month.getMonth()]}/>)
-          }}
-
-          firstDay={1}
-          monthFormat={"MMMM"}
-        />
-      </ScrollView>
+        firstDay={1}
+        monthFormat={"MMMM"}
+      />
 
       {/* Buttons Section */}
       <Box

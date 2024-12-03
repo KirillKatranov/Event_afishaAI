@@ -5,6 +5,7 @@ import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {Tag} from "@/entities/tag";
+import {colors} from "@/entities/tag/model/colors";
 import Icon from "@/shared/ui/Icons/Icon";
 import DropShadow from "react-native-drop-shadow";
 import Animated, {SharedValue, useAnimatedStyle, interpolate} from "react-native-reanimated";
@@ -78,7 +79,7 @@ export const TagCard: React.FC<TagCardProps> = ({
             overflow={"hidden"}
             style={{
               padding: 20,
-              backgroundColor: theme.colors.tagsCardColors[index % 4],
+              backgroundColor: colors[index % 4],
               marginBottom: -62
             }}
           >
