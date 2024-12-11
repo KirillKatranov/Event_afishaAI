@@ -3,6 +3,7 @@ import Animated, {interpolateColor, useAnimatedStyle, useSharedValue, withTiming
 import {useTheme} from "@shopify/restyle";
 import {OnboardingIllustration, OnboardingNav, OnboardingText, useOnboardingStore} from "@/widgets/onboarding-elements";
 import {Theme} from "@/shared/providers/Theme";
+import {Box} from "@/shared/ui";
 
 export const OnboardingPage: React.FC = () => {
   const theme = useTheme<Theme>();
@@ -29,17 +30,26 @@ export const OnboardingPage: React.FC = () => {
       style={[
         animatedBackground,
         {
-          flex: 1,
-          justifyContent: "flex-end",
-          gap: 36
+          flex: 1
         }
       ]}
     >
-      <OnboardingIllustration/>
+      <Box
+        flex={1}
+        justifyContent={"flex-end"}
+        borderWidth={4}
+        borderColor={"black"}
+        overflow={"hidden"}
+        style={{
+          gap: 36, borderRadius: 25
+        }}
+      >
+        <OnboardingIllustration/>
 
-      <OnboardingText/>
+        <OnboardingText/>
 
-      <OnboardingNav/>
+        <OnboardingNav/>
+      </Box>
     </Animated.View>
   )
 }

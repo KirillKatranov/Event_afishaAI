@@ -6,7 +6,8 @@ interface FeedbackState {
   hasError: boolean;
   isSuccess: boolean;
   setText: (text: string) => void;
-  submitFeedback: (username: string) => void;
+  submitFeedback: (username: string) => Promise<void>;
+  resetPage: () => void;
 }
 
 export const useFeedbackStore = create<FeedbackState>((set) => ({
@@ -16,12 +17,12 @@ export const useFeedbackStore = create<FeedbackState>((set) => ({
 
   setText: (text: string) => set({ text }),
 
-  submitFeedback: (
+  submitFeedback: async (
     username: string
   ) => {
     set({ hasError: false, isSuccess: false });
 
-    feedbackService.sendFeedback({ username: username, message: useFeedbackStore.getState().text })
+    await feedbackService.sendFeedback({ username: username, message: useFeedbackStore.getState().text })
       .then((response) => {
         if (response.status === 200) {
           console.log(`Successfully submit feedback`);
@@ -35,5 +36,9 @@ export const useFeedbackStore = create<FeedbackState>((set) => ({
         console.log(`Feedback request error: ${e}`);
         set({ hasError: true });
       })
+  },
+
+  resetPage: () => {
+    set({ isSuccess: false, hasError: false })
   },
 }));

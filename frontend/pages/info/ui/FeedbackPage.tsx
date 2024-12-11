@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {Pressable, TextInput} from "react-native";
-import {useRouter} from "expo-router";
+import {useFocusEffect, useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import {useFeedbackStore} from "@/pages/info/model/store/useFeedbackState";
@@ -13,7 +13,18 @@ export const FeedbackPage = () => {
   const theme = useTheme<Theme>();
   const router = useRouter();
   const config = useConfig();
-  const { text, setText, submitFeedback, hasError, isSuccess } = useFeedbackStore();
+  const { text, setText, submitFeedback, hasError, isSuccess, resetPage } = useFeedbackStore();
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => resetPage();
+    }, [resetPage])
+  )
+
+  const onSubmitPress = () => {
+    submitFeedback(config.initDataUnsafe.user.username)
+      .then(() => setText(""));
+  }
 
   return (
     <Box
@@ -87,7 +98,7 @@ export const FeedbackPage = () => {
       }
 
       <Pressable
-        onPress={ () => submitFeedback(config.initDataUnsafe.user.username) }
+        onPress={ onSubmitPress }
       >
         <Box
           backgroundColor="button_color"

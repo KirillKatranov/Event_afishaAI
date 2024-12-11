@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {Pressable} from "react-native";
+import {Image, Pressable} from "react-native";
 import { useFocusEffect } from "expo-router";
 import { useTheme } from "@shopify/restyle";
 import {CalendarList, LocaleConfig} from "react-native-calendars";
@@ -11,6 +11,7 @@ import { useConfig } from "@/shared/providers/TelegramConfig";
 import {CalendarHeader} from "./calendar-components/CalendarHeader";
 import {CalendarDay} from "@/widgets/date-picker/ui/calendar-components/CalendarDay";
 import Animated, {useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming} from "react-native-reanimated";
+import {LinearGradient} from "expo-linear-gradient";
 
 export const DatePicker: React.FC = () => {
   const theme = useTheme<Theme>();
@@ -19,7 +20,7 @@ export const DatePicker: React.FC = () => {
   const [filterMessage, setFilterMessage] = React.useState<string>("");
 
   const {
-    displayDays,
+    displayDays, selectedDaysUpdated, tempSelectedDays,
     submitSelectedDays, updateSelectedDays, clearSelectedDays,
     fetchAllLikes
   } = useCalendarStore();
@@ -81,6 +82,31 @@ export const DatePicker: React.FC = () => {
       gap={"m"}
       paddingBottom={"m"}
     >
+      <Image
+        source={require("@/shared/assets/images/CalendarGradient.png")}
+        resizeMode="stretch"
+        style={{
+          position: "absolute",
+          zIndex: 2,
+          width: "130%",
+          height: 120,
+          top: -65,
+          alignSelf: "center"
+        }}
+      />
+
+      <LinearGradient
+        colors={[theme.colors.bg_color, theme.colors.transparent]}
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: 60,
+          zIndex: 1
+        }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      />
+
       <CalendarList
         pastScrollRange={0}
         futureScrollRange={1}
@@ -93,19 +119,19 @@ export const DatePicker: React.FC = () => {
         contentContainerStyle={{
           gap: 40,
           flexGrow: 1,
-          marginVertical: 30,
+          marginTop: 50,
+          marginBottom: 30,
           justifyContent: "center"
         }}
-        scrollEnabled
         showsVerticalScrollIndicator={false}
         hideDayNames={true}
         theme={{
-          calendarBackground: theme.colors.bg_color,
+          calendarBackground: theme.colors.transparent,
           weekVerticalMargin: 2,
           contentStyle: { width: "100%"},
         }}
 
-        style={{ flex: 1 }}
+        style={{ flex: 1, zIndex: -1 }}
 
         calendarStyle={{
           flex: 1,
@@ -132,36 +158,50 @@ export const DatePicker: React.FC = () => {
         alignItems={"center"}
         justifyContent={"center"}
         gap={"s"}
+        paddingHorizontal={"l"}
       >
-        <Pressable onPress={onCancelPress}>
+        <Pressable
+          onPress={onCancelPress}
+          disabled={ Object.keys(tempSelectedDays).length == 0 }
+        >
           <Box
             width={254} height={30}
             alignItems={"center"} justifyContent={"center"}
             padding={"s"}
             borderRadius={"l"}
+            backgroundColor={
+              Object.keys(tempSelectedDays).length == 0 ?
+                "transparent" :
+                "secondary_bg_color"
+            }
           >
             <Text
               variant={"calendarAcceptButton"}
               color={"text_color"}
               textAlign={"center"}
+              selectable={false}
             >
               {"Сброс"}
             </Text>
           </Box>
         </Pressable>
 
-        <Pressable onPress={onSubmitPress}>
+        <Pressable
+          onPress={onSubmitPress}
+          disabled={!selectedDaysUpdated}
+        >
           <Box
-            width={254} height={30}
+            width={254} height={32}
             alignItems={"center"} justifyContent={"center"}
             padding={"s"}
             borderRadius={"l"}
-            backgroundColor={"calendarAcceptButton"}
+            backgroundColor={!selectedDaysUpdated ? "calendarAcceptButtonDisabled" : "calendarAcceptButton"}
           >
             <Text
               variant={"calendarAcceptButton"}
               color={"black"}
               textAlign={"center"}
+              selectable={false}
             >
               {"Выбрать Период"}
             </Text>
@@ -178,7 +218,8 @@ export const DatePicker: React.FC = () => {
             top: 20,
             paddingHorizontal: 12, paddingVertical: 8,
             borderRadius: 8,
-            backgroundColor: theme.colors.secondary_bg_color
+            backgroundColor: theme.colors.secondary_bg_color,
+            zIndex: 2
           }
         ]}
       >

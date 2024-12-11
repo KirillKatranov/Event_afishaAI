@@ -6,7 +6,7 @@ import {Event} from "@/entities/event";
 import {getDatesInRange} from "@/shared/scripts/date";
 
 interface CalendarState {
-  isCalendarVisible: boolean;
+  selectedDaysUpdated: boolean;
   tempSelectedDays: MarkedDates;
   selectedDays: MarkedDates;
   likesDays: MarkedDates;
@@ -17,11 +17,10 @@ interface CalendarState {
   submitSelectedDays: () => void;
   clearSelectedDays: () => void;
   fetchAllLikes: (username: string) => void;
-  setCalendarVisible: (visible: boolean) => void;
 }
 
 export const useCalendarStore = create<CalendarState>((set, get) => ({
-  isCalendarVisible: false,
+  selectedDaysUpdated: false,
   tempSelectedDays: {},
   selectedDays: {},
   likesDays: {},
@@ -61,6 +60,8 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
       console.log("temp selected", updatedSelectedDays);
       return { tempSelectedDays: updatedSelectedDays };
     });
+
+    if (!get().selectedDaysUpdated) set({ selectedDaysUpdated: true });
 
     get().updateDisplayDays();
   },
@@ -104,16 +105,13 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
   },
 
   submitSelectedDays: () => {
-    set((state) => ({ selectedDays: state.tempSelectedDays }))
+    set((state) => ({ selectedDays: state.tempSelectedDays }));
+    set({ selectedDaysUpdated: false });
   },
 
   clearSelectedDays: () => {
-    set({ selectedDays: {}, tempSelectedDays: {} });
+    set({ selectedDays: {}, tempSelectedDays: {}, selectedDaysUpdated: false });
 
     get().updateDisplayDays();
-  },
-
-  setCalendarVisible: (visible: boolean) => {
-    set({ isCalendarVisible: visible });
-  },
+  }
 }));

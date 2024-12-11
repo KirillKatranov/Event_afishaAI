@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useMemo, useRef} from "react";
 import {Pressable} from "react-native";
 import {useRouter} from "expo-router";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
@@ -80,17 +80,23 @@ export const EventsSwiper = () => {
     }
   }, [swipedAll]);
 
-  if (isLoading) {
-    return (
-      <Box flex={1} backgroundColor="bg_color">
-        <LoadingCard style={{ height: "100%", width: "100%" }}/>
-      </Box>
+  const renderCard = useMemo(() => {
+    return (event: Event) => (
+      <EventCard
+        event={event}
+        onLike={() => {
+          swiperRef.current?.swipeRight();
+        }}
+        onDislike={() => {
+          swiperRef.current?.swipeLeft();
+        }}
+      />
     );
-  }
+  }, []);
 
-  if (hasError) {
-    return <ErrorCard />
-  }
+
+  if (isLoading) return <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>
+  if (hasError) return <ErrorCard />
 
   return (
     <Box
@@ -105,17 +111,12 @@ export const EventsSwiper = () => {
                 swiperRef.current = swiper;
               }}
               cards={events}
-              renderCard={(event) => (
-                <EventCard
-                  event={event}
-                  onLike={ () => { swiperRef.current?.swipeRight() } }
-                  onDislike={ () => { swiperRef.current?.swipeLeft() } }
-                />
-              )}
+              renderCard={renderCard}
+              keyExtractor={(event) => event.id.toString()}
               backgroundColor="white"
               horizontalSwipe={swipeEnabled}
               verticalSwipe={false}
-              stackSize={3}
+              stackSize={2}
               containerStyle={{ backgroundColor: theme.colors.bg_color }}
               cardStyle={{ height: "100%" }}
               cardVerticalMargin={0}

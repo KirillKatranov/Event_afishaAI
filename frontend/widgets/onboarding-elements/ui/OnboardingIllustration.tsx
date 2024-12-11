@@ -42,7 +42,7 @@ export const OnboardingIllustration = () => {
         <Box
           position={"absolute"}
           width={"100%"}
-          top={0}
+          top={60}
           zIndex={-1}
         >
           <Illustration name={"topLine"} width={"100%"}/>
@@ -87,7 +87,7 @@ export const OnboardingIllustration = () => {
         <Box
           position={"absolute"}
           width={"100%"}
-          bottom={0}
+          bottom={4}
           zIndex={-1}
         >
           <Illustration name={"bottomLine"} width={"100%"}/>
