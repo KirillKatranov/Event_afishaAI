@@ -6,6 +6,7 @@ from event.models import Tags, Content, User, Like, Feedback
 from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema
 from django.db.models import Q
 from datetime import date
+from ninja.errors import HttpError
 
 
 @api_controller(
@@ -58,6 +59,18 @@ class ContentController:
         if date_start and not date_end:
             q_filter &= Q(date=date_start)
         content = Content.objects.filter(q_filter)
+        return content
+
+    @route.get(
+        path="/contents/{content_id}",
+        response={
+            200: ContentSchema,
+        },
+    )
+    def get_content_by_id(self, content_id: int) -> ContentSchema:
+        content = Content.objects.filter(id=content_id).first()
+        if not content:
+            raise HttpError(404, f"Событие с ID {content_id} не найдено")
         return content
 
     @route.get(
