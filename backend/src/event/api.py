@@ -83,7 +83,7 @@ class ContentController:
         return content
 
     @route.get(
-        path="/contents/{content_id:int}",
+        path="/contents/{content_id}",
         response={
             200: ContentSchema,
         },
