@@ -62,18 +62,6 @@ class ContentController:
         return content
 
     @route.get(
-        path="/contents/{content_id}",
-        response={
-            200: ContentSchema,
-        },
-    )
-    def get_content_by_id(self, content_id: int) -> ContentSchema:
-        content = Content.objects.filter(id=content_id).first()
-        if not content:
-            raise HttpError(404, f"Событие с ID {content_id} не найдено")
-        return content
-
-    @route.get(
         path="/contents/liked",
         response={
             200: list[ContentSchema],
@@ -92,6 +80,18 @@ class ContentController:
             q_filter &= Q(date=date_start)
         q_filter &= Q(likes__in=likes)
         content = Content.objects.filter(q_filter)
+        return content
+
+    @route.get(
+        path="/contents/{content_id:int}",
+        response={
+            200: ContentSchema,
+        },
+    )
+    def get_content_by_id(self, content_id: int) -> ContentSchema:
+        content = Content.objects.filter(id=content_id).first()
+        if not content:
+            raise HttpError(404, f"Событие с ID {content_id} не найдено")
         return content
 
 
