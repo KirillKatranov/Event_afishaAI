@@ -83,5 +83,9 @@ export const Text = {
     fontFamily: 'MontserratSemiBold',
     fontSize: 12,
   },
+  sharedCardButton: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 20,
+  },
   defaults: {},
 }

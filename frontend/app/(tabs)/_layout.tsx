@@ -20,6 +20,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs
+        initialRouteName={"feed"}
         screenOptions={{
           tabBarActiveTintColor: theme.colors.button_color,
           headerShown: false,

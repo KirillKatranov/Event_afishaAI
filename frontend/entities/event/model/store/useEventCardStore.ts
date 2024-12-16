@@ -6,11 +6,13 @@ interface EventCardState {
   descriptionScrollOnTop: boolean;
   descriptionSwiping: boolean;
   descriptionExpanded: boolean;
+  swipeEnabled: boolean;
   setTagsScrolling: (newState: boolean) => void;
   setDescriptionSwiping: (newState: boolean) => void;
   setDescriptionExpanded: (newState: boolean) => void;
   setDescriptionScrolling: (newState: boolean) => void;
   setDescriptionScrollOnTop: (newState: boolean) => void;
+  setSwipeEnabled: (state: boolean) => void;
 }
 
 export const useEventCardStore = create<EventCardState>((set) => ({
@@ -25,4 +27,9 @@ export const useEventCardStore = create<EventCardState>((set) => ({
   setDescriptionExpanded: (newState: boolean) => set({ descriptionExpanded: newState }),
   setDescriptionScrolling: (newState: boolean) => set({ descriptionScrolling: newState }),
   setDescriptionScrollOnTop: (newState: boolean) => set({ descriptionScrollOnTop: newState }),
+
+  swipeEnabled: true,
+  setSwipeEnabled: (state: boolean) => {
+    set({ swipeEnabled: state })
+  },
 }));

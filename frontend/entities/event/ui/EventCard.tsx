@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useEffect, useState} from "react";
-import {Image, ImageBackground, Platform} from "react-native";
+import {Image, ImageBackground, Platform, Pressable} from "react-native";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
 import {Hyperlink} from "react-native-hyperlink";
@@ -13,6 +13,7 @@ import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {ActionButton, TagChip} from "@/shared/ui";
 import {Gesture, GestureDetector, GestureHandlerRootView, ScrollView} from "react-native-gesture-handler";
+import { WEB_APP_URL } from '@env';
 
 const DraggableScrollView = Platform.select({
   web: () => require('@/shared/providers/DraggableScroll').DraggableScrollView,
@@ -37,16 +38,25 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
     tagsScrolling, setTagsScrolling,
     descriptionScrolling, setDescriptionScrolling,
     descriptionScrollOnTop, setDescriptionScrollOnTop,
-    setDescriptionSwiping,
+    descriptionSwiping, setDescriptionSwiping,
     descriptionExpanded, setDescriptionExpanded,
+    setSwipeEnabled
   } = useEventCardStore();
 
   useEffect(() => {
     heightValue.value = withTiming(
-      descriptionExpanded ? (cardHeight - 36 - 16 - 10) : titleHeight,
-      { duration: 300 },
+      descriptionExpanded ? (cardHeight - 40 - 16 - 10) : titleHeight,
+      { duration: 250 },
     );
   }, [descriptionExpanded, titleHeight, cardHeight]);
+
+  useEffect(() => {
+    if (descriptionExpanded || descriptionSwiping || tagsScrolling) {
+      setSwipeEnabled(false)
+    } else {
+      setSwipeEnabled(true)
+    }
+  }, [descriptionExpanded, descriptionSwiping, tagsScrolling]);
 
   const animatedInfoStyle = useAnimatedStyle(() => ({
     height: heightValue.value,
@@ -56,9 +66,9 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
     heightValue.value = Math.max(
       titleHeight,
       Math.min(
-        cardHeight - 36 - 16 - 10,
+        cardHeight - 40 - 16 - 10,
         descriptionExpanded
-          ? cardHeight - 36 - 16 - 10 - event.translationY
+          ? cardHeight - 40 - 16 - 10 - event.translationY
           : titleHeight - event.translationY
       )
     );
@@ -76,8 +86,8 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
         setDescriptionExpanded(false);
       } else {
         heightValue.value = withTiming(
-          descriptionExpanded ? cardHeight - 36 - 16 - 10 : titleHeight,
-          { duration: 300 }
+          descriptionExpanded ? cardHeight - 40 - 16 - 10 : titleHeight,
+          { duration: 250 }
         );
       }
     },
@@ -298,6 +308,38 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
           </GestureDetector>
         </Box>
       </ImageBackground>
+
+      <Pressable
+        onPress={ () => {
+          console.log(WEB_APP_URL);
+          const link = `${WEB_APP_URL}?startapp=${event.id}`;
+          console.log(link);
+          const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
+
+          config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
+        }}
+        style={{
+          position: "absolute",
+          top: 16, right: 16,
+          zIndex: 1
+        }}
+      >
+        <Box
+          backgroundColor={"cardBGColor"}
+          height={40}
+          width={40}
+          alignItems={"center"}
+          justifyContent={"center"}
+          borderRadius={"xl"}
+        >
+          <Icon
+            name={"share"}
+            color={theme.colors.white}
+            size={24}
+          />
+        </Box>
+      </Pressable>
+
     </GestureHandlerRootView>
   );
 });

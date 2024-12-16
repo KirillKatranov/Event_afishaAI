@@ -29,6 +29,7 @@ type WebAppUser = {
 
 type WebappData = {
   user: WebAppUser;
+  start_param?: string;
 };
 
 
@@ -51,6 +52,7 @@ type TelegramWebapp = {
   expand: () => void;
   disableVerticalSwipes: () => void;
   openLink: (url: string, options?: { try_instant_view?: boolean }) => void;
+  openTelegramLink: (url: string) => void;
   close: () => void;
   safeAreaInset?: { top?: number; bottom?: number; left?: number; right?: number };
   HapticFeedback?: TelegramHapticFeedback;

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import eventsService from "@/widgets/events-swiper/api/EventsService";
-import {ContentParams} from "@/widgets/events-swiper/model/types/events.types";
+import {ContentParams} from "@/features/content";
+import ContentService from "@/features/content/api/ContentService";
 import {Event} from "@/entities/event";
 
 interface EventsState {
@@ -10,8 +10,6 @@ interface EventsState {
   swipedAll: boolean;
   fetchEvents: (tag?: string, date_start?: string, date_end?: string) => void;
   setSwipedAll: (state: boolean) => void;
-  swipeEnabled: boolean;
-  setSwipeEnabled: (state: boolean) => void;
 }
 
 export const useEventsSwiperStore = create<EventsState>((set) => ({
@@ -33,7 +31,7 @@ export const useEventsSwiperStore = create<EventsState>((set) => ({
     if (date_start) params.date_start = date_start;
     if (date_end)   params.date_end = date_end;
 
-    eventsService.getContent(params)
+    ContentService.getContent(params)
       .then((response) => {
         switch (response.status) {
           case 200: {
@@ -60,10 +58,5 @@ export const useEventsSwiperStore = create<EventsState>((set) => ({
 
   setSwipedAll: async (state: boolean) => {
     set({ swipedAll: state });
-  },
-
-  swipeEnabled: true,
-  setSwipeEnabled: (state: boolean) => {
-    set({ swipeEnabled: state })
   },
 }));

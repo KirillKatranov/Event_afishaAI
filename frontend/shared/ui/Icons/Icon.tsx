@@ -12,6 +12,7 @@ const icons = {
   like: Icons.Like,
   likeFilled: Icons.LikeFilled,
   location: Icons.Location,
+  share: Icons.Share,
   tags: Icons.Tags,
   user: Icons.User,
   dislike: Icons.Dislike,

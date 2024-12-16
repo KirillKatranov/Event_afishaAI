@@ -44,6 +44,7 @@
     "react-native": "0.74.5",
     "react-native-calendars": "^1.1307.0",
     "react-native-deck-swiper": "^2.0.17",
+    "react-native-dotenv": "^3.4.11",
     "react-native-drop-shadow": "^1.0.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-hyperlink": "^0.0.22",

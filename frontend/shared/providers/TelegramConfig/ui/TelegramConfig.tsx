@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from "react";
-import { Platform } from "react-native";
+import React, {createContext, useContext} from "react";
+import {Platform} from "react-native";
 
 export const MockConfig: TelegramWebapp = {
   backgroundColor: "",
@@ -9,6 +9,7 @@ export const MockConfig: TelegramWebapp = {
   openLink(url: string, options: { try_instant_view?: boolean } | undefined): void {
     console.log(`MockConfig.openLink() call with ${url} ${options}`);
   },
+  openTelegramLink(url: string): void { console.log(`MockConfig.openTelegramLink() call with ${url}`); },
   headerColor: "",
   initData: "",
   platform: "",
@@ -54,9 +55,15 @@ const getTelegramConfig = (): TelegramWebapp => {
     // @ts-ignore
     const TelegramWebappConfig: TelegramWebapp = window.Telegram.WebApp;
 
+    if (!TelegramWebappConfig.initDataUnsafe.user.username) {
+      TelegramWebappConfig.initDataUnsafe.user.username = TelegramWebappConfig.initDataUnsafe.user.id.toString()
+    }
+
     console.log("Calling config functions");
     TelegramWebappConfig.expand();
     TelegramWebappConfig.disableVerticalSwipes();
+
+    console.log("Start param:", TelegramWebappConfig.initDataUnsafe.start_param);
 
     return TelegramWebappConfig;
   } else {
@@ -64,6 +71,21 @@ const getTelegramConfig = (): TelegramWebapp => {
   }
 };
 
+export const getStartParam = (): string => {
+  if (Platform.OS !== "web") {
+    return "";
+  }
+
+  // @ts-ignore
+  if (typeof window !== undefined && window.Telegram?.WebApp?.initDataUnsafe) {
+    // @ts-ignore
+
+    const startParam =  window.Telegram.WebApp.initDataUnsafe.start_param;
+    return startParam ? startParam : "";
+  } else {
+    return "";
+  }
+};
 
 export const ConfigProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const config = getTelegramConfig();

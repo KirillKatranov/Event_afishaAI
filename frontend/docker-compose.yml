@@ -13,6 +13,7 @@ services:
       - ./entities:/app/entities
       - ./shared:/app/shared
       - ./server.js:/app/server.js
+      - ./.env:/app/.env
     networks:
       - afisha
     restart: always

@@ -27,21 +27,12 @@ export const EventsSwiper = () => {
     isLoading, hasError,
     swipedAll, setSwipedAll,
     fetchEvents,
-    swipeEnabled, setSwipeEnabled
   } = useEventsSwiperStore();
 
   const { selectedDays} = useCalendarStore();
   const { tag, setTag } = useSelectedTagStore();
   const { addLikedEvent, removeLikedEvent, saveAction } = useLikesStore();
-  const { descriptionExpanded, descriptionSwiping, tagsScrolling } = useEventCardStore();
-
-  useEffect(() => {
-    if (descriptionExpanded || descriptionSwiping || tagsScrolling) {
-      setSwipeEnabled(false)
-    } else {
-      setSwipeEnabled(true)
-    }
-  }, [descriptionExpanded, descriptionSwiping, tagsScrolling]);
+  const { swipeEnabled } = useEventCardStore();
 
   const swipedAllInfoOpacity = useSharedValue(0);
 
@@ -170,7 +161,7 @@ export const EventsSwiper = () => {
             }}
             style={{
               backgroundColor: theme.colors.cardBGColor,
-              width: 36, height: 36,
+              width: 40, height: 40,
               position: "absolute",
               top: 16, left: 16,
               borderRadius: 50,
