@@ -311,10 +311,10 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
 
       <Pressable
         onPress={ () => {
-          console.log(WEB_APP_URL);
           const link = `${WEB_APP_URL}?startapp=${event.id}`;
-          console.log(link);
           const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
+
+          console.log("Sharing event with link:", link);
 
           config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
         }}

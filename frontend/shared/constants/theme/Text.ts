@@ -87,5 +87,9 @@ export const Text = {
     fontFamily: 'MontserratSemiBold',
     fontSize: 20,
   },
+  likedEventButton: {
+    fontFamily: 'MontserratMedium',
+    fontSize: 16,
+  },
   defaults: {},
 }

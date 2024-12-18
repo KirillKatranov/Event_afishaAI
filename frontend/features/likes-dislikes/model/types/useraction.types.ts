@@ -2,7 +2,7 @@
  * Type of POST like/dislike response data
  */
 export type ActionData = {
-  action: "like" | "dislike",
+  action: "like" | "dislike" | "delete_mark",
   username: string,
   contentId: number
 };

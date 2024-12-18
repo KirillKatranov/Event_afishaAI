@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import {LikesParams} from "@/features/likes-dislikes/model/types/likes.types";
+import {ActionData} from "@/features/likes-dislikes/model/types/useraction.types";
 import likesService from "@/features/likes-dislikes/api/LikesService";
 import {Event} from "@/entities/event";
 
@@ -10,7 +11,7 @@ interface LikesState {
   addLikedEvent: (event: Event) => void;
   removeLikedEvent: (eventId: number) => void;
   fetchLikes: (username: string, date_start?: string, date_end?: string) => void;
-  saveAction: (action: "like" | "dislike", id: number, username: string) => Promise<void>;
+  saveAction: (actionData: ActionData) => Promise<void>;
 }
 
 export const useLikesStore = create<LikesState>((set) => ({
@@ -67,21 +68,19 @@ export const useLikesStore = create<LikesState>((set) => ({
   },
 
   saveAction: async (
-    action,
-    id,
-    username
+    actionData: ActionData
   ) => {
 
-    await likesService.postAction({action: action, username: username, contentId: id})
+    await likesService.postAction(actionData)
       .then((response) => {
         if (response.status === 200) {
-          console.log(`Successfully post like/dislike`);
+          console.log(`Successfully post ${actionData.action}`);
         } else {
-          console.log(`Error in posting like/dislike with code: ${response.status}`);
+          console.log(`Error in posting ${actionData.action} with code: ${response.status}`);
         }
       })
       .catch((e) => {
-        console.log(`Error posting like/dislike with error: ${e}`);
+        console.log(`Error posting ${actionData.action} with error: ${e}`);
       })
   },
 }));

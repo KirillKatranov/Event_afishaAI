@@ -14,3 +14,5 @@ django-cors-headers
 django-ninja-extra
 gunicorn
 yandexgptlite
+pyrogram
+requests

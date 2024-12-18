@@ -4,7 +4,7 @@ import {useRouter} from "expo-router";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
 import Swiper from "react-native-deck-swiper";
-import {useEventsSwiperStore} from "@/widgets/events-swiper/model/store/useEventsSwiperStore";
+import {useEventsSwiperStore} from "@/features/content";
 import {useCalendarStore} from "@/features/dates";
 import {useLikesStore} from "@/features/likes-dislikes";
 import {useSelectedTagStore} from "@/features/tag-selected";
@@ -60,7 +60,12 @@ export const EventsSwiper = () => {
 
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
-    fetchEvents(tag, borders.date_start, borders.date_end);
+    fetchEvents({
+      username: username,
+      tag: tag,
+      date_start: borders.date_start,
+      date_end: borders.date_end
+    });
   }, [tag, selectedDays]);
 
   useEffect(() => {
@@ -115,12 +120,18 @@ export const EventsSwiper = () => {
               childrenOnTop={true}
               onSwipedAll={() => setSwipedAll(true)}
               onSwipedRight={(cardIndex) => {
-                saveAction("like", events[cardIndex].id, username)
-                  .then(() => addLikedEvent(events[cardIndex]))
+                saveAction({
+                  action: "like",
+                  contentId: events[cardIndex].id,
+                  username: username
+                }).then(() => addLikedEvent(events[cardIndex]))
               }}
               onSwipedLeft={(cardIndex) => {
-                saveAction("dislike", events[cardIndex].id, username)
-                  .then(() => removeLikedEvent(events[cardIndex].id))
+                saveAction({
+                  action: "dislike",
+                  contentId: events[cardIndex].id,
+                  username: username
+                }).then(() => removeLikedEvent(events[cardIndex].id))
               }}
               onSwiping={(x) => {
                 likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;
@@ -242,6 +253,7 @@ export const EventsSwiper = () => {
                       <Text
                         variant="body"
                         color="button_text_color"
+                        textAlign={"center"}
                       >
                         { "Изменить даты мероприятий" }
                       </Text>

@@ -40,6 +40,13 @@ type TelegramHapticFeedback = {
   notificationOccurred: (type: "error" | "success" | "warning") => void;
 };
 
+type BackButton = {
+  isVisible: boolean;
+  onClick: (callback: () => void) => void;
+  offClick: (callback: () => void) => void;
+  show: () => void;
+  hide: () => void;
+};
 
 type TelegramWebapp = {
   initData: string;
@@ -55,6 +62,7 @@ type TelegramWebapp = {
   openTelegramLink: (url: string) => void;
   close: () => void;
   safeAreaInset?: { top?: number; bottom?: number; left?: number; right?: number };
+  BackButton?: BackButton;
   HapticFeedback?: TelegramHapticFeedback;
 };
 

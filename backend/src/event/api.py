@@ -51,15 +51,21 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_content(self, tag: str | None = None, date_start: date | None = None, date_end: date | None = None) ->\
-            list[ContentSchema]:
+    def get_content(self, username: str, tag: str | None = None, date_start: date | None = None,
+                    date_end: date | None = None) -> list[ContentSchema]:
         q_filter = Q(tags__name=tag) if tag else Q()
         if date_start and date_end:
             q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
         if date_start and not date_end:
             q_filter &= Q(date=date_start)
-        content = Content.objects.filter(q_filter)
-        return content
+        contents = Content.objects.filter(q_filter)
+        current_user = User.objects.filter(username=username).first()
+        if not current_user:
+            current_user = User.objects.create(username=username)
+        likes = current_user.likes
+        content_ids = [like.content.id for like in likes.all()]
+        contents_not_mark = contents.filter(~Q(id__in=content_ids))
+        return contents_not_mark
 
     @route.get(
         path="/contents/liked",
@@ -127,6 +133,20 @@ class LikeController:
         content = Content.objects.filter(id=request_data.content_id).first()
         Like.objects.update_or_create(user=user, content=content, defaults={"value": False})
         return {'user': request_data.username, 'content': request_data.content_id, 'value': False}
+
+    @route.post(
+        path="/delete_mark",
+    )
+    def delete_mark(self, request_data: LikeRequestSchema):
+        user = User.objects.filter(username=request_data.username).first()
+        if not user:
+            user = User.objects.create(username=request_data.username)
+        content = Content.objects.filter(id=request_data.content_id).first()
+        like = Like.objects.filter(user=user, content=content).first()
+        if not like:
+            raise HttpError(404, "Like not found")
+        like.delete()
+        return 200
 
 
 @api_controller(

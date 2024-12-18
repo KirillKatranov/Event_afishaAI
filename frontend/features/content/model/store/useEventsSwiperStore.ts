@@ -8,7 +8,8 @@ interface EventsState {
   isLoading: boolean;
   hasError: boolean;
   swipedAll: boolean;
-  fetchEvents: (tag?: string, date_start?: string, date_end?: string) => void;
+  fetchEvents: (params: ContentParams) => void;
+  addEvent: (event: Event) => void;
   setSwipedAll: (state: boolean) => void;
 }
 
@@ -20,16 +21,9 @@ export const useEventsSwiperStore = create<EventsState>((set) => ({
   swipedAll: false,
 
   fetchEvents: (
-    tag?: string,
-    date_start?: string,
-    date_end?: string
+    params: ContentParams
   ) => {
     set({ isLoading: true, hasError: false });
-
-    const params: ContentParams = {};
-    if (tag)        params.tag = tag;
-    if (date_start) params.date_start = date_start;
-    if (date_end)   params.date_end = date_end;
 
     ContentService.getContent(params)
       .then((response) => {
@@ -54,6 +48,12 @@ export const useEventsSwiperStore = create<EventsState>((set) => ({
         console.log(`Events request error: ${e}`);
         set({ hasError: true, isLoading: false })
       });
+  },
+
+  addEvent: (event: Event) => {
+    set((state) => {
+      return { events: [...state.events, event], swipedAll: false };
+    })
   },
 
   setSwipedAll: async (state: boolean) => {

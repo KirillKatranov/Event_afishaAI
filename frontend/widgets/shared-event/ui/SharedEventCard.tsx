@@ -24,8 +24,11 @@ export const SharedEventCard: React.FC = () => {
     if (!event) getEvent(id!)
   }, []);
 
-  if (isLoading || !event) return <LoadingCard style={{ flex: 1 }}/>;
-  if (hasError) return <ErrorCard/>;
+  if (hasError)
+    return <ErrorCard text={"😬 Упс... Что-то пошло не так.\n\nСкорее всего, данное мероприятие уже прошло."}/>;
+
+  if (isLoading || !event)
+    return <LoadingCard style={{ flex: 1 }}/>;
 
   return (
     <Box
@@ -35,13 +38,19 @@ export const SharedEventCard: React.FC = () => {
         event={event}
         onLike={() => {
           router.replace("/feed");
-          saveAction("like", event.id, username)
-            .then(() => addLikedEvent(event))
+          saveAction({
+            action: "like",
+            contentId: event.id,
+            username: username
+          }).then(() => addLikedEvent(event))
         }}
         onDislike={() => {
           router.replace("/feed");
-          saveAction("dislike", event.id, username)
-            .then(() => removeLikedEvent(event.id))
+          saveAction({
+            action: "dislike",
+            contentId: event.id,
+            username: username
+          }).then(() => removeLikedEvent(event.id))
         }}
       />
     </Box>

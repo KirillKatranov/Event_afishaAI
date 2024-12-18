@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Box, ErrorCard, LoadingCard, Text} from "@/shared/ui";
 import {FlatList, ImageBackground, Modal, Pressable, RefreshControl, ScrollView} from "react-native";
-import {MaterialIcons} from "@expo/vector-icons";
 import {useTheme} from "@shopify/restyle";
 import {Hyperlink} from "react-native-hyperlink";
 import {useLikedEventListStore} from "@/widgets/liked-events-list/model/useLikedEventListStore";
@@ -11,11 +10,14 @@ import {LikedEventCard} from "@/entities/event";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {getPeriodBorders} from "@/shared/scripts/date";
+import {WEB_APP_URL} from "@env";
+import Icon from "@/shared/ui/Icons/Icon";
+import {useEventsSwiperStore} from "@/features/content";
 
 export const LikesList = () => {
   const theme = useTheme<Theme>();
   const username = useConfig().initDataUnsafe.user.username;
-  const openLink = useConfig().openLink;
+  const config = useConfig();
 
   const {
     likes,
@@ -33,6 +35,7 @@ export const LikesList = () => {
   } = useLikedEventListStore();
 
   const { selectedDays } = useCalendarStore();
+  const { addEvent } = useEventsSwiperStore()
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -42,6 +45,19 @@ export const LikesList = () => {
     fetchLikes(username, borders.date_start, borders.date_end);
     setRefreshing(false);
   };
+
+  useEffect(() => {
+    if (config.BackButton) {
+      if (modalVisible) {
+        config.BackButton.show();
+        config.BackButton.onClick(() => setModalVisible(false))
+      } else {
+        config.BackButton.hide();
+      }
+    }
+
+    return () => { if (config.BackButton) config.BackButton!.hide(); }
+  }, [modalVisible]);
 
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
@@ -151,14 +167,51 @@ export const LikesList = () => {
               padding="m"
               paddingBottom="l"
             >
-              <Text
-                variant="header"
-                style={{
-                  color: "white"
-                }}
+              <Box
+                flexDirection={"row"}
+                alignItems={"center"}
+                gap={"s"}
               >
-                { selectedEvent != undefined && likes[selectedEvent].name }
-              </Text>
+                <Text
+                  variant="header"
+                  color={"white"}
+                  style={{
+                    flex: 1
+                  }}
+                >
+                  { selectedEvent != undefined && likes[selectedEvent].name }
+                </Text>
+
+                {
+                  selectedEvent != undefined && (
+                    <Pressable
+                      onPress={ () => {
+                        const link = `${WEB_APP_URL}?startapp=${likes[selectedEvent].id}`;
+                        const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
+
+                        console.log("Sharing event with link:", link);
+
+                        config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
+                      }}
+                    >
+                      <Box
+                        backgroundColor={"cardBGColor"}
+                        height={40}
+                        width={40}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        borderRadius={"xl"}
+                      >
+                        <Icon
+                          name={"share"}
+                          color={theme.colors.white}
+                          size={24}
+                        />
+                      </Box>
+                    </Pressable>
+                  )
+                }
+              </Box>
 
               <Text
                 variant="body"
@@ -170,7 +223,10 @@ export const LikesList = () => {
               </Text>
 
               {
-                selectedEvent != undefined && likes[selectedEvent].contact && (
+                selectedEvent != undefined &&
+                likes[selectedEvent].contact &&
+                likes[selectedEvent].contact!.length > 0 &&
+                (
                   <Box
                     gap={"s"}
                   >
@@ -178,7 +234,7 @@ export const LikesList = () => {
                       variant={"body"}
                       color={"cardSubtextColor"}
                     >
-                      { "\nСсылки:" }
+                      { "Ссылки:" }
                     </Text>
 
                     {likes[selectedEvent].contact?.map((con, index) => {
@@ -187,10 +243,10 @@ export const LikesList = () => {
                           key={index}
                           linkDefault={true}
                           linkStyle={{ color: theme.colors.link_color }}
-                          onPress={ () => openLink(Object.values(con)[0], { try_instant_view: true }) }
+                          onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
                           linkText={(url) => {
-                            const con = likes[selectedEvent].contact?.find((c) => Object.values(c)[0] === url);
-                            return con ? Object.keys(con)[0] : url;
+                            const contact = likes[selectedEvent].contact!.find((c) => Object.values(c)[0] === url);
+                            return contact ? Object.keys(contact)[0] : url;
                           }}
                         >
                           <Text
@@ -204,41 +260,72 @@ export const LikesList = () => {
                   </Box>
                 )
               }
+            </Box>
 
-              <Box
-                bottom={0}
-                width={"100%"}
-                flexDirection={"row"}
-                paddingHorizontal={"m"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
+            <Box
+              gap={"m"}
+              padding={"m"}
+            >
+              <Pressable
+                onPress={ () => {
+                  setModalVisible(false);
+                  saveAction({
+                    action: "delete_mark",
+                    contentId: likes[selectedEvent!].id,
+                    username: username
+                  })
+                    .then(() => {
+                      removeLikedEvent(likes[selectedEvent!].id);
+                      addEvent(likes[selectedEvent!]);
+                      setEventSelected(undefined);
+                    });
+                }}
               >
-                <Pressable
-                  onPress={ () => {
-                    setModalVisible(false);
-                    saveAction("dislike", likes[selectedEvent!].id, username)
-                      .then(() => {
-                        removeLikedEvent(likes[selectedEvent!].id);
-                        setEventSelected(undefined);
-                      });
-                  }}
+                <Box
+                  width={"100%"} height={44}
+                  alignItems={"center"} justifyContent={"center"}
+                  backgroundColor={"lime"}
+                  borderRadius={"m"}
                 >
-                  <Box width={44} height={44} alignItems={"center"} justifyContent={"center"}
-                       style={{ borderRadius: 25, backgroundColor: 'rgb(255,0,0)'}}>
-                    <MaterialIcons name="thumb-down" size={20} color="white" />
-                  </Box>
-                </Pressable>
+                  <Text
+                    variant={"likedEventButton"}
+                    color={"black"}
+                    textAlign={"center"}
+                  >
+                    { "Удалить из избранного" }
+                  </Text>
+                </Box>
+              </Pressable>
 
-                <Pressable
-                  onPress={ () => setModalVisible(false) }
+              <Pressable
+                onPress={ () => {
+                  setModalVisible(false);
+                  saveAction({
+                    action: "dislike",
+                    contentId: likes[selectedEvent!].id,
+                    username: username
+                  })
+                    .then(() => {
+                      removeLikedEvent(likes[selectedEvent!].id);
+                      setEventSelected(undefined);
+                    });
+                }}
+              >
+                <Box
+                  width={"100%"} height={44}
+                  alignItems={"center"} justifyContent={"center"}
+                  backgroundColor={"gray"}
+                  borderRadius={"m"}
                 >
-                  <Box width={44} height={44} alignItems={"center"} justifyContent={"center"}
-                       backgroundColor={"button_color"}
-                       style={{ borderRadius: 25 }}>
-                    <MaterialIcons name="close" size={20} color="white" />
-                  </Box>
-                </Pressable>
-              </Box>
+                  <Text
+                    variant={"likedEventButton"}
+                    color={"red"}
+                    textAlign={"center"}
+                  >
+                    { "Не нравится" }
+                  </Text>
+                </Box>
+              </Pressable>
             </Box>
           </ScrollView>
         </ImageBackground>

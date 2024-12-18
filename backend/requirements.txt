@@ -131,6 +131,8 @@ propcache==0.2.0
     # via yarl
 psycopg2-binary==2.9.10
     # via -r requirements.in
+pyaes==1.6.1
+    # via pyrogram
 pycparser==2.22
     # via cffi
 pycryptodome==3.21.0
@@ -141,6 +143,10 @@ pydantic==2.8.2
     #   django-ninja
 pydantic-core==2.20.1
     # via pydantic
+pyrogram==2.0.106
+    # via -r requirements.in
+pysocks==1.7.1
+    # via pyrogram
 python-crontab==3.2.0
     # via django-celery-beat
 python-dateutil==2.9.0.post0
@@ -151,7 +157,9 @@ python-dateutil==2.9.0.post0
 redis==5.0.7
     # via -r requirements.in
 requests==2.32.3
-    # via yandexgptlite
+    # via
+    #   -r requirements.in
+    #   yandexgptlite
 s3transfer==0.6.2
     # via boto3
 six==1.16.0
