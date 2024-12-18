@@ -73,20 +73,28 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_liked_content(self, username: str, date_start: date | None = None, date_end: date | None = None) -> \
-            list[ContentSchema]:
+    def get_liked_content(self, username: str, value: bool = True,
+                          date_start: date | None = None, date_end: date | None = None) -> list[ContentSchema]:
         current_user = User.objects.filter(username=username).first()
         if not current_user:
             current_user = User.objects.create(username=username)
-        likes = Like.objects.filter(user=current_user, value=True)
-        q_filter = Q()
+
+        likes = Like.objects.filter(user=current_user, value=value).order_by('created')
+        liked_content_ids = likes.values_list('content_id', flat=True)
+
+        content_filter = Q(id__in=liked_content_ids)
         if date_start and date_end:
-            q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
+            content_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
         if date_start and not date_end:
-            q_filter &= Q(date=date_start)
-        q_filter &= Q(likes__in=likes)
-        content = Content.objects.filter(q_filter)
-        return content
+            content_filter &= Q(date=date_start)
+
+        content = Content.objects.filter(content_filter).distinct()
+        content_sorted_by_likes = sorted(
+            content,
+            key=lambda c: next(like.created for like in likes if like.content_id == c.id),
+            reverse=True
+        )
+        return content_sorted_by_likes
 
     @route.get(
         path="/contents/{content_id}",
