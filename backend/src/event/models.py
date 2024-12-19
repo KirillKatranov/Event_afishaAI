@@ -64,3 +64,13 @@ class Like(GenericModel):
 class Feedback(GenericModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedback')
     message = models.TextField()
+
+
+class RemovedFavorite(models.Model):
+    """Эта таблица будет фиксировать, что пользователь исключил конкретный контент из избранного."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.ForeignKey(Content, on_delete=models.CASCADE)
+    removed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'content')

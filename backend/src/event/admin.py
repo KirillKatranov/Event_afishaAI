@@ -1,5 +1,5 @@
 from django.contrib import admin
-from event.models import Content, Tags, Like, User, Feedback
+from event.models import Content, Tags, Like, User, Feedback, RemovedFavorite
 
 
 @admin.register(Content)
@@ -25,3 +25,8 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('user', 'message', 'created')
+
+
+@admin.register(RemovedFavorite)
+class RemovedFavoriteAdmin(admin.ModelAdmin):
+    list_display = ('user', 'content', 'removed_at')

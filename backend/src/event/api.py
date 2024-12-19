@@ -2,7 +2,7 @@ from ninja_extra import NinjaExtraAPI
 
 from http import HTTPStatus
 from ninja_extra import api_controller, route
-from event.models import Tags, Content, User, Like, Feedback
+from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite
 from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema
 from django.db.models import Q
 from datetime import date
@@ -65,7 +65,8 @@ class ContentController:
         likes = current_user.likes
         content_ids = [like.content.id for like in likes.all()]
         contents_not_mark = contents.filter(~Q(id__in=content_ids))
-        return contents_not_mark
+        removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
+        return contents_not_mark.exclude(id__in=removed_contents)
 
     @route.get(
         path="/contents/liked",
@@ -123,7 +124,6 @@ class LikeController:
         user = User.objects.filter(username=request_data.username).first()
         if not user:
             user = User.objects.create(username=request_data.username)
-        # todo: создавать пользователя если такого нет.
         content = Content.objects.filter(id=request_data.content_id).first()
         Like.objects.update_or_create(user=user, content=content, defaults={"value": True})
         return {'user': request_data.username, 'content': request_data.content_id, 'value': True}
@@ -154,6 +154,9 @@ class LikeController:
         if not like:
             raise HttpError(404, "Like not found")
         like.delete()
+
+        # Если пользователь удалил мероприятие из избранного, то оно не должно показываться у него в ленте
+        RemovedFavorite.objects.get_or_create(user=user, content=content)
         return 200
 
 
