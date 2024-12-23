@@ -1,3 +1,2 @@
 export {LikesList} from "./ui/LikesList";
-
-export {useLikedEventListStore} from "./model/useLikedEventListStore";
+export {DislikesList} from "./ui/DislikesList";

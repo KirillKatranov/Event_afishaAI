@@ -1,13 +1,13 @@
-import {LikesParams, LikesResponse} from "@/features/likes-dislikes/model/types/likes.types";
+import {ReactionsParams, LikesResponse} from "@/features/likes-dislikes/model/types/likes.types";
 import axiosInstance from "@/shared/api/AxiosConfig";
 import {Event} from "@/entities/event";
 import {ActionData, ActionResponse, ActionResponseData} from "@/features/likes-dislikes/model/types/useraction.types";
 
 class LikesService {
-  async getLikes(
-    params: LikesParams
+  async getReactions(
+    params: ReactionsParams
   ) {
-    console.log("Send GET likes request with params: ", params);
+    console.log("Send GET reaction request with params: ", params);
 
     const response: LikesResponse = await axiosInstance.get<Event[]>(
       '/contents/liked',

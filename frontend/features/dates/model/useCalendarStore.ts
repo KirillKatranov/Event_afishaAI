@@ -82,7 +82,7 @@ export const useCalendarStore = create<CalendarState>((set, get) => ({
   },
 
   fetchAllLikes: (username: string) => {
-    likesService.getLikes({username: username})
+    likesService.getReactions({username: username})
       .then((response) => get().updateLikesDays(response.data));
   },
 

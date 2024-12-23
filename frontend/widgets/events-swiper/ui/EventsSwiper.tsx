@@ -6,7 +6,7 @@ import {useTheme} from "@shopify/restyle";
 import Swiper from "react-native-deck-swiper";
 import {useEventsSwiperStore} from "@/features/content";
 import {useCalendarStore} from "@/features/dates";
-import {useLikesStore} from "@/features/likes-dislikes";
+import {useReactionsStore} from "@/features/likes-dislikes";
 import {useSelectedTagStore} from "@/features/tag-selected";
 import {Event, EventCard, useEventCardStore} from "@/entities/event";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
@@ -31,7 +31,7 @@ export const EventsSwiper = () => {
 
   const { selectedDays} = useCalendarStore();
   const { tag, setTag } = useSelectedTagStore();
-  const { addLikedEvent, removeLikedEvent, saveAction } = useLikesStore();
+  const { addLikedEvent, addDislikedEvent, saveAction } = useReactionsStore();
   const { swipeEnabled } = useEventCardStore();
 
   const swipedAllInfoOpacity = useSharedValue(0);
@@ -131,7 +131,7 @@ export const EventsSwiper = () => {
                   action: "dislike",
                   contentId: events[cardIndex].id,
                   username: username
-                }).then(() => removeLikedEvent(events[cardIndex].id))
+                }).then(() => addDislikedEvent(events[cardIndex]))
               }}
               onSwiping={(x) => {
                 likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;

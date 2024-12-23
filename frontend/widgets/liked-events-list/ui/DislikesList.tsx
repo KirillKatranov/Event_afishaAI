@@ -10,7 +10,7 @@ import {useConfig} from "@/shared/providers/TelegramConfig";
 import {getPeriodBorders} from "@/shared/scripts/date";
 import {SelectedEvent} from "@/widgets/liked-events-list/ui/SelectedEvent";
 
-export const LikesList = React.memo(() => {
+export const DislikesList = React.memo(() => {
   const theme = useTheme<Theme>();
   const username = useConfig().initDataUnsafe.user.username;
 
@@ -18,22 +18,25 @@ export const LikesList = React.memo(() => {
   const [modalVisible, setModalVisible] = React.useState(false);
 
   const {
-    likes,
-    isLikesLoading, hasLikesError,
+    dislikes,
+    isDislikesLoading, hasDislikesError,
     fetchReactions,
   } = useReactionsStore();
 
   const { selectedDays } = useCalendarStore();
 
   useEffect(() => {
-    const borders = getPeriodBorders(Object.keys(selectedDays));
-    fetchReactions({
-      username: username,
-      date_start: borders.date_start, date_end: borders.date_end
-    });
+    if (dislikes.length == 0) {
+      const borders = getPeriodBorders(Object.keys(selectedDays));
+      fetchReactions({
+        username: username,
+        date_start: borders.date_start, date_end: borders.date_end,
+        value: "False"
+      });
+    }
   }, [selectedDays]);
 
-  if (isLikesLoading) {
+  if (isDislikesLoading) {
     return (
       <Box flex={1}>
         <FlatList
@@ -53,7 +56,7 @@ export const LikesList = React.memo(() => {
     )
   }
 
-  if (hasLikesError) {
+  if (hasDislikesError) {
     return (
       <Box flex={1} backgroundColor="bg_color">
         <ErrorCard />
@@ -61,7 +64,7 @@ export const LikesList = React.memo(() => {
     );
   }
 
-  if (likes.length === 0) {
+  if (dislikes.length === 0) {
     return (
       <Box flex={1} backgroundColor="bg_color" justifyContent="center" alignItems="center">
         <Text variant="body" color="text_color">
@@ -76,7 +79,7 @@ export const LikesList = React.memo(() => {
       flex={1}
     >
       <FlatList
-        data={ likes }
+        data={ dislikes }
         renderItem={({ item }) => (
           <LikedEventCard
             name={item.name}
@@ -88,7 +91,7 @@ export const LikesList = React.memo(() => {
             }}
           />
         )}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.name}
         style={{
           width: "100%"
         }}
@@ -107,7 +110,7 @@ export const LikesList = React.memo(() => {
         transparent
       >
         <SelectedEvent
-          type={"liked"}
+          type={"disliked"}
           selectedEvent={selectedEvent}
           setEventSelected={setEventSelected} setModalVisible={setModalVisible}
         />

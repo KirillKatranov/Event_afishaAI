@@ -3,7 +3,7 @@ import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
 import {useSharedEventStore} from "@/widgets/shared-event/model/store/useSharedEventStore";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {EventCard} from "@/entities/event";
-import {useLikesStore} from "@/features/likes-dislikes";
+import {useReactionsStore} from "@/features/likes-dislikes";
 import {useRouter} from "expo-router";
 
 export const SharedEventCard: React.FC = () => {
@@ -18,7 +18,7 @@ export const SharedEventCard: React.FC = () => {
 
   const {
     saveAction, addLikedEvent, removeLikedEvent
-  } = useLikesStore();
+  } = useReactionsStore();
 
   useEffect(() => {
     if (!event) getEvent(id!)
