@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {Pressable} from "react-native";
 import {useRouter} from "expo-router";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
@@ -31,7 +31,11 @@ export const EventsSwiper = () => {
 
   const { selectedDays} = useCalendarStore();
   const { tag, setTag } = useSelectedTagStore();
-  const { addLikedEvent, addDislikedEvent, saveAction } = useReactionsStore();
+  const {
+    addLikedEvent, addDislikedEvent,
+    removeLikedEvent, removeDislikedEvent,
+    saveAction
+  } = useReactionsStore();
   const { swipeEnabled } = useEventCardStore();
 
   const swipedAllInfoOpacity = useSharedValue(0);
@@ -76,19 +80,17 @@ export const EventsSwiper = () => {
     }
   }, [swipedAll]);
 
-  const renderCard = useMemo(() => {
-    return (event: Event) => (
-      <EventCard
-        event={event}
-        onLike={() => {
-          swiperRef.current?.swipeRight();
-        }}
-        onDislike={() => {
-          swiperRef.current?.swipeLeft();
-        }}
-      />
-    );
-  }, []);
+  const renderCard = (event: Event) => (
+    <EventCard
+      event={event}
+      onLike={() => {
+        swiperRef.current?.swipeRight();
+      }}
+      onDislike={() => {
+        swiperRef.current?.swipeLeft();
+      }}
+    />
+  );
 
 
   if (isLoading) return <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>
@@ -112,7 +114,12 @@ export const EventsSwiper = () => {
               backgroundColor="white"
               horizontalSwipe={swipeEnabled}
               verticalSwipe={false}
-              stackSize={2}
+              stackSize={3}
+              stackScale={0}
+              stackSeparation={0}
+              stackAnimationTension={100}
+              stackAnimationFriction={15}
+              swipeBackCard
               containerStyle={{ backgroundColor: theme.colors.bg_color }}
               cardStyle={{ height: "100%" }}
               cardVerticalMargin={0}
@@ -124,14 +131,20 @@ export const EventsSwiper = () => {
                   action: "like",
                   contentId: events[cardIndex].id,
                   username: username
-                }).then(() => addLikedEvent(events[cardIndex]))
+                }).then(() => {
+                  addLikedEvent(events[cardIndex]);
+                  removeDislikedEvent(events[cardIndex].id);
+                })
               }}
               onSwipedLeft={(cardIndex) => {
                 saveAction({
                   action: "dislike",
                   contentId: events[cardIndex].id,
                   username: username
-                }).then(() => addDislikedEvent(events[cardIndex]))
+                }).then(() => {
+                  addDislikedEvent(events[cardIndex])
+                  removeLikedEvent(events[cardIndex].id);
+                })
               }}
               onSwiping={(x) => {
                 likeOpacity.value = x > 0 ? Math.min(x / 100, 1) : 0;
@@ -162,27 +175,55 @@ export const EventsSwiper = () => {
         )
       }
 
-      {/* Back button */}
-      {
-        tag && !swipedAll && (
-          <Pressable
-            onPress={() => {
-              router.replace("/(tabs)/tags");
-              setTag(undefined);
-            }}
-            style={{
-              backgroundColor: theme.colors.cardBGColor,
-              width: 40, height: 40,
-              position: "absolute",
-              top: 16, left: 16,
-              borderRadius: 50,
-              zIndex: 1, alignItems: "center", justifyContent: "center"
-            }}
-          >
-            <Icon name={"chevronLeft"} color={theme.colors.gray} size={24}/>
-          </Pressable>
-        )
-      }
+      {/* Buttons area */}
+      <Box
+        flexDirection={"row"}
+        height={16 + 40 + 16}
+        gap={"m"}
+        padding={"m"}
+        justifyContent={"flex-start"}
+        position={"absolute"} zIndex={1}
+        alignSelf={"flex-start"}
+      >
+        {/* Back button */}
+        {
+          tag && !swipedAll && (
+            <Pressable
+              onPress={() => {
+                router.replace("/(tabs)/tags");
+                setTag(undefined);
+              }}
+            >
+              <Box
+                backgroundColor={"cardBGColor"}
+                width={40} height={40}
+                borderRadius={"eventCard"}
+                alignItems={"center"} justifyContent={"center"}
+              >
+                <Icon name={"chevronLeft"} color={theme.colors.gray} size={24}/>
+              </Box>
+            </Pressable>
+          )
+        }
+
+        {/* Swipe back card button */}
+        {
+          !swipedAll && (
+            <Pressable
+              onPress={ () => swiperRef.current?.swipeBack() }
+            >
+              <Box
+                backgroundColor={"cardBGColor"}
+                width={40} height={40}
+                borderRadius={"eventCard"}
+                alignItems={"center"} justifyContent={"center"}
+              >
+                <Icon name={"back"} color={theme.colors.gray} size={24}/>
+              </Box>
+            </Pressable>
+          )
+        }
+      </Box>
 
       {
         swipedAll && (

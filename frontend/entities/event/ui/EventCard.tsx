@@ -29,26 +29,25 @@ interface EventCardProps {
 export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDislike }) => {
   const theme = useTheme<Theme>();
   const config = useConfig();
-  const heightValue = useSharedValue(125);
+  const heightValue = useSharedValue(0);
 
   const [cardHeight, setCardHeight] = useState(0);
-  const [titleHeight, setTitleHeight] = useState(200);
+  const [titleHeight, setTitleHeight] = useState(0);
 
-  const {
-    tagsScrolling, setTagsScrolling,
-    descriptionScrolling, setDescriptionScrolling,
-    descriptionScrollOnTop, setDescriptionScrollOnTop,
-    descriptionSwiping, setDescriptionSwiping,
-    descriptionExpanded, setDescriptionExpanded,
-    setSwipeEnabled
-  } = useEventCardStore();
+  const [tagsScrolling, setTagsScrolling] = useState(false);
+  const [descriptionScrolling, setDescriptionScrolling] = useState(false);
+  const [descriptionScrollOnTop, setDescriptionScrollOnTop] = useState(true);
+  const [descriptionSwiping, setDescriptionSwiping] = useState(false);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+
+  const { setSwipeEnabled } = useEventCardStore();
 
   useEffect(() => {
     heightValue.value = withTiming(
-      descriptionExpanded ? (cardHeight - 40 - 16 - 10) : titleHeight,
+      descriptionExpanded ? (cardHeight - titleHeight) : 0,
       { duration: 250 },
     );
-  }, [descriptionExpanded, titleHeight, cardHeight]);
+  }, [descriptionExpanded, cardHeight]);
 
   useEffect(() => {
     if (descriptionExpanded || descriptionSwiping || tagsScrolling) {
@@ -64,15 +63,15 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
 
   const handlePanGestureUpdate = useCallback((event: { translationY: number }) => {
     heightValue.value = Math.max(
-      titleHeight,
+      0,
       Math.min(
-        cardHeight - 40 - 16 - 10,
+        (cardHeight - titleHeight),
         descriptionExpanded
-          ? cardHeight - 40 - 16 - 10 - event.translationY
-          : titleHeight - event.translationY
+          ? (cardHeight - titleHeight) - event.translationY
+          : 0 - event.translationY
       )
     );
-  }, [cardHeight, descriptionExpanded, heightValue, titleHeight]);
+  }, [cardHeight, descriptionExpanded, heightValue]);
 
   const handlePanGestureEnd = useCallback(
     (event: { translationY: number }) => {
@@ -86,12 +85,12 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
         setDescriptionExpanded(false);
       } else {
         heightValue.value = withTiming(
-          descriptionExpanded ? cardHeight - 40 - 16 - 10 : titleHeight,
+          descriptionExpanded ? (cardHeight - titleHeight) : 0,
           { duration: 250 }
         );
       }
     },
-    [cardHeight, descriptionExpanded, heightValue, setDescriptionExpanded, titleHeight]
+    [cardHeight, descriptionExpanded, heightValue ]
   );
 
   const panGesture = Gesture.Pan().runOnJS(true)
@@ -119,7 +118,6 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
           overflow: "hidden",
           backgroundColor: theme.colors.secondary_bg_color,
         }}
-        onLayout={(e) => setCardHeight(e.nativeEvent.layout.height)}
       >
         <Image
           source={{ uri: event.image || undefined }}
@@ -131,20 +129,58 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
           }}
         />
 
-        <Box flex={1} justifyContent="flex-end">
-          <GestureDetector gesture={panGesture}>
-            <Animated.View
-              style={[
-                animatedInfoStyle,
-                {
-                  backgroundColor: theme.colors.cardBGColor,
-                  borderTopLeftRadius: 40, borderTopRightRadius: 40,
-                  gap: theme.spacing.l,
-                  paddingTop: theme.spacing.m
-                }
-              ]}
+        {/* Buttons area */}
+        <Box
+          flexDirection={"row"}
+          height={16 + 40 + 16}
+          gap={"m"}
+          padding={"m"}
+          justifyContent={"flex-end"}
+        >
+          <Pressable
+            onPress={ () => {
+              const link = `${WEB_APP_URL}?startapp=${event.id}`;
+              const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
+
+              console.log("Sharing event with link:", link);
+
+              config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
+            }}
+          >
+            <Box
+              backgroundColor={"cardBGColor"}
+              height={40}
+              width={40}
+              alignItems={"center"}
+              justifyContent={"center"}
+              borderRadius={"xl"}
             >
-              <Box gap="s" paddingHorizontal="eventCardPadding">
+              <Icon
+                name={"share"}
+                color={theme.colors.white}
+                size={24}
+              />
+            </Box>
+          </Pressable>
+        </Box>
+
+        <Box
+          flex={1}
+          justifyContent="flex-end"
+          onLayout={(e) => setCardHeight(e.nativeEvent.layout.height)}
+        >
+          <GestureDetector gesture={panGesture}>
+            <Box>
+              <Box
+                backgroundColor={"cardBGColor"}
+                borderTopRightRadius={"xl"} borderTopLeftRadius={"xl"}
+                gap={"s"}
+                paddingHorizontal={"eventCardPadding"} paddingVertical={"m"}
+                onLayout={(event) => {
+                  const { height } = event.nativeEvent.layout;
+                  setTitleHeight(height);
+                }}
+              >
                 <Box
                   height={4} width={100}
                   borderRadius="xl"
@@ -157,10 +193,6 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                   variant={"cardHeader"}
                   color={"cardMainTextColor"}
                   textAlign={"center"}
-                  onLayout={(event) => {
-                    const { height } = event.nativeEvent.layout;
-                    setTitleHeight(height + 88);
-                  }}
                 >
                   { event.name }
                 </Text>
@@ -182,164 +214,149 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                 }
               </Box>
 
-              {/* Location */}
-              <Box flexDirection="column" gap="s" paddingHorizontal="eventCardPadding">
-                {event.location && (
-                  <Box flexDirection="row" gap="xs" alignItems="center">
-                    <Icon name="location" color={theme.colors.white} size={16} />
-                    <Text variant="cardSubInfo" color="cardMainTextColor">
-                      {event.location}
-                    </Text>
-                  </Box>
-                )}
+              <Animated.View style={[
+                animatedInfoStyle,
+                { backgroundColor: theme.colors.cardBGColor, gap: theme.spacing.m }]}
+              >
+                {/* Location */}
+                <Box flexDirection="column" gap="s" paddingHorizontal="eventCardPadding">
+                  {
+                    event.location && (
+                      <Box flexDirection="row" gap="xs" alignItems="center">
+                        <Icon name="location" color={theme.colors.white} size={16} />
 
-                {/* Cost */}
-                {event.cost && (
-                  <Box flexDirection="row" gap="xs" alignItems="center">
-                    <Text variant="cardSubInfo" color="cardMainTextColor">
-                      {event.cost}
-                    </Text>
-                  </Box>
-                )}
-
-                {/* Date */}
-                {event.date && (
-                  <Box flexDirection="row" gap="xs" alignItems="center">
-                    <Icon name="calendar" color={theme.colors.gray} size={16} />
-                    <Text variant="cardSubInfo" color="cardMainTextColor">
-                      {formatDate(event.date)}
-                    </Text>
-                    {event.time && (
-                      <Text variant="cardSubInfo" color="cardMainTextColor">
-                        {`В ${event.time}`}
-                      </Text>
-                    )}
-                  </Box>
-                )}
-              </Box>
-
-              {(event.description || event.contact) && (
-                <Box
-                  flex={1}
-                  overflow="hidden"
-                  marginHorizontal="l"
-                  borderRadius="l"
-                  backgroundColor="cardBGColor"
-                  paddingHorizontal="m"
-                  paddingVertical="m"
-                >
-                  <ScrollView
-                    onScroll={(e) =>
-                      setDescriptionScrollOnTop(e.nativeEvent.contentOffset.y === 0)
-                    }
-                    onTouchStart={() => setDescriptionScrolling(true)}
-                    onTouchEnd={() => setDescriptionScrolling(false)}
-                    overScrollMode="never"
-                    style={{ flex: 1 }}
-                    contentContainerStyle={{ gap: 10 }}
-                  >
-                    <Text
-                      variant={"cardSubheader"}
-                      color={"cardMainTextColor"}
-                    >
-                      {"О МЕРОПРИЯТИИ"}
-                    </Text>
-
-                    {
-                      event.description && (
-                        <Text
-                          variant={"cardText"}
-                          color={"cardSubtextColor"}
-                        >
-                          {event.description}
+                        <Text variant="cardSubInfo" color="cardMainTextColor">
+                          {event.location}
                         </Text>
-                      )
-                    }
+                      </Box>
+                    )
+                  }
 
-                    {
-                      event.contact && event.contact.length > 0 && (
-                        <Box
-                          gap={"s"}
-                        >
+                  {/* Cost */}
+                  {
+                    event.cost && (
+                      <Box flexDirection="row" gap="xs" alignItems="center">
+                        <Icon name="cost" color={theme.colors.gray} size={16} />
+
+                        <Text variant="cardSubInfo" color="cardMainTextColor">
+                          { `${event.cost} руб.`}
+                        </Text>
+                      </Box>
+                    )
+                  }
+
+                  {/* Date */}
+                  {
+                    event.date && (
+                      <Box flexDirection="row" gap="xs" alignItems="center">
+                        <Icon name="calendar" color={theme.colors.gray} size={16} />
+
+                        <Text variant={"cardSubInfo"} color={"cardMainTextColor"}>
+                          {formatDate(event.date)}
+                        </Text>
+
+                        {
+                          event.time && (
+                            <Text variant={"cardSubInfo"} color={"cardMainTextColor"}>
+                              {`В ${event.time}`}
+                            </Text>
+                          )
+                        }
+                      </Box>
+                    )
+                  }
+                </Box>
+
+                {(event.description || event.contact) && (
+                  <Box
+                    flex={1}
+                    overflow="hidden"
+                    marginHorizontal="l"
+                    borderRadius="l"
+                    backgroundColor="cardBGColor"
+                    padding={"m"}
+                  >
+                    <ScrollView
+                      onScroll={(e) =>
+                        setDescriptionScrollOnTop(e.nativeEvent.contentOffset.y === 0)
+                      }
+                      onTouchStart={() => setDescriptionScrolling(true)}
+                      onTouchEnd={() => setDescriptionScrolling(false)}
+                      overScrollMode="never"
+                      style={{ flex: 1 }}
+                      contentContainerStyle={{ gap: 10 }}
+                    >
+                      <Text
+                        variant={"cardSubheader"}
+                        color={"cardMainTextColor"}
+                      >
+                        {"О МЕРОПРИЯТИИ"}
+                      </Text>
+
+                      {
+                        event.description && (
                           <Text
                             variant={"cardText"}
                             color={"cardSubtextColor"}
                           >
-                            { "Ссылки:" }
+                            {event.description}
                           </Text>
+                        )
+                      }
 
-                          {event.contact.map((con, index) => {
-                            return (
-                              <Hyperlink
-                                key={index}
-                                linkDefault={true}
-                                linkStyle={{ color: theme.colors.link_color }}
-                                onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
-                                linkText={(url) => {
-                                  const contact = event.contact!.find((c) => Object.values(c)[0] === url);
-                                  return contact ? Object.keys(contact)[0] : url;
-                                }}
-                              >
-                                <Text
-                                  variant={"cardText"}
+                      {
+                        event.contact && event.contact.length > 0 && (
+                          <Box
+                            gap={"s"}
+                          >
+                            <Text
+                              variant={"cardText"}
+                              color={"cardSubtextColor"}
+                            >
+                              { "Ссылки:" }
+                            </Text>
+
+                            {event.contact.map((con, index) => {
+                              return (
+                                <Hyperlink
+                                  key={index}
+                                  linkDefault={true}
+                                  linkStyle={{ color: theme.colors.link_color }}
+                                  onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
+                                  linkText={(url) => {
+                                    const contact = event.contact!.find((c) => Object.values(c)[0] === url);
+                                    return contact ? Object.keys(contact)[0] : url;
+                                  }}
                                 >
-                                  {Object.values(con)[0]}
-                                </Text>
-                              </Hyperlink>
-                            );
-                          })}
-                        </Box>
-                      )
-                    }
-                  </ScrollView>
-                </Box>
-              )}
+                                  <Text
+                                    variant={"cardText"}
+                                  >
+                                    {Object.values(con)[0]}
+                                  </Text>
+                                </Hyperlink>
+                              );
+                            })}
+                          </Box>
+                        )
+                      }
+                    </ScrollView>
+                  </Box>
+                )}
 
-              <Box
-                flexDirection="row"
-                width="100%"
-                paddingBottom="l" paddingHorizontal="l"
-                gap="s"
-              >
-                <ActionButton type="dislike" onPress={onDislike} />
-                <ActionButton type="like" onPress={onLike} />
-              </Box>
-            </Animated.View>
+                <Box
+                  flexDirection="row"
+                  width="100%"
+                  paddingBottom="l" paddingHorizontal="l"
+                  gap="s"
+                >
+                  <ActionButton type="dislike" onPress={onDislike} />
+                  <ActionButton type="like" onPress={onLike} />
+                </Box>
+              </Animated.View>
+            </Box>
           </GestureDetector>
         </Box>
       </ImageBackground>
-
-      <Pressable
-        onPress={ () => {
-          const link = `${WEB_APP_URL}?startapp=${event.id}`;
-          const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
-
-          console.log("Sharing event with link:", link);
-
-          config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
-        }}
-        style={{
-          position: "absolute",
-          top: 16, right: 16,
-          zIndex: 1
-        }}
-      >
-        <Box
-          backgroundColor={"cardBGColor"}
-          height={40}
-          width={40}
-          alignItems={"center"}
-          justifyContent={"center"}
-          borderRadius={"xl"}
-        >
-          <Icon
-            name={"share"}
-            color={theme.colors.white}
-            size={24}
-          />
-        </Box>
-      </Pressable>
-
     </GestureHandlerRootView>
   );
 });

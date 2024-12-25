@@ -184,12 +184,12 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
                 <Box
                   width={"100%"} height={44}
                   alignItems={"center"} justifyContent={"center"}
-                  backgroundColor={"red"}
+                  backgroundColor={"lime"}
                   borderRadius={"m"}
                 >
                   <Text
                     variant={"likedEventButton"}
-                    color={"gray"}
+                    color={"black"}
                     textAlign={"center"}
                   >
                     { "Понравилось" }
@@ -216,12 +216,12 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
             <Box
               width={"100%"} height={44}
               alignItems={"center"} justifyContent={"center"}
-              backgroundColor={"lime"}
+              backgroundColor={"red"}
               borderRadius={"m"}
             >
               <Text
                 variant={"likedEventButton"}
-                color={"black"}
+                color={"gray"}
                 textAlign={"center"}
               >
                 { "Удалить" }

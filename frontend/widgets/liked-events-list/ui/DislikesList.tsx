@@ -26,14 +26,12 @@ export const DislikesList = React.memo(() => {
   const { selectedDays } = useCalendarStore();
 
   useEffect(() => {
-    if (dislikes.length == 0) {
-      const borders = getPeriodBorders(Object.keys(selectedDays));
-      fetchReactions({
-        username: username,
-        date_start: borders.date_start, date_end: borders.date_end,
-        value: "False"
-      });
-    }
+    const borders = getPeriodBorders(Object.keys(selectedDays));
+    fetchReactions({
+      username: username,
+      date_start: borders.date_start, date_end: borders.date_end,
+      value: "False"
+    });
   }, [selectedDays]);
 
   if (isDislikesLoading) {
