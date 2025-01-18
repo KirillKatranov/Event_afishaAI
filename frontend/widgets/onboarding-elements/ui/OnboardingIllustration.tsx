@@ -6,19 +6,21 @@ import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
 
 export const OnboardingIllustration = () => {
-  const { page } = useOnboardingStore();
+  const { page, pageTitle } = useOnboardingStore();
   const [pageSubTick, setPageSubTick] = useState(page);
-
-  const opacity = useSharedValue(1);
+  const opacity = useSharedValue(0);
 
   useEffect(() => {
     if (page != 1) {
-      opacity.value = withTiming(0, { duration: 200 }, () => {
+      opacity.value = withTiming(0, { duration: 250 }, () => {
         runOnJS(setPageSubTick)(page);
-        opacity.value = withTiming(1, { duration: 200 });
+        opacity.value = withTiming(1, { duration: 250 });
       });
     } else {
-      opacity.value = withTiming(1, { duration: 200 }, () => runOnJS(setPageSubTick)(page));
+      opacity.value = withTiming(0, { duration: 250 }, () => {
+        runOnJS(setPageSubTick)(page);
+        opacity.value = withTiming(1, { duration: 250 })
+      })
     }
   }, [page]);
 
@@ -41,71 +43,111 @@ export const OnboardingIllustration = () => {
       >
         <Box
           position={"absolute"}
-          width={"100%"}
-          top={60}
-          zIndex={-1}
+          top={100}
+          alignSelf={"center"}
         >
-          <Illustration name={"topLine"} width={"100%"}/>
-        </Box>
-
-        <Text
-          variant={"onboardingHello"}
-          color={"toxicBlue"}
-          style={{
-            position: "absolute",
-            top: 16,
-            left: 36
-          }}
-        >
-          { "ПРИВЕТ!" }
-        </Text>
-
-        <Box
-          position={"absolute"}
-          backgroundColor={"toxicBlue"}
-          top={94}
-          left={76}
-          right={0}
-          style={{
-            borderTopLeftRadius: 25,
-            borderBottomLeftRadius: 25,
-            paddingHorizontal: 42,
-            paddingVertical: 32
-          }}
-        >
-          <Text
-            variant={"onboardingIam"}
-            color={"lime"}
-          >
-            { "Я — Стрелка, твой гид и помощник в поиске мероприятий" }
+          <Text variant={"onboardingIam"} style={{ color: "#000000" }}>
+            ВЫБИРАЙ ИЗ{" "}
+            <Text style={{ color: "#8E00FF" }}>10 КАТЕГОРИЙ</Text>
           </Text>
+          <Box
+            style={{
+              marginTop: 30,
+              marginLeft: 35,
+              gap: 10
+            }}
+          >
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "flex-start"
+              }}
+            >
+              <Text fontWeight={600} variant={"tagsHeaderQuestion"}>— ОТ КОНЦЕРТОВ</Text>
+            </Box>
+            <Box
+              style={{
+                marginLeft: 160
+              }}
+            >
+              <Text fontWeight={600} variant={"tagsHeaderQuestion"}>ДО ВЫСТАВОК</Text>
+            </Box>
+          </Box>
         </Box>
-
-
-        <Illustration name={"arrow"} height={"100%"}/>
 
         <Box
-          position={"absolute"}
-          width={"100%"}
-          bottom={4}
-          zIndex={-1}
+          height={"100%"}
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative"
+          }}
         >
-          <Illustration name={"bottomLine"} width={"100%"}/>
+          <Illustration name={"firstPageArrow"}/>
         </Box>
+
       </Animated.View>
     )
   }
 
   if (pageSubTick == 2) {
     return (
-      <Animated.View style={animatedOpacity}>
+      <Animated.View style={[
+        animatedOpacity,
+        {
+          position: "absolute",
+          height: "100%",
+          width: "100%"
+        }
+      ]}>
+        <Box
+          position={"absolute"}
+          top={92}
+          alignSelf={"center"}
+          zIndex={2}
+        >
+          <Text
+            variant={"onboardingTitle"}
+            textAlign={"center"}
+            lineHeight={34}
+            style={{
+              color: "#000000",
+
+            }}
+          >
+            {pageTitle}
+          </Text>
+        </Box>
+
         <Box
           flex={1}
-          paddingHorizontal={"xl"}
           justifyContent={"center"}
           alignItems={"center"}
+          style={{
+            marginBottom: 93
+          }}
         >
-          <Illustration name={"like"} width={"100%"} height={"100%"}/>
+          <Box
+            style={{
+              position: "relative",
+              right: 5,
+            }}
+          >
+            <Illustration name={"onboardingLike"}/>
+          </Box>
+          <Box
+            style={{
+              display: "flex",
+              alignItems: "center",
+              position: "relative",
+              right: 15,
+            }}
+          >
+            <Illustration name={"onboardingLikes"}/>
+          </Box>
+          <Illustration name={"secondPageArrow"}/>
         </Box>
       </Animated.View>
     )
@@ -113,14 +155,41 @@ export const OnboardingIllustration = () => {
 
   {/* page == 3 */}
   return (
-    <Animated.View style={animatedOpacity}>
+    <Animated.View style={[
+      animatedOpacity,
+      {
+        position: "absolute",
+        height: "100%",
+        width: "100%"
+      }
+    ]}>
+      <Box
+        position={"absolute"}
+        top={100}
+        alignSelf={"center"}
+      >
+        <Text
+          variant={"onboardingTitle"}
+          textAlign={"center"}
+          lineHeight={34}
+          style={{
+            color: "#000000"
+          }}
+        >
+          {pageTitle}
+        </Text>
+      </Box>
       <Box
         flex={1}
         paddingHorizontal={"xl"}
+        flexDirection={"row"}
         justifyContent={"center"}
         alignItems={"center"}
+        style={{
+          marginBottom: 60
+        }}
       >
-        <Illustration name={"calendar"} width={"100%"} height={"100%"}/>
+        <Illustration name={"thirdPageArrow"}/>
       </Box>
     </Animated.View>
   )

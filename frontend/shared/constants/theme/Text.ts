@@ -24,11 +24,11 @@ export const Text = {
     fontSize: 12,
   },
   onboardingTitle: {
-    fontFamily: 'TTTravelsDemiBold',
+    fontFamily: 'MontserratSemiBold',
     fontSize: 24,
   },
   onboardingSubtitle: {
-    fontFamily: 'TTTravelsDemiBold',
+    fontFamily: 'MontserratMedium',
     fontSize: 14,
   },
   onboardingButton: {
@@ -41,7 +41,7 @@ export const Text = {
   },
   onboardingIam: {
     fontFamily: 'MontserratBold',
-    fontSize: 20,
+    fontSize: 24,
   },
   tagChip: {
     fontFamily: 'MontserratSemiBold',

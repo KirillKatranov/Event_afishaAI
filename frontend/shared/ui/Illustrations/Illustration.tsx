@@ -3,11 +3,15 @@ import {SvgProps, NumberProp} from 'react-native-svg';
 import * as Illustrations from "@/shared/ui/Illustrations/svgs";
 
 const illustrations = {
-  arrow: Illustrations.Arrow,
+  firstPageArrow: Illustrations.FirstPageArrow,
+  secondPageArrow: Illustrations.SecondPageArrow,
+  thirdPageArrow: Illustrations.ThirdPageArrow,
   bottomLine: Illustrations.BottomLine,
   topLine: Illustrations.TopLine,
   like: Illustrations.Like,
   calendar: Illustrations.Calendar,
+  onboardingLikes: Illustrations.OnboardingLikes,
+  onboardingLike: Illustrations.OnboardingLike
 };
 
 export interface IconProps extends SvgProps {
@@ -18,8 +22,7 @@ export interface IconProps extends SvgProps {
 
 const Icon: React.FC<IconProps> = ({name, width, height}) => {
   const IllustrationComponent = illustrations[name];
-
-  return <IllustrationComponent width={width} height={height}/>;
+  return <IllustrationComponent width={width} height={height} />;
 };
 
 export default Icon;

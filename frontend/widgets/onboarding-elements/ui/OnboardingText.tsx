@@ -4,24 +4,16 @@ import { useOnboardingStore } from "@/widgets/onboarding-elements/model/store/us
 import { Box, Text } from "@/shared/ui";
 
 export const OnboardingText: React.FC = () => {
-  const { page, pageTitle, pageSubtitle, setPageText } = useOnboardingStore();
-  const [pageSubTick, setPageSubTick] = useState(page);
+  const { page, pageSubtitle, setPageText } = useOnboardingStore();
+  const [text, setText] = useState('для тебя')
 
-  const opacity = useSharedValue(1);
-
+  const opacity = useSharedValue(0);
   useEffect(() => {
-    if (page != 1) {
-      opacity.value = withTiming(0, { duration: 200 }, () => {
-        runOnJS(setPageSubTick)(page);
-        runOnJS(setPageText)();
-        opacity.value = withTiming(1, { duration: 200 });
-      });
-    } else {
-      opacity.value = withTiming(1, { duration: 200 }, () => {
-        runOnJS(setPageSubTick)(page);
-        runOnJS(setPageText)();
-      });
-    }
+    opacity.value = withTiming(0, { duration: 250 }, () => {
+      runOnJS(setPageText)();
+      setText(page == 1 ? 'для тебя' : (page == 2 ? 'под рукой' : ''));
+      opacity.value = withTiming(1, { duration: 250 });
+    });
   }, [page]);
 
   const animatedOpacity = useAnimatedStyle(() => ({
@@ -38,21 +30,24 @@ export const OnboardingText: React.FC = () => {
           paddingHorizontal: 40
         }}
       >
-        <Text
-          variant={"onboardingTitle"}
-          textAlign={"center"}
-          color={ pageSubTick == 2 ? "lime" : "totalBlack" }
+        <Box
+          style={{
+            backgroundColor: "#E1F44B",
+            borderRadius: 25,
+            padding: 10,
+          }}
         >
-          {pageTitle}
-        </Text>
-
-        <Text
-          variant={"onboardingSubtitle"}
-          textAlign={"center"}
-          color={ pageSubTick == 2 ? "white" : "totalBlack" }
-        >
-          {pageSubtitle}
-        </Text>
+          <Text
+            variant={"onboardingSubtitle"}
+            textAlign={"center"}
+            color={"black" }
+            fontSize={14}
+            fontWeight={400}
+            lineHeight={20}
+          >
+            {pageSubtitle} <Text fontWeight={800} color={"totalBlack"}>{text}</Text>
+          </Text>
+        </Box>
       </Box>
     </Animated.View>
   );

@@ -1,11 +1,9 @@
 import React from "react";
-import {useRouter} from "expo-router";
 import {useOnboardingStore} from "@/widgets/onboarding-elements/model/store/useOnboardingStore";
-import {Box, OnboardingButton, Stepper} from "@/shared/ui";
+import {Box, Stepper} from "@/shared/ui";
 
 export const OnboardingNav = () => {
-  const router = useRouter();
-  const { page, incPage } = useOnboardingStore();
+  const { page } = useOnboardingStore();
 
   return (
     <Box
@@ -20,11 +18,7 @@ export const OnboardingNav = () => {
         pagesCount={3}
         currentPage={page}
       />
-
-      <OnboardingButton
-        page={page}
-        onPress={page == 3 ? () => router.replace("/(tabs)/feed") : incPage}
-      />
     </Box>
   )
 }
+

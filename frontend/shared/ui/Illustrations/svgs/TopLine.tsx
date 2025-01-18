@@ -2,19 +2,19 @@ import * as React from "react";
 import Svg, {Path} from "react-native-svg";
 import {IllustrationComponentProps} from "@/shared/ui/Illustrations/IllustrationComponentProps";
 
-export const TopLine: React.FC<IllustrationComponentProps> = ({width = 393, height = 393}) => (
+export const TopLine: React.FC<IllustrationComponentProps> = ({width = 393, height = 137}) => (
   <Svg
-    width={width}
-    height={height}
-    preserveAspectRatio="none"
-    viewBox="0 0 393 349"
-    fill="none"
-  >
-    <Path
-      d="M-11.306 5.438c42.849.84 83.69 10.98 108.91 48.81 14.158 21.236 17.886 47.273 20.215 72.12 1.82 19.407 6.281 47.2-4.188 65.2-12.443 21.393-64.353 37.71-65.929 1.457-.89-20.482 18.173-27.751 34.24-36.789 25.548-14.371 54.555-20.978 83.229-25.679 26.54-4.351 57.185-10.368 83.959-4.189 46.95 10.835 48.547 49.358 52.816 90.333 3.79 36.387 6.208 82.5 34.239 110.002 16.132 15.828 44.591 15.158 65.564 16.391"
-      stroke="#B4C9FE"
-      strokeWidth={10}
-      strokeLinecap="round"
-    />
-  </Svg>
+      width={width}
+      height={height}
+      preserveAspectRatio="none"
+      viewBox="0 0 393 137"
+      fill="none"
+    >
+      <Path
+        d="M-20.8779 131.953C-7.04755 111.923 6.18592 85.7782 31.9933 80.2726C47.8221 76.8958 64.1658 76.2584 80.3015 75.7096C139.49 73.6964 198.84 74.8168 258.06 74.8168C288.854 74.8168 321.265 77.6302 338.706 48.0341C343.331 40.1847 351.91 28.7821 342.574 20.6561C333.211 12.5069 317.042 5.38 304.384 5.38C301.337 5.38 302.094 9.73976 303.094 11.5301C305.653 16.1083 315.327 16.772 319.759 17.2835C349.774 20.7467 380.821 16.9272 409.432 8.75265"
+        stroke="#F1F1F1"
+        strokeWidth={10}
+        strokeLinecap="round"
+      />
+    </Svg>
 );

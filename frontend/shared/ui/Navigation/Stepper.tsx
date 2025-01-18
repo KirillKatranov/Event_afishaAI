@@ -14,15 +14,15 @@ interface StepperProps {
 }
 
 export const Stepper: React.FC<StepperProps> = ({
-  pagesCount,
-  currentPage,
-}) => {
+                                                  pagesCount,
+                                                  currentPage,
+                                                }) => {
   return (
     <Box
       justifyContent={"center"}
       flexDirection="row"
       height={8}
-      style={{ gap: 1 }}
+      style={{ gap: 1, marginBottom: 80 }}
     >
       {Array.from({ length: pagesCount }).map((_, index) => (
         <Step key={index} isActive={index + 1 === currentPage} />
@@ -39,7 +39,7 @@ const Step: React.FC<StepProps> = ({ isActive }) => {
 
   const animatedStyle = useAnimatedStyle(() => ({
     width: animatedWidth.value,
-    backgroundColor: isActive ? theme.colors.black : theme.colors.transparent,
+    backgroundColor: isActive ? theme.colors.lime : theme.colors.transparent,
     opacity: isActive ? 1 : 0.5,
   }));
 
@@ -50,7 +50,7 @@ const Step: React.FC<StepProps> = ({ isActive }) => {
         {
           borderRadius: 10,
           borderWidth: 0.5,
-          borderColor: theme.colors.black,
+          borderColor: theme.colors.lime,
         }
       ]}
     />
