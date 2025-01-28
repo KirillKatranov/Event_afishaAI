@@ -1,6 +1,6 @@
 import React from "react";
-import {ServicesPage} from "@/pages/tags";
+import {TagsPage} from "@/pages/tags";
 
 export default function ServicesScreen() {
-  return <ServicesPage/>
+  return <TagsPage/>
 }

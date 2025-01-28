@@ -1,33 +1,32 @@
 import React from "react";
 import {Pressable} from "react-native";
-import {useTheme} from "@shopify/restyle";
 import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
-import {Theme} from "@/shared/providers/Theme";
 import {Tag} from "@/entities/tag";
-import {colors} from "@/entities/tag/model/colors";
-import Icon from "@/shared/ui/Icons/Icon";
-import DropShadow from "react-native-drop-shadow";
+import {colors} from "@/entities/tag";
 import Animated, {SharedValue, useAnimatedStyle, interpolate} from "react-native-reanimated";
+import Icon from "@/shared/ui/Icons/Icon";
 
 interface TagCardProps {
   index: number;
+  service: "events" | "places" | "organizers" | "trips";
   tag: Tag;
-  onPress: () => void;
+  liked: boolean;
+  onPress: () => void; onLike: () => void;
   scrollY: SharedValue<number>;
 }
 
 export const TagCard: React.FC<TagCardProps> = ({
   index,
+  service,
   tag,
-  onPress,
+  liked,
+  onPress, onLike,
   scrollY
 }) => {
-  const theme = useTheme<Theme>();
-
   const inputRange = [
-    (index - 1) * 124 + 325,
-    index * 124 + 325,
+    (index - 1) * 124 + 300,
+    index * 124 + 300,
   ];
 
   const opacity = useAnimatedStyle(() => ({
@@ -63,89 +62,80 @@ export const TagCard: React.FC<TagCardProps> = ({
       onPress={ onPress }
     >
       <Animated.View
-        style={opacity}
+        style={[opacity]}
       >
-        <DropShadow
+        <Box
+          minHeight={186}
+          borderRadius={"xl"}
+          overflow={"hidden"}
+          flexDirection={"column"}
+          gap={"xs"}
           style={{
-            borderRadius: 40,
+            padding: 20,
+            backgroundColor: colors[service],
+            marginBottom: -62,
             shadowOffset: {width: 0, height: -2},
             shadowColor: "rgba(0,0,0,0.15)",
             shadowRadius: 8,
           }}
         >
-          <Box
-            minHeight={186}
-            borderRadius={"xl"}
-            overflow={"hidden"}
+          {/* Tag description */}
+          <Text
+            variant={"tagCardDescription"}
+            color={service == "places" ? "white" : "black"}
+            textTransform={"lowercase"}
             style={{
-              padding: 20,
-              backgroundColor: colors[index % 4],
-              marginBottom: -62
+              alignSelf: "flex-start", justifyContent: "center",
+              maxWidth: "100%",
+              paddingHorizontal: 6, borderRadius: 10,
+              backgroundColor: service == "places" ? "#A533FF" : "#E1F44B"
             }}
+            selectable={false}
           >
-            <Box
-              width="100%"
-              flexDirection={"row"}
-              gap={"s"}
+            { tag.description }
+          </Text>
+
+          {/* Tag name */}
+          <Box
+            flexDirection={"row"}
+            justifyContent={"space-between"}
+            gap={"xs"}
+          >
+            <Text
+              variant={"tagCardName"}
+              color={"black"}
+              textTransform={"uppercase"} numberOfLines={1}
+              selectable={false}
+              style={{
+                alignSelf: "flex-start", justifyContent: "center",
+                maxWidth: "100%",
+                paddingHorizontal: 8, borderRadius: 10,
+                backgroundColor: "white"
+              }}
             >
-              <Box
-                flex={1}
-                flexDirection={"column"}
-                gap={"xs"}
-              >
-                {/* Events count chip */}
-                <Box
-                  paddingHorizontal={"s"}
-                  paddingVertical={"xs"}
-                  borderWidth={1}
-                  borderColor={"black"}
-                  alignSelf={"flex-start"}
-                  style={{
-                    borderRadius: 20
-                  }}
-                >
-                  <Text
-                    variant={"tagCardEventsCount"}
-                    color={"black"}
-                  >
-                    { tag.count }
-                  </Text>
-                </Box>
+              { tag.name }
+            </Text>
 
-                {/* Tag description */}
-                <Text
-                  variant={"tagCardDescription"}
-                  color={"black"}
-                  textTransform={"lowercase"}
-                >
-                  { tag.description }
-                </Text>
-
-                {/* Tag name */}
-                <Text
-                  variant={"tagCardName"}
-                  color={"black"}
-                  textTransform={"uppercase"}
-                  numberOfLines={1}
-                  style={{ marginTop: -8 }}
-                >
-                  { tag.name }
-                </Text>
-              </Box>
-
-              <Box
-                height={"100%"}
-                justifyContent={"center"}
-              >
-                <Icon
-                  name={"diagonalArrow"}
-                  color={theme.colors.black}
-                  size={36}
-                />
-              </Box>
-            </Box>
+            <Pressable
+              onPress={onLike}
+            >
+              <Icon
+                name={ liked ? "likeFilled" : "like" }
+                color={ service == "places" ? "#A533FF" : "#E1F44B" }
+                size={32}
+              />
+            </Pressable>
           </Box>
-        </DropShadow>
+
+          {/* Events count chip */}
+          <Text
+            variant={"tagCardEventsCount"}
+            style={{ color: service == "places" ? "#A533FF" : "#FFFFFF"}}
+            selectable={false}
+          >
+            { tag.count }
+          </Text>
+        </Box>
       </Animated.View>
     </Pressable>
   )

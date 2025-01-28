@@ -7,3 +7,7 @@ export {Like} from "./Like"
 export {Calendar} from "./Calendar"
 export {OnboardingLikes} from "./OnboardingLikes"
 export {OnboardingLike} from "./OnboardingLike"
+export {Trips} from "./Trips";
+export {Places} from "./Places";
+export {Events} from "./Events";
+export {Organizers} from "./Organizers";

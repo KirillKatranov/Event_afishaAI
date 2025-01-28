@@ -5,5 +5,10 @@ import {Tag} from "@/entities/tag";
  */
 export type TagsResponse = {
   status: number;
-  data: Tag[];
+  data: TagsData;
 };
+
+export type TagsData = {
+  tags: Tag[];
+  preferences: number[];
+}

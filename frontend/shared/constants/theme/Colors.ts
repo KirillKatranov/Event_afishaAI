@@ -2,6 +2,7 @@ export const Colors = {
   cardBGColor: "rgba(30,30,30,0.7)",
   cardMainTextColor: "#FFFFFF",
   cardSubtextColor: "#D8DFE9",
+  cardDescriptionTextColor: "#393939",
   lime: "#E1F44B",
   black: "#393939",
   totalBlack: "#000000",

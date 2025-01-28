@@ -11,7 +11,11 @@ const illustrations = {
   like: Illustrations.Like,
   calendar: Illustrations.Calendar,
   onboardingLikes: Illustrations.OnboardingLikes,
-  onboardingLike: Illustrations.OnboardingLike
+  onboardingLike: Illustrations.OnboardingLike,
+  trips: Illustrations.Trips,
+  places: Illustrations.Places,
+  events: Illustrations.Events,
+  organizers: Illustrations.Organizers,
 };
 
 export interface IconProps extends SvgProps {

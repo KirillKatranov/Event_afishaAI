@@ -1,1 +1,6 @@
-export const colors = ["#EDF3C3", "#E1F44B", "#B4C9FE", "#7775E7"]
+export const colors = {
+  events: "#FF3DFF",
+  places: "#E1F44B",
+  organizers: "#8382F1",
+  trips: "#A533FF",
+}

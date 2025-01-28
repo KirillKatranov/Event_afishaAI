@@ -1,28 +1,31 @@
 import React, {useEffect} from "react";
-import {useRouter} from "expo-router";
-import {useTheme} from "@shopify/restyle";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import {useTagsStore} from "@/widgets/tags-list/model/store/useTagsStore";
-import {useSelectedTagStore} from "@/features/tag-selected";
 import {TagCard} from "@/entities/tag";
-import {Theme} from "@/shared/providers/Theme";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
-import Animated, {useSharedValue} from "react-native-reanimated";
+import Animated, {SharedValue} from "react-native-reanimated";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
-export const TagsList = () => {
-  const { tags, isLoading, hasError, fetchTags } = useTagsStore();
-  const { setTag } = useSelectedTagStore();
-  const theme = useTheme<Theme>();
+interface TagsListProps {
+  scrollY: SharedValue<number>
+}
+
+export const TagsList: React.FC<TagsListProps> = ({
+  scrollY
+}) => {
+  const { service } = useLocalSearchParams<{ service: "events" | "places" | "organizers" | "trips" }>()
+  const { tags, preferences, isLoading, hasError, fetchTags, onTagLike } = useTagsStore();
   const router = useRouter();
-
-  const scrollY = useSharedValue(0);
+  const username = useConfig().initDataUnsafe.user.username;
 
   useEffect(() => {
-    fetchTags();
+    fetchTags({ username: username, macro_category: service });
   }, []);
 
   if (isLoading) {
     return (
       <Animated.FlatList
+        scrollEnabled={false}
         overScrollMode={"never"}
         showsVerticalScrollIndicator={false}
         data={Array(10)}
@@ -30,63 +33,51 @@ export const TagsList = () => {
           <LoadingCard
             key={index}
             style={{ height: 186, width: "100%", marginBottom: -62, borderRadius: 40 }}
+            loadingColors={["rgba(255,255,255,0)", "rgba(255,255,255,0.75)"]}
             index={index}
           />
         )}
-        style={{
-          width: "100%",
-          paddingHorizontal: 10,
-        }}
-        contentContainerStyle={{
-          backgroundColor: theme.colors.bg_color,
-          gap: 12,
-        }}
+        style={{width: "100%", paddingHorizontal: 10,}}
+        contentContainerStyle={{gap: 12,}}
       />
     );
   }
 
   if (hasError) {
     return (
-      <Box flex={1} backgroundColor="bg_color">
-        <ErrorCard />
+      <Box flex={1}>
+        <ErrorCard style={{ backgroundColor: "transparent" }}/>
       </Box>
     );
   }
 
   return (
-    <Animated.FlatList
-      scrollEnabled={true}
-      showsVerticalScrollIndicator={false}
-      overScrollMode={"never"}
-      data={tags}
-      renderItem={({item, index}) => (
-        <TagCard
-          index={index}
-          tag={item}
-          onPress={() => {
-            setTag(item.name);
-            router.replace("/feed");
-          }}
-          scrollY={scrollY}
-        />
-      )}
-      keyExtractor={(item) => item.name}
+    <Box
+      flex={1}
       style={{
-        flex: 1,
-        backgroundColor: theme.colors.bg_color,
         paddingHorizontal: 10,
         paddingBottom: 62,
-        width: "100%",
       }}
-      contentContainerStyle={{
-        flex: 1,
-        backgroundColor: theme.colors.bg_color,
-        gap: 0,
-      }}
-      // Track scroll position
-      onScroll={(event) => {
-        scrollY.value = event.nativeEvent.contentOffset.y;
-      }}
-    />
+    >
+      {
+        tags.map((item, index) => (
+          <TagCard
+            key={item.name}
+            service={service}
+            index={index}
+            liked={!!preferences.find((elem) => elem == item.id)}
+            tag={item}
+            onPress={() => {
+              router.push({
+                pathname: "/tags/[service]/[tag]",
+                params: { service: service, tag: item.name }
+              });
+            }}
+            onLike={ () => onTagLike({ username: username, tag_id: item.id })}
+            scrollY={scrollY}
+          />
+        ))
+      }
+    </Box>
   );
 };

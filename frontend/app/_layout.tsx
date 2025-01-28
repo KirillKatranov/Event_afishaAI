@@ -13,6 +13,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
+    UnboundedExtraBold: require('@/shared/assets/fonts/Unbounded-ExtraBold.ttf'),
+    UnboundedSemiBold: require('@/shared/assets/fonts/Unbounded-SemiBold.ttf'),
     MontserratLight: require('@/shared/assets/fonts/Montserrat-Light.ttf'),
     MontserratRegular: require('@/shared/assets/fonts/Montserrat-Regular.ttf'),
     MontserratMedium: require('@/shared/assets/fonts/Montserrat-Medium.ttf'),

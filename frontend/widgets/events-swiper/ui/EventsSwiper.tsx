@@ -1,36 +1,35 @@
 import React, {useEffect, useRef} from "react";
 import {Pressable} from "react-native";
-import {useRouter} from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
 import Swiper from "react-native-deck-swiper";
-import {useEventsSwiperStore} from "@/features/content";
 import {useCalendarStore} from "@/features/dates";
 import {useReactionsStore} from "@/features/likes-dislikes";
-import {useSelectedTagStore} from "@/features/tag-selected";
 import {Event, EventCard, useEventCardStore} from "@/entities/event";
-import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
+import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
-import {getPeriodBorders} from "@/shared/scripts/date";
 import Icon from "@/shared/ui/Icons/Icon";
 
-export const EventsSwiper = () => {
+interface EventsSwiperProps {
+  events: Event[];
+  swipedAll: boolean; setSwipedAll: (swipedAll: boolean) => void;
+}
+
+export const EventsSwiper: React.FC<EventsSwiperProps> = ({
+  events,
+  swipedAll, setSwipedAll
+}) => {
+  const { tag } = useLocalSearchParams<{ tag: string }>();
+
   const theme = useTheme<Theme>();
   const router = useRouter();
   const username = useConfig().initDataUnsafe.user.username;
   const swiperRef = useRef<Swiper<Event> | null>();
 
-  const {
-    events,
-    isLoading, hasError,
-    swipedAll, setSwipedAll,
-    fetchEvents,
-  } = useEventsSwiperStore();
-
   const { selectedDays} = useCalendarStore();
-  const { tag, setTag } = useSelectedTagStore();
   const {
     addLikedEvent, addDislikedEvent,
     removeLikedEvent, removeDislikedEvent,
@@ -63,16 +62,6 @@ export const EventsSwiper = () => {
   }
 
   useEffect(() => {
-    const borders = getPeriodBorders(Object.keys(selectedDays));
-    fetchEvents({
-      username: username,
-      tag: tag,
-      date_start: borders.date_start,
-      date_end: borders.date_end
-    });
-  }, [tag, selectedDays]);
-
-  useEffect(() => {
     if (swipedAll) {
       swipedAllInfoOpacity.value = withTiming(1);
     } else {
@@ -91,10 +80,6 @@ export const EventsSwiper = () => {
       }}
     />
   );
-
-
-  if (isLoading) return <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>
-  if (hasError) return <ErrorCard />
 
   return (
     <Box
@@ -190,8 +175,7 @@ export const EventsSwiper = () => {
           tag && !swipedAll && (
             <Pressable
               onPress={() => {
-                router.replace("/(tabs)/tags");
-                setTag(undefined);
+                router.back();
               }}
             >
               <Box
@@ -248,10 +232,7 @@ export const EventsSwiper = () => {
               {
                 tag && (
                   <Pressable
-                    onPress={ () => {
-                      router.navigate("/tags");
-                      setTag(undefined);
-                    }}
+                    onPress={ () => router.back() }
                   >
                     <Box
                       flexDirection="row"
@@ -278,7 +259,7 @@ export const EventsSwiper = () => {
               {
                 Object.keys(selectedDays).length > 0 && (
                   <Pressable
-                    onPress={ () => router.navigate("/(tabs)/calendar")}
+                    onPress={ () => router.navigate("/calendar")}
                   >
                     <Box
                       flexDirection="row"

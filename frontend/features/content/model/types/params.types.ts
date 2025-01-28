@@ -7,3 +7,9 @@ export type ContentParams = {
   date_start?: string,
   date_end?: string
 }
+
+export type FeedParams = {
+  username: string,
+  date_start?: string,
+  date_end?: string
+}

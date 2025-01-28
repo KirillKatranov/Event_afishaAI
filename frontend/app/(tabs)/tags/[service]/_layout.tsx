@@ -4,7 +4,7 @@ const StackLayout = () => {
   return (
     <Stack>
       <Stack.Screen name='index' options={{ headerShown: false }}/>
-      <Stack.Screen name='[service]' options={{ headerShown: false }}/>
+      <Stack.Screen name='[tag]' options={{ headerShown: false }}/>
     </Stack>
   )
 }

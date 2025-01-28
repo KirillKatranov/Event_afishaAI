@@ -1,57 +1,55 @@
 import { create } from 'zustand';
-import {ContentParams} from "@/features/content";
+import {FeedParams} from "@/features/content";
 import ContentService from "@/features/content/api/ContentService";
 import {Event} from "@/entities/event";
 
-interface EventsState {
-  events: Event[];
+interface FeedState {
+  feed: Event[];
   isLoading: boolean;
   hasError: boolean;
   swipedAll: boolean;
-  fetchEvents: (params: ContentParams) => void;
+  fetchFeed: (params: FeedParams) => void;
   addEvent: (event: Event) => void;
   setSwipedAll: (state: boolean) => void;
 }
 
-export const useEventsSwiperStore = create<EventsState>((set) => ({
-  events: [],
+export const useFeedStore = create<FeedState>((set) => ({
+  feed: [],
   isLoading: true,
   hasError: false,
   swipedAll: false,
 
-  fetchEvents: (
-    params: ContentParams
-  ) => {
+  fetchFeed: (params: FeedParams) => {
     set({ isLoading: true, hasError: false });
 
-    ContentService.getContent(params)
+    ContentService.getFeed(params)
       .then((response) => {
         switch (response.status) {
           case 200: {
-            console.log(`Successfully get events`);
+            console.log(`Successfully get feed`);
             if (response.data.length > 0) {
-              set({ events: response.data, isLoading: false, swipedAll: false });
+              set({ feed: response.data, isLoading: false, swipedAll: false });
             } else {
-              console.log(`No events on provided params`);
-              set({ isLoading: false, swipedAll: true })
+              console.log(`No feed events on provided params`);
+              set({ isLoading: false, swipedAll: true });
             }
             break;
           }
           default: {
-            console.log(`Events request error with code: ${response.status}`);
+            console.log(`Feed request error with code: ${response.status}`);
             set({ hasError: true, isLoading: false });
           }
         }
       })
       .catch((e) => {
-        console.log(`Events request error: ${e}`);
+        console.log(`Feed request error: ${e}`);
         set({ hasError: true, isLoading: false })
       });
   },
 
   addEvent: (event: Event) => {
     set((state) => {
-      return { events: [...state.events, event], swipedAll: false };
+      return { events: [...state.feed, event], swipedAll: false };
     })
   },
 

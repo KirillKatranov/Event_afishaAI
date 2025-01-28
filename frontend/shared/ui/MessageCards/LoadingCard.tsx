@@ -15,11 +15,13 @@ import {Theme} from "@/shared/providers/Theme";
 interface LoadingCardProps {
   style?: StyleProp<ViewStyle>;
   index?: number;
+  loadingColors?: string[];
 }
 
 export const LoadingCard: React.FC<LoadingCardProps> = ({
   style= {},
   index = 0,
+  loadingColors
 }) => {
   const theme = useTheme<Theme>();
   const background = useSharedValue(0);
@@ -38,7 +40,7 @@ export const LoadingCard: React.FC<LoadingCardProps> = ({
     backgroundColor: interpolateColor(
       background.value,
       [0, 1],
-      [theme.colors.secondary_bg_color, theme.colors.bg_color],
+      loadingColors ? loadingColors : [theme.colors.secondary_bg_color, theme.colors.bg_color],
       'RGB',
       { gamma: 1 }
     ),

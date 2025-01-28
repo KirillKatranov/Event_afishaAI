@@ -17,6 +17,21 @@ class ContentService {
     return response;
   };
 
+  async getFeed (
+    params: ContentParams
+  ) {
+    console.log("Send GET feed request with params: ", params);
+
+    const response: EventsResponse = await axiosInstance.get<Event[]>(
+      '/contents_feed',
+      {
+        params: params
+      });
+
+    return response;
+  };
+
+
   async getSingleEvent(
     id: string | number
   ) {

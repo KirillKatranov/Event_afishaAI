@@ -273,8 +273,8 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                     overflow="hidden"
                     marginHorizontal="l"
                     borderRadius="l"
-                    backgroundColor="cardBGColor"
                     padding={"m"}
+                    style={{ backgroundColor: "#ECEBE8" }}
                   >
                     <ScrollView
                       onScroll={(e) =>
@@ -288,7 +288,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                     >
                       <Text
                         variant={"cardSubheader"}
-                        color={"cardMainTextColor"}
+                        color={"cardDescriptionTextColor"}
                       >
                         {"О МЕРОПРИЯТИИ"}
                       </Text>
@@ -297,7 +297,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                         event.description && (
                           <Text
                             variant={"cardText"}
-                            color={"cardSubtextColor"}
+                            color={"cardDescriptionTextColor"}
                           >
                             {event.description}
                           </Text>
@@ -311,7 +311,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                           >
                             <Text
                               variant={"cardText"}
-                              color={"cardSubtextColor"}
+                              color={"cardDescriptionTextColor"}
                             >
                               { "Ссылки:" }
                             </Text>

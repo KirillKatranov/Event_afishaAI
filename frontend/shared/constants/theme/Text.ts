@@ -72,15 +72,15 @@ export const Text = {
     fontSize: 48,
   },
   tagCardName: {
-    fontFamily: 'MontserratSemiBold',
-    fontSize: 42,
+    fontFamily: 'UnboundedSemiBold',
+    fontSize: 25,
   },
   tagCardDescription: {
-    fontFamily: 'MontserratLight',
+    fontFamily: 'MontserratBold',
     fontSize: 14,
   },
   tagCardEventsCount: {
-    fontFamily: 'MontserratSemiBold',
+    fontFamily: 'UnboundedSemiBold',
     fontSize: 12,
   },
   sharedCardButton: {
@@ -91,5 +91,7 @@ export const Text = {
     fontFamily: 'MontserratMedium',
     fontSize: 16,
   },
+  serviceName: { fontFamily: 'UnboundedExtraBold', fontSize: 26, },
+  serviceDescription: { fontFamily: 'MontserratSemiBold', fontSize: 16, },
   defaults: {},
 }
