@@ -2,8 +2,9 @@ from ninja_extra import NinjaExtraAPI
 
 from http import HTTPStatus
 from ninja_extra import api_controller, route
-from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite
-from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema
+from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite, UserCategoryPreference
+from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema, \
+    UserPreferencesResponseSchema, TagsResponseSchema
 from django.db.models import Q
 from datetime import date
 from ninja.errors import HttpError
@@ -30,21 +31,74 @@ class TagsController:
     @route.get(
         path="/tags",
         response={
-            200: list[TagSchema],
+            200: TagsResponseSchema,
         },
     )
-    def get_tags(self):
-        tags = Tags.objects.all()
-        result = [tag for tag in tags if tag.contents.count() > 0]
-        for res in result:
-            res.count = res.contents.count()
-        return result
+    def get_tags(self, username: str, macro_category: str):
+        from django.db.models import Count
+
+        tags = (
+            Tags.objects.filter(macro_category__name=macro_category)
+            .annotate(content_count=Count('contents'))
+            .filter(content_count__gt=0)
+        )
+
+        user, _ = User.objects.get_or_create(username=username)
+        preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
+        preferences_categories = [pref.tag.id for pref in preferences]
+        tag_schemas = [
+            TagSchema(
+                id=tag.id,
+                name=tag.name,
+                description=tag.description,
+                image=tag.image.url if tag.image else None,
+                # todo: ИСПРАВИТЬ!
+                # todo: это не count, нужно убрать отсюда те меро которые уже не показыватся поль-лям
+                count=tag.content_count
+            )
+            for tag in tags
+        ]
+        return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
 
 
 @api_controller(
     prefix_or_class="/api/v1",
 )
 class ContentController:
+    @route.get(
+        path="/сontents_feed",
+        response={
+            200: list[ContentSchema],
+        },
+    )
+    def get_content_for_feed(self, username: str, date_start: date | None = None,
+                             date_end: date | None = None) -> list[ContentSchema]:
+        q_filter = Q()
+        if date_start and date_end:
+            q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
+        if date_start and not date_end:
+            q_filter &= Q(date=date_start)
+
+        current_user = User.objects.filter(username=username).first()
+        if not current_user:
+            current_user = User.objects.create(username=username)
+
+        preferred_tags = current_user.category_preferences.values_list("tag_id", flat=True)
+
+        # Если у пользователя нет предпочтений, возвращаем весь контент
+        if not preferred_tags:
+            contents = Content.objects.filter(q_filter).distinct()
+        else:
+            contents = Content.objects.filter(q_filter, tags__id__in=preferred_tags).distinct()
+
+        likes = current_user.likes
+        content_ids = [like.content.id for like in likes.all()]
+        contents_not_mark = contents.filter(~Q(id__in=content_ids))
+
+        removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
+        result_contents = contents_not_mark.exclude(id__in=removed_contents)
+        return result_contents
+
     @route.get(
         path="/contents",
         response={
@@ -61,6 +115,9 @@ class ContentController:
         contents = Content.objects.filter(q_filter)
         current_user = User.objects.filter(username=username).first()
         if not current_user:
+
+            # todo: при таком раскладе пользователь никогда не увидит приветственных экранов,
+            #  тут я должен генерить исключение для редиректа.
             current_user = User.objects.create(username=username)
         likes = current_user.likes
         content_ids = [like.content.id for like in likes.all()]
@@ -178,11 +235,64 @@ class FeedbackController:
         return {"status": "ok"}
 
 
+@api_controller(
+    prefix_or_class="/api/v1",
+)
+class PreferencesController:
+    @route.post(
+        path="/preferences/categories",
+        response={200: dict},
+    )
+    def set_category_preferences(self, username: str, tag_id: int):
+        """
+        Устанавливает предпочтение пользователя для указанной категории (тег).
+        """
+        user, _ = User.objects.get_or_create(username=username)
+        tag = Tags.objects.filter(id=tag_id).first()
+
+        if not tag:
+            raise HttpError(404, "Tag not found")
+
+        UserCategoryPreference.objects.get_or_create(user=user, tag=tag)
+        return {"message": f"Preference for tag_id {tag_id} added successfully"}
+
+    @route.delete(
+        path="/preferences/categories",
+        response={200: dict},
+    )
+    def delete_category_preference(self, username: str, tag_id: int):
+        """
+        Удаляет конкретное предпочтение пользователя по категории (тегу).
+        """
+        user, _ = User.objects.get_or_create(username=username)
+        preference = UserCategoryPreference.objects.filter(user=user, tag_id=tag_id).first()
+
+        if not preference:
+            raise HttpError(404, "Preference not found for the specified tag")
+
+        preference.delete()
+        return {"message": f"Preference for tag_id {tag_id} deleted successfully"}
+
+    @route.get(
+        path="/preferences/categories",
+        response={200: UserPreferencesResponseSchema},
+    )
+    def get_user_preferences(self, username: str) -> UserPreferencesResponseSchema:
+        """
+        Возвращает список всех предпочтений пользователя по категориям (тегам).
+        """
+        user, _ = User.objects.get_or_create(username=username)
+        preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
+        categories = [pref.tag.name for pref in preferences]
+        return UserPreferencesResponseSchema(categories=categories)
+
+
 api = NinjaExtraAPI(title="afisha", version="0.0.1")
 api.register_controllers(
     HealthController,
     TagsController,
     ContentController,
     LikeController,
-    FeedbackController
+    FeedbackController,
+    PreferencesController
 )

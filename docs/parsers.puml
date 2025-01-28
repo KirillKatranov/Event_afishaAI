@@ -1,0 +1,20 @@
+@startuml
+title Архитектура "Парсинг"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+skinparam linetype ortho
+LAYOUT_WITH_LEGEND()
+
+
+!startsub ADMIN_SYSTEM
+
+System_Boundary(admin, "Парсеры") {
+    Component(tg, "Тг", работа в фоне)
+    Component(yandex, "Яндекс афиша", работа в фоне)
+    Component(vk, "Vk", работа в фоне)
+    Component(db, "Database", Postgres)
+}
+!endsub
+Rel(tg, db, "Update")
+Rel(yandex, db, "Update")
+Rel(vk, db, "Update")
+@enduml

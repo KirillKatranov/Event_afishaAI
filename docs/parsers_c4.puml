@@ -1,0 +1,318 @@
+@startuml c4_class
+
+skinparam linetype ortho
+title C4 - Code level diagram for Parsing data service
+
+package frameworks_and_drivers {
+    note as frameworks_and_drivers_description
+        В этом разделе реализуется всё,
+        что связано с конкретными технологиями,
+        которые использует приложение:
+        HTTP web server с помощью FastApi, Uvicorn, Nginx.
+        Логика работы с базой данных PostgreSQL с помощью Django ORM.
+        Логика работы с S3 хранилищем с помощью Minio.
+        Логика работы с фоновыми задачами с помощью Celery.
+        Это самый верхний уровень в иерархии,
+        он пользуется бизнес-логикой приложения (вызывает её).
+    end note
+    package http_server {
+        note as http_server_description
+        В этом разделе расположены все файлы для работы http сервера (Nginx).
+        end note
+    }
+    package web_framework {
+        note as web_framework_description
+        В этом разделе расположены все файлы и логика для работы веб-сервера (FastAPI).
+        end note
+        package schemas {
+            note as schemas_description
+            В этом разделе описаны pydantic схемы для запросов и ответов.
+            end note
+            class ContentPydanticSchema {
+                + name: str
+                + description: str
+                + tags: list[str]
+                + image: bytes
+                + contact: dict
+                + date_start: datetime
+                + date_end: datetime
+                + time: str
+                + location: str
+                + cost: int
+            }
+            class ImagePydanticSchema {
+                + filename: str
+            }
+        }
+    }
+    package celery {
+        note as celery_description
+        В этом разделе расположены все файлы и логика для работы фоновых задач.
+        В качестве брокера сообщений будет использоваться RabbitMQ.
+        end note
+    }
+    package gateway  {
+        note as gateway_description
+        В этом разделе расположены все конкретные реализации gateway.
+        end note
+        class TelegramGateway {
+            + __init__(client) -> None
+            + fetch_events() -> List[dict]
+        }
+        class VkGateway {
+            + __init__(self, client) -> None
+            + fetch_events() -> List[dict]
+        }
+        class YandexGateway {
+            + __init__(self, client) -> None
+            + fetch_events() -> List[dict]
+        }
+    }
+    package nlp_processor{
+        class NLPProcessorMl {
+                + __init__(*args, **kwargs) -> None
+                + extract_date_start(*args, **kwargs) -> datetime
+                + extract_date_end(*args, **kwargs) -> datetime
+                + extract_categories(*args, **kwargs) -> list[str]
+                + extract_cost(*args, **kwargs) -> int
+                + extract_short_description(*args, **kwargs) -> str
+                + extract_links(*args, **kwargs) -> list[str]
+                + extract_location(*args, **kwargs) -> str
+            }
+    }
+    package rabbitmq {
+        note as rabbitmq_description
+        В этом разделе реализуется логика работы с RabbitMQ.
+        В частности, отправка сообщений в очереди и их чтение.
+        end note
+        ' Возможно, клиент, поставляемый вместе с импортируемыми библиотеками (aiopika),
+        ' уже будет содержать нужные методы, но хорошо иметь данный класс как ориентир.
+        class RabbitMQClient {
+            + init_db(*args, **kwargs) -> None
+            + create_connection(*args, **kwargs) -> None
+            + create_queue(name: str, *args, **kwargs) -> None
+            + publish(queue: str, *args, **kwargs) -> None
+            + consume(queue: str, *args, **kwargs) -> str
+        }
+    }
+    package minio {
+        note as minio_description
+        В этом разделе расположены все файлы для реализации для онлайн хранения изображений.
+        end note
+    }
+    package repositories {
+        note as repositories_description
+        В этой директории реализуется логика работы с хранилищами данных.
+        end note
+        class DjangoOrmContentRepository {
+            + __init__(self, db_session: AsyncSession) -> None
+            + save_content(save_content_dto: ContentDto) -> ContentDto
+        }
+        class MinioFileRepository {
+            + __init__(self, minio_client: AsyncMinioClient, bucket_name: str) -> None
+            + upload_file(filename: str, content: bytes) -> str
+            + download_file(file_location: str) -> FileDto
+        }
+    }
+    package db {
+        note as db_description
+        В этом разделе реализуется логика работы с базой данных PostgreSQL
+        с помощью Django ORM.
+        end note
+        package migrations {
+            note as migrations_description
+            В этом разделе реализуется логика миграций БД с помощью Django ORM.
+            end note
+        }
+        package models {
+            note as models_description
+            В этом разделе описаны таблицы БД.
+            end note
+            class Content {
+                + id: int <<PK>>
+                + name: CharField
+                + description: TextField
+                + tags: ManyToManyField
+                + image: ImageField
+                + contact: JSONField
+                + date_start: DateField
+                + date_end: DateField
+                + time: CharField
+                + location: CharField
+                + cost: IntegerField
+            }
+        }
+
+        ' Models relations:
+        ' https://lucidchart.com/pages/er-diagrams
+        ' https://plantuml.com/ru/ie-diagram
+    }
+}
+
+package interface_adapters {
+    note as interface_adapters_description
+        В этом разделе реализуются адаптеры интерфейсов.
+        Задача — преобразовывать данные между внутренними форматами, которые
+        используются бизнес-логикой (например, сущности), и форматами, которые
+        поступают из внешних источников (например, запросы,
+        данные из баз данных или ответы внешних сервисов).
+    end note
+    package controllers {
+        note as controllers_description
+        Контроллер в чистой архитектуре принимает данные (например, Pydantic
+        модели из FastAPI), но эти данные должны быть преобразованы в DTO,
+        которые используются для взаимодействия с бизнес-логикой (UseCase). Это изолирует
+        бизнес-логику от деталей фреймворка (в данном случае, FastAPI и Pydantic)
+        и позволяет легко менять детали реализации входных данных, не затрагивая логику приложения.
+        end note
+        class ContentController {
+            + __init__(self, get_content_tg_use_case: GetContentTgUseCase, get_content_vk_use_case: GetContentVkUseCase, get_content_yandex_use_case: GetContentYandexUseCase, save_content_use_case: SaveContentUseCase) -> None
+            + get_contents() -> List[ContentPydanticSchema]
+            + save_contents(List[ContentPydanticSchema]) -> bool
+        }
+        note right of ContentController
+        get_contents - Получение данных из внешних источников
+        save_contents - Сохранение данных в хранилище
+        end note
+    }
+    package gateways {
+        note as gateways_description
+        Gateway -  это компонент, который служит интерфейсом между приложением и внешними системами.
+        Гейтвей реализует логику взаимодействия с API или другими внешними источниками данных,
+        инкапсулируя низкоуровневые детали реализации.
+        end note
+        class BaseGateway {
+            + __init__(client, gateway: BaseGateway) -> None
+            + fetch_events() -> List[dict]
+        }
+        note right of BaseGateway
+        fetch_events - Получает сырые данные из внешних API
+        end note
+    }
+    package NLPProcessor {
+        note as nlp_processor_description
+        NLPProcessor -  это модуль который отвечает за обработку естественного языка с помощью ML.
+        end note
+        class NLPProcessorBase {
+            + __init__(*args, **kwargs) -> None
+            + extract_date_start(*args, **kwargs) -> datetime
+            + extract_date_end(*args, **kwargs) -> datetime
+            + extract_categories(*args, **kwargs) -> list[str]
+            + extract_cost(*args, **kwargs) -> int
+            + extract_short_description(*args, **kwargs) -> str
+            + extract_links(*args, **kwargs) -> list[str]
+            + extract_location(*args, **kwargs) -> str
+        }
+    }
+
+    package dtos {
+        note as dtos_description
+        В этом разделе описаны DTO (Data Transfer Objects) — объекты,
+        которые передаются между различными уровнями приложения. В реализации
+        следует использовать Python dataclass.
+        end note
+        class ContentDto {
+            + id: uuid
+            + type: EventType
+            + name: str
+            + description: str
+            + tags: list[str]
+            + image: bytes
+            + contact: json
+            + date_start: datetime
+            + date_end: datetime
+            + time: time
+            + location: str
+            + cost: int
+        }
+    }
+    package repositories {
+        note as repositories_description
+        В этом разделе реализованы протоколы репозиториев.
+        end note
+        interface ContentRepositoryProtocol {
+            + save_content(content_dto: ContentDto)
+        }
+        interface FileRepositoryProtocol {
+            + upload_file(filename: str, content: bytes)
+        }
+        note right of FileRepositoryProtocol
+        upload_file - Загружает файл в хранилище и возвращает его путь.
+        end note
+    }
+}
+
+' Repositories dependencies:
+ContentRepositoryProtocol .up....|> DjangoOrmContentRepository
+FileRepositoryProtocol .up....|> MinioFileRepository
+BaseGateway ....|> VkGateway
+BaseGateway ....|> YandexGateway
+BaseGateway ....|> TelegramGateway
+NLPProcessorBase .up....|> NLPProcessorMl
+
+package usecases {
+    note as usecases_description
+        В этом разделе реализуется бизнес-логика приложения.
+        Задача - описать все бизнес-процессы, которые касаются домменных объектов.
+    end note
+    abstract class AbstractUseCase {
+        + execute(*args, **kwargs) -> Any
+    }
+    class GetContentTgUseCase {
+        + __init__(client, gateway: BaseGateway, nlp_processor: NLPProcessor) -> None
+        + execute() -> List[ContentPydanticSchema]
+    }
+    class GetContentYandexUseCase {
+        + __init__(client, gateway: BaseGateway, nlp_processor: NLPProcessor) -> None
+        + execute() -> List[ContentPydanticSchema]
+    }
+    class GetContentVkUseCase {
+        + __init__(client, gateway: BaseGateway, nlp_processor: NLPProcessor) -> None
+        + execute() -> List[ContentPydanticSchema]
+    }
+    class SaveContentUseCase {
+        + __init__(content_repository: ContentRepositoryProtocol, file_repository: FileRepositoryProtocol) -> None
+        + execute() -> bool
+    }
+
+
+    ' Usecases dependencies:
+    AbstractUseCase ..|> GetContentTgUseCase
+    AbstractUseCase ..|> GetContentYandexUseCase
+    AbstractUseCase ..|> GetContentVkUseCase
+    AbstractUseCase ..|> SaveContentUseCase
+}
+
+package entities {
+    note as entities_description
+        В этом разделе описаны доменные объекты - сущности.
+        Сущность на уровне кода - это инстанс класса (есть данные, мб методы).
+        На этом уровне также допускается написание функций, которые обеспечивают
+        выполнение логики приложения (а она неизбежно как-то обрабатывает сущности).
+    end note
+    enum ContentType {
+        EVENT
+        PLACE
+    }
+    class ContentEntity {
+        + id: uuid
+        + type: EventType
+        + name: str
+        + description: str
+        + tags: list[str]
+        + image: bytes
+        + contact: json
+        + date_start: datetime
+        + date_end: datetime
+        + time: time
+        + location: str
+        + cost: int
+    }
+}
+
+' Global flow.
+frameworks_and_drivers -down----> interface_adapters
+interface_adapters -down----> usecases
+usecases -down----> entities
+
+@enduml
