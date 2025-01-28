@@ -66,7 +66,7 @@ class TagsController:
 )
 class ContentController:
     @route.get(
-        path="/сontents_feed",
+        path="/contents_feed",
         response={
             200: list[ContentSchema],
         },
