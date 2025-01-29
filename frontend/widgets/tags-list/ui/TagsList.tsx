@@ -3,7 +3,7 @@ import {useLocalSearchParams, useRouter} from "expo-router";
 import {useTagsStore} from "@/widgets/tags-list/model/store/useTagsStore";
 import {TagCard} from "@/entities/tag";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
-import Animated, {SharedValue} from "react-native-reanimated";
+import Animated, {LinearTransition, SharedValue} from "react-native-reanimated";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 
 interface TagsListProps {
@@ -61,21 +61,26 @@ export const TagsList: React.FC<TagsListProps> = ({
     >
       {
         tags.map((item, index) => (
-          <TagCard
-            key={item.name}
-            service={service}
-            index={index}
-            liked={!!preferences.find((elem) => elem == item.id)}
-            tag={item}
-            onPress={() => {
-              router.push({
-                pathname: "/tags/[service]/[tag]",
-                params: { service: service, tag: item.name }
-              });
-            }}
-            onLike={ () => onTagLike({ username: username, tag_id: item.id })}
-            scrollY={scrollY}
-          />
+          <Animated.View
+            key={item.id}
+            layout={LinearTransition.duration(200)}
+          >
+            <TagCard
+              key={item.id}
+              service={service}
+              index={index}
+              liked={!!preferences.find((elem) => elem == item.id)}
+              tag={item}
+              onPress={() => {
+                router.push({
+                  pathname: "/tags/[service]/[tag]",
+                  params: { service: service, tag: item.name }
+                });
+              }}
+              onLike={ () => onTagLike({ username: username, tag_id: item.id })}
+              scrollY={scrollY}
+            />
+          </Animated.View>
         ))
       }
     </Box>

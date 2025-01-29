@@ -208,7 +208,7 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
                 username: config.initDataUnsafe.user.username
               })
                 .then(() => {
-                  removeLikedEvent(props.selectedEvent!.id);
+                  props.type == "liked" ? removeLikedEvent(props.selectedEvent!.id) : removeDislikedEvent(props.selectedEvent!.id);
                   props.setEventSelected(undefined);
                 });
             }}
