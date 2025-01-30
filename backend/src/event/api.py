@@ -5,7 +5,7 @@ from ninja_extra import api_controller, route
 from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite, UserCategoryPreference
 from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema, \
     UserPreferencesResponseSchema, TagsResponseSchema
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from datetime import date
 from ninja.errors import HttpError
 
@@ -147,11 +147,25 @@ class ContentController:
             content_filter &= Q(date=date_start)
 
         content = Content.objects.filter(content_filter).distinct()
+
+        # Предзагрузка макрокатегорий через связь тегов
+        content = content.prefetch_related(
+            Prefetch(
+                'tags',
+                queryset=Tags.objects.select_related('macro_category')
+            )
+        )
+
         content_sorted_by_likes = sorted(
             content,
             key=lambda c: next(like.created for like in likes if like.content_id == c.id),
             reverse=True
         )
+
+        for item in content_sorted_by_likes:
+            macro_categories = [tag.macro_category.name for tag in item.tags.all() if tag.macro_category]
+            item.macro_category = macro_categories[0] if macro_categories else None  # Берем первую найденную
+
         return content_sorted_by_likes
 
     @route.get(

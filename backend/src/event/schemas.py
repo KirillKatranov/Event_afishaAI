@@ -35,6 +35,7 @@ class ContentSchema(Schema):
     time: str | None = None
     cost: int | None = None
     location: str | None = None
+    macro_category: str | None = None
 
     @field_validator('image')
     @classmethod
