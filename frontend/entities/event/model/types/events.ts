@@ -14,6 +14,7 @@ export type Event = {
   time?: string;
   cost?: string;
   location?: string;
+  macro_category?: "events" | "places" | "organizers" | "trips" ;
 }
 
 export type Contact = {

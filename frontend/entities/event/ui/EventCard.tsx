@@ -134,8 +134,11 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
           flexDirection={"row"}
           height={16 + 40 + 16}
           gap={"m"}
-          padding={"m"}
           justifyContent={"flex-end"}
+          style={{
+            marginRight: 80,
+            paddingTop: 24,
+          }}
         >
           <Pressable
             onPress={ () => {

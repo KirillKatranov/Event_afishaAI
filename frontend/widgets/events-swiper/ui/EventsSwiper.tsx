@@ -12,6 +12,7 @@ import {Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import Icon from "@/shared/ui/Icons/Icon";
+import { Image } from "react-native";
 
 interface EventsSwiperProps {
   events: Event[];
@@ -22,6 +23,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
   events,
   swipedAll, setSwipedAll
 }) => {
+  const { initDataUnsafe } = useConfig();
   const { tag } = useLocalSearchParams<{ tag: string }>();
 
   const theme = useTheme<Theme>();
@@ -86,6 +88,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
       flex={1}
       backgroundColor="bg_color"
     >
+    
       {
         !swipedAll && (
           <Box flex={1} backgroundColor="bg_color">
@@ -165,11 +168,15 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
         flexDirection={"row"}
         height={16 + 40 + 16}
         gap={"m"}
-        padding={"m"}
         justifyContent={"flex-start"}
         position={"absolute"} zIndex={1}
         alignSelf={"flex-start"}
+        style={{
+          paddingTop: 24,
+          paddingLeft: 24,
+        }}
       >
+        
         {/* Back button */}
         {
           tag && !swipedAll && (
@@ -207,6 +214,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
             </Pressable>
           )
         }
+
       </Box>
 
       {

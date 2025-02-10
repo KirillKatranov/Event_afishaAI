@@ -88,6 +88,27 @@ export const ProfilePage = () => {
           </Text>
         </Box>
       </Pressable>
+      <Pressable
+        onPress={ () => { router.back() }}
+      >
+        <Box
+          backgroundColor="button_color"
+          height={52}
+          width={"100%"}
+          alignItems="center"
+          justifyContent="center"
+          style={{
+            borderRadius: 12,
+          }}
+        >
+          <Text
+            variant="body"
+            color="button_text_color"
+          >
+            { "Назад" }
+          </Text>
+        </Box>
+      </Pressable>
     </Box>
   );
 }

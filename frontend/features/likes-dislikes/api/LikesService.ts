@@ -14,7 +14,6 @@ class LikesService {
       {
         params: params
       });
-
     return response;
   }
 

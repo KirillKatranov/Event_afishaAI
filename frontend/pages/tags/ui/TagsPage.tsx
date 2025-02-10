@@ -9,9 +9,12 @@ import Animated, {
   interpolate,
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
-import {useLocalSearchParams} from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import {LinearGradient} from "expo-linear-gradient";
 import {ServicesColors} from "@/entities/service";
+import { Pressable, Image } from "react-native";
+import {useConfig} from "@/shared/providers/TelegramConfig";
+
 
 export const TagsPage = () => {
   const { service } = useLocalSearchParams<{ service: "events" | "places" | "organizers" | "trips" }>()
@@ -39,8 +42,34 @@ export const TagsPage = () => {
     };
   });
 
+  const router = useRouter();
+  const { initDataUnsafe } = useConfig();
+
   return (
     <Box flex={1} backgroundColor="bg_color">
+      <Pressable
+        onPress={ () => { router.replace("/profile") }}
+        style={{
+          zIndex: 3,
+        }}
+      >
+        <Image
+          source={{ uri: initDataUnsafe.user.photo_url }}
+          style={{
+            position: "absolute",
+            width: 40,
+            height: 40,
+            borderRadius: 100,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            zIndex: 3,
+            marginTop: 24, 
+            marginRight: 24,
+            right: 0,
+          }}
+        />
+      </Pressable>
       <Animated.ScrollView
         onScroll={onScroll}
         showsVerticalScrollIndicator={false}

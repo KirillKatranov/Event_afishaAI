@@ -2,7 +2,7 @@ import {Stack} from "expo-router";
 
 const StackLayout = () => {
   return (
-    <Stack>
+    <Stack >
       <Stack.Screen name='index' options={{ headerShown: false }}/>
       <Stack.Screen name='feedback' options={{ headerShown: false }}/>
     </Stack>

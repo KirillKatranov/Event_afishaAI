@@ -83,6 +83,7 @@ export const DislikesList = React.memo(() => {
             name={item.name}
             date={item.date}
             image={item.image}
+            macro_category={item.macro_category}
             onPress={() => {
               setEventSelected(item);
               setModalVisible(true);

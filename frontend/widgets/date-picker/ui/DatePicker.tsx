@@ -1,6 +1,6 @@
 import React, {useCallback} from "react";
 import {Image, Pressable} from "react-native";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useTheme } from "@shopify/restyle";
 import {CalendarList, LocaleConfig} from "react-native-calendars";
 import { useCalendarStore } from "@/features/dates";
@@ -18,6 +18,8 @@ export const DatePicker: React.FC = () => {
   const minDate = new Date();
   const username = useConfig().initDataUnsafe.user.username;
   const [filterMessage, setFilterMessage] = React.useState<string>("");
+  const { initDataUnsafe } = useConfig();
+  const router = useRouter()
 
   const {
     displayDays, selectedDaysUpdated, tempSelectedDays,
@@ -107,6 +109,7 @@ export const DatePicker: React.FC = () => {
         end={{ x: 0, y: 1 }}
       />
 
+      
       <CalendarList
         pastScrollRange={0}
         futureScrollRange={1}

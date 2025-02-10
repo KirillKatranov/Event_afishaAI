@@ -19,4 +19,8 @@ export const Colors = {
   calendarSelectedDay: "#B4C9FE",
   calendarAcceptButton: "#E1F44B",
   calendarAcceptButtonDisabled: "#e1f4aa",
+  events: "#FF47FF",
+  places: "#E1F44B",
+  organizers: "#6361DD",
+  trips: "#930CFF",
 }

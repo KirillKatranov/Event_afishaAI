@@ -59,7 +59,13 @@ export const LikesPage = React.memo(() => {
   };
 
   return (
-    <Box flex={1} backgroundColor={"bg_color"}>
+    <Box 
+      flex={1} 
+      backgroundColor={"bg_color"}
+      style={{
+        paddingTop: 70,
+      }}
+    >
       <Image
         source={require("@/shared/assets/images/CalendarGradient.png")}
         resizeMode="stretch"
@@ -68,7 +74,7 @@ export const LikesPage = React.memo(() => {
           zIndex: -1,
           width: "130%",
           height: 120,
-          top: -65,
+          top: -40,
           opacity: 0.5,
           alignSelf: "center"
         }}
