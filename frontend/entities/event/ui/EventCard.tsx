@@ -14,6 +14,7 @@ import {useConfig} from "@/shared/providers/TelegramConfig";
 import {ActionButton, TagChip} from "@/shared/ui";
 import {Gesture, GestureDetector, GestureHandlerRootView, ScrollView} from "react-native-gesture-handler";
 import { WEB_APP_URL } from '@env';
+import {ServicesColors} from "@/entities/service";
 
 const DraggableScrollView = Platform.select({
   web: () => require('@/shared/providers/DraggableScroll').DraggableScrollView,
@@ -102,7 +103,9 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
 
   const renderTags = useCallback(
     () =>
-      event.tags!.map((tag) => <TagChip key={tag.name} text={tag.name} />),
+      event.tags!.map((tag) => (
+        <TagChip key={tag.name} text={tag.name} color={event.macro_category ? ServicesColors[event.macro_category] : theme.colors.white} />
+      )),
     [event.tags]
   );
 
@@ -137,7 +140,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
           justifyContent={"flex-end"}
           style={{
             marginRight: 80,
-            paddingTop: 24,
+            paddingTop: 20,
           }}
         >
           <Pressable

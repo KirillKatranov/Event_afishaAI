@@ -14,9 +14,28 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
   day,
   onPress
 }) => {
+  if (day.state == "disabled") {
+    return (
+      <Box
+        width={"100%"}
+        height={30}
+        alignItems={"center"} justifyContent={"center"}
+        backgroundColor={"bg_color"}
+      >
+        <Text
+          variant={"calendarDay"}
+          color={"subtitle_text_color"}
+          selectable={false}
+          textAlign={"center"} textAlignVertical={"center"}
+        >
+          { formatDay(day.date!.day.toString()) }
+        </Text>
+      </Box>
+    )
+  }
+
   return (
     <Pressable
-      disabled={day.state == "disabled"}
       onPress={onPress}
       style={{ width: "100%" }}
     >
@@ -56,8 +75,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
             day.marking && (day.marking.startingDay || day.marking.endingDay) ?
               "white" :
               (day.marking && (day.marking.selected)) ?
-                "black" :
-                (day.state == "disabled") ? "subtitle_text_color" : "text_color"
+                "black" : "text_color"
           }
           selectable={false}
           textAlign={"center"} textAlignVertical={"center"}

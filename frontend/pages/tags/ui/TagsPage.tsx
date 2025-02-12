@@ -1,5 +1,4 @@
 import React from "react";
-import {StyleSheet} from "react-native";
 import { Box} from "@/shared/ui";
 import { TagsHeader } from "@/pages/tags/ui/TagsHeader";
 import {TagsList, useTagsStore} from "@/widgets/tags-list";
@@ -9,11 +8,8 @@ import Animated, {
   interpolate,
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
-import {useLocalSearchParams, useRouter} from "expo-router";
-import {LinearGradient} from "expo-linear-gradient";
-import {ServicesColors} from "@/entities/service";
-import { Pressable, Image } from "react-native";
-import {useConfig} from "@/shared/providers/TelegramConfig";
+import {useLocalSearchParams} from "expo-router";
+import {Services} from "@/entities/service";
 
 
 export const TagsPage = () => {
@@ -42,50 +38,20 @@ export const TagsPage = () => {
     };
   });
 
-  const router = useRouter();
-  const { initDataUnsafe } = useConfig();
-
   return (
-    <Box flex={1} backgroundColor="bg_color">
-      <Pressable
-        onPress={ () => { router.replace("/profile") }}
-        style={{
-          zIndex: 3,
-        }}
-      >
-        <Image
-          source={{ uri: initDataUnsafe.user.photo_url }}
-          style={{
-            position: "absolute",
-            width: 40,
-            height: 40,
-            borderRadius: 100,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            zIndex: 3,
-            marginTop: 24, 
-            marginRight: 24,
-            right: 0,
-          }}
-        />
-      </Pressable>
+    <Box flex={1} backgroundColor={"bg_color"}>
       <Animated.ScrollView
         onScroll={onScroll}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
         scrollEnabled={!isLoading}
       >
-        <LinearGradient
-          colors={["#FFFFFF", ServicesColors[service]]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={{...StyleSheet.absoluteFillObject, marginTop: -110}}
-        />
-
         {/* Parallax Header */}
         <Animated.View style={[headerStyle]}>
-          <TagsHeader />
+          <TagsHeader
+            title={Services.find((ser) => ser.id == service)?.name as string}
+            service={service}
+          />
         </Animated.View>
 
         <TagsList scrollY={scrollY}/>

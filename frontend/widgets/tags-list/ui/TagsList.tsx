@@ -5,6 +5,8 @@ import {TagCard} from "@/entities/tag";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
 import Animated, {LinearTransition, SharedValue} from "react-native-reanimated";
 import {useConfig} from "@/shared/providers/TelegramConfig";
+import {useTheme} from "@shopify/restyle";
+import {Theme} from "@/shared/providers/Theme";
 
 interface TagsListProps {
   scrollY: SharedValue<number>
@@ -17,6 +19,7 @@ export const TagsList: React.FC<TagsListProps> = ({
   const { tags, preferences, isLoading, hasError, fetchTags, onTagLike } = useTagsStore();
   const router = useRouter();
   const username = useConfig().initDataUnsafe.user.username;
+  const theme = useTheme<Theme>()
 
   useEffect(() => {
     fetchTags({ username: username, macro_category: service });
@@ -33,7 +36,7 @@ export const TagsList: React.FC<TagsListProps> = ({
           <LoadingCard
             key={index}
             style={{ height: 186, width: "100%", marginBottom: -62, borderRadius: 40 }}
-            loadingColors={["rgba(255,255,255,0)", "rgba(255,255,255,0.75)"]}
+            loadingColors={[theme.colors.bg_color, theme.colors.secondary_bg_color]}
             index={index}
           />
         )}

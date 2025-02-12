@@ -1,7 +1,7 @@
 import React from "react";
 import { DislikesList, LikesList } from "@/widgets/liked-events-list";
 import { TabView } from "react-native-tab-view";
-import {Image, useWindowDimensions} from "react-native";
+import {Image, Pressable, useWindowDimensions} from "react-native";
 import {Box} from "@/shared/ui";
 import { useTheme } from "@shopify/restyle";
 import { Theme } from "@/shared/providers/Theme";
@@ -37,7 +37,7 @@ export const LikesPage = React.memo(() => {
   const animationValue = useSharedValue(index);
 
   const indicatorTranslateX = useAnimatedStyle(() => {
-    const translateX = interpolate(animationValue.value, [0, 1], [0, layout.width / 2]);
+    const translateX = interpolate(animationValue.value, [0, 1], [0, (layout.width - 80 + 20) / 2]);
     return {
       transform: [{ translateX }],
     };
@@ -59,23 +59,23 @@ export const LikesPage = React.memo(() => {
   };
 
   return (
-    <Box 
-      flex={1} 
+    <Box
+      flex={1}
       backgroundColor={"bg_color"}
       style={{
         paddingTop: 70,
       }}
     >
       <Image
-        source={require("@/shared/assets/images/CalendarGradient.png")}
+        source={require("@/shared/assets/images/BlurredCircles.png")}
         resizeMode="stretch"
         style={{
           position: "absolute",
           zIndex: -1,
-          width: "130%",
+          width: "100%",
           height: 120,
-          top: -40,
-          opacity: 0.5,
+          top: -15,
+          opacity: 0.75,
           alignSelf: "center"
         }}
       />
@@ -84,34 +84,40 @@ export const LikesPage = React.memo(() => {
         flexDirection="row"
         height={44}
         alignItems={"center"}
+        style={{ paddingHorizontal: 40, gap: 20 }}
       >
-        <Animated.Text
-          style={[
-            { flex: 1, textAlign: "center", color: theme.colors.text_color, ...theme.textVariants.body },
-            likesOpacity,
-          ]}
+        <Pressable
           onPress={() => onIndexChange(0)}
+          style={{flex: 1, height: 44, alignItems: "center", justifyContent: "center"}}
         >
-          { "Понравилось" }
-        </Animated.Text>
-        <Animated.Text
-          style={[
-            { flex: 1, textAlign: "center", color: theme.colors.text_color, ...theme.textVariants.body },
-            dislikesOpacity,
-          ]}
+          <Animated.Text
+            selectable={false}
+            style={[{color: theme.colors.text_color, ...theme.textVariants.reactionsPages, textAlign: "center" }, likesOpacity]}
+          >
+            { "Избранное" }
+          </Animated.Text>
+        </Pressable>
+
+        <Pressable
           onPress={() => onIndexChange(1)}
+          style={{flex: 1, height: 44, alignItems: "center", justifyContent: "center"}}
         >
-          { "Не понравилось" }
-        </Animated.Text>
+          <Animated.Text
+            selectable={false}
+            style={[{color: theme.colors.text_color, ...theme.textVariants.reactionsPages, textAlign: "center" }, dislikesOpacity]}
+          >
+            { "Не понравились" }
+          </Animated.Text>
+        </Pressable>
 
         {/* Animated Indicator */}
         <Animated.View
           style={[
             {
               position: "absolute", bottom: 0,
-              height: 4, width: layout.width / 2,
+              height: 4, width: (layout.width - 80 - 20) / 2,
               borderRadius: 10,
-              backgroundColor: theme.colors.lime,
+              backgroundColor: "#BA25F7",
             },
             indicatorTranslateX,
           ]}

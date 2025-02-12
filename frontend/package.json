@@ -56,7 +56,8 @@
     "react-native-svg": "15.2.0",
     "react-native-tab-view": "^4.0.5",
     "react-native-web": "~0.19.10",
-    "zustand": "^5.0.0-rc.2"
+    "zustand": "^5.0.0-rc.2",
+    "expo-blur": "~14.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -4,10 +4,12 @@ import {Text} from "@/shared/ui/Base/Text";
 
 interface TagChipProps {
   text: string;
+  color?: string;
 }
 
 export const TagChip: React.FC<TagChipProps> = ({
-  text
+  text,
+  color
 }) => {
   return (
     <Box
@@ -20,8 +22,8 @@ export const TagChip: React.FC<TagChipProps> = ({
     >
       <Text
         variant={"tagChip"}
-        color={"lime"}
         selectable={false}
+        style={{ color: color }}
       >
         {text}
       </Text>

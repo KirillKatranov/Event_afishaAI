@@ -11,6 +11,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Icon from "@/shared/ui/Icons/Icon";
 import DropShadow from "react-native-drop-shadow";
+import {LinearGradient} from "expo-linear-gradient";
 
 interface TagCardProps {
   index: number;
@@ -136,6 +137,22 @@ export const TagCard: React.FC<TagCardProps> = ({
             >
               { tag.count }
             </Text>
+
+            <LinearGradient
+              colors={[
+                'rgba(255,253,253,0.4)', 'rgba(255,253,253,0.45)', 'rgba(255,253,253,0.51)', 'rgba(255,253,253,0.6)',
+                'rgba(255,253,253,0.7)', 'rgba(255,253,253,0.8)', 'rgba(255,253,253,0.85)', 'rgba(255,253,253,0.9)'
+              ]}
+              locations={[0, 0.31, 0.49, 0.62, 0.73, 0.84, 0.92, 1]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={{
+                position: "absolute",
+                width: "100%", height: "100%",
+                top: 0, left: 0, right: 0, bottom: 0,
+                zIndex: -1
+              }}
+            />
           </Box>
         </DropShadow>
       </Pressable>

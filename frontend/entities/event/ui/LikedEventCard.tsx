@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {Pressable, Image} from "react-native";
 import {Box} from "@/shared/ui/Base/Box";
 import {Text} from "@/shared/ui/Base/Text";
@@ -6,6 +6,8 @@ import {formatDate} from "@/shared/scripts/date";
 import { LinearGradient } from "expo-linear-gradient";
 import DropShadow from "react-native-drop-shadow";
 import { ServicesColors } from "@/entities/service";
+import {useTheme} from "@shopify/restyle";
+import {Theme} from "@/shared/providers/Theme";
 
 interface LikedEventCardProps {
   image?: string;
@@ -22,91 +24,92 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
   macro_category,
   onPress,
 }) => {
-  
+  const theme = useTheme<Theme>();
 
   return (
     <Pressable
       onPress={onPress}
     >
-      
-        <LinearGradient
-          colors={[ 'rgba(0,0,0,0)',  macro_category ? `${ServicesColors[macro_category]}30` : "" ,macro_category ? `${ServicesColors[macro_category]}60` : "", macro_category ? `${ServicesColors[macro_category]}FF` : ""]}
+      <DropShadow
+        style={{
+          borderRadius: 16,
+          shadowRadius: 5,
+          elevation: 20,
+          shadowColor: "black",
+          shadowOffset: {
+            height: 5,
+            width: 5,
+          },
+          shadowOpacity: 0.25
+        }}
+      >
+        <Box
+          flex={1}
+          flexDirection="row"
+          minHeight={120}
+          overflow="hidden"
           style={{
+            borderWidth: 1,
+            borderColor: "#B4C9FE",
             borderRadius: 16,
           }}
-          locations={[0.8, 0.9, 0.94, 1]}
-          start={[0, 0]}
-          end={[1, 0]}
         >
-          <DropShadow
+
+          <Image
+            source={{ uri: image ? image : undefined }}
+            resizeMode={"cover"}
+            blurRadius={10}
             style={{
-              borderRadius: 16,
-              shadowRadius: 5,
-              elevation: 20,
-              shadowColor: "black",
-              shadowOffset: {
-                height: 5,
-                width: 5,
-              },
-              shadowOpacity: 0.25
+              height: "100%",
+              width: "40%",
+              position: "absolute",
+              left: 0
+            }}
+          />
+
+          <Image
+            source={{ uri: image ? image : undefined }}
+            resizeMode={"contain"}
+            style={{
+              height: "100%",
+              width: "40%",
+            }}
+          />
+
+          <Box
+            flex={1}
+            flexDirection="column"
+            style={{
+              backgroundColor: macro_category ? ServicesColors[macro_category] : "",
+              paddingHorizontal: 16, paddingVertical: 20
             }}
           >
-            <Box
-              flex={1}
-              flexDirection="row"
-              minHeight={120}
-              overflow="hidden"
-              style={{
-                borderWidth: 1,
-                borderColor: "#B4C9FE",
-                borderRadius: 16,
-              }}
+            <Text
+              variant={"reactionsCardTitle"}
+              color={"text_color"}
             >
-            
-              <Image
-                source={{ uri: image ? image : undefined }}
-                resizeMode={"cover"}
-                blurRadius={10}
-                style={{
-                  height: "100%",
-                  width: "40%",
-                  position: "absolute",
-                  left: 0
-                }}
-              />
+              { name }
+            </Text>
 
-              <Image
-                source={{ uri: image ? image : undefined }}
-                resizeMode={"contain"}
-                style={{
-                  height: "100%",
-                  width: "40%",
-                }}
-              />
+            <Text
+              variant={"reactionsCardSubtitle"}
+              color={"subtitle_text_color"}
+            >
+              { formatDate(date) }
+            </Text>
 
-              <Box
-                flex={1}
-                flexDirection="column"
-                justifyContent="center"
-                padding="m"
-              >
-                <Text
-                  variant="body"
-                  color="text_color"
-                >
-                  { name }
-                </Text>
-
-                <Text
-                  variant="body"
-                  color="subtitle_text_color"
-                >
-                  { formatDate(date) }
-                </Text>
-              </Box>
-            </Box>
-          </DropShadow>    
-        </LinearGradient>
+            <LinearGradient
+              colors={[theme.colors.bg_color, `${theme.colors.bg_color}E0`, `${theme.colors.bg_color}B5`, `${theme.colors.bg_color}7F`, `${theme.colors.bg_color}00`]}
+              locations={[0.53, 0.75, 0.85, 0.91, 1]}
+              style={{
+                position: "absolute", top: 0, right: 0, left: 0, bottom: 0, zIndex: -1
+              }}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+            />
+          </Box>
+        </Box>
+      </DropShadow>
     </Pressable>
   )
 }

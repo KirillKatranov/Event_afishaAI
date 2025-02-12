@@ -91,6 +91,18 @@ export const Text = {
     fontFamily: 'MontserratMedium',
     fontSize: 16,
   },
+  reactionsPages: {
+    fontFamily: 'MontserratMedium',
+    fontSize: 16,
+  },
+  reactionsCardTitle: {
+    fontFamily: 'MontserratMedium',
+    fontSize: 14,
+  },
+  reactionsCardSubtitle: {
+    fontFamily: 'MontserratMedium',
+    fontSize: 12,
+  },
   serviceName: { fontFamily: 'UnboundedExtraBold', fontSize: 26, },
   serviceDescription: { fontFamily: 'MontserratSemiBold', fontSize: 16, },
   defaults: {},

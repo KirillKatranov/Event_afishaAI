@@ -1,6 +1,6 @@
 import React from 'react';
-import {color, useTheme} from "@shopify/restyle";
-import {Tabs} from "expo-router";
+import {useTheme} from "@shopify/restyle";
+import {Tabs, useSegments} from "expo-router";
 import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
@@ -14,6 +14,9 @@ export default function TabLayout() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { initDataUnsafe } = useConfig();
+  const segments = useSegments();
+
+  const isCalendarScreen = segments.includes("calendar");
 
   return (
     <Box
@@ -23,35 +26,21 @@ export default function TabLayout() {
       style={{
         paddingBottom: insets.bottom, paddingTop: insets.top,
         paddingLeft: insets.left, paddingRight: insets.right,
-        borderRadius: 10,
       }}
     >
-      
       <Tabs
         initialRouteName={"feed"}
         screenOptions={{
           tabBarActiveTintColor: theme.colors.text_color,
           tabBarInactiveTintColor: theme.colors.subtitle_text_color,
           headerShown: false,
-          tabBarShowLabel: true,
           tabBarIconStyle: {
             color: "white"
           },
-          tabBarLabelStyle: {
-            fontSize: 9,
-            lineHeight: 16,
-            color: theme.colors.text_color,
-          },
           tabBarStyle: {
             backgroundColor: theme.colors.bg_color,
-            display: "flex",
-            flexDirection: "column",
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10, 
-            marginBottom: 0,
-            borderTopWidth: 1,
-            marginTop: -10,
-            borderColor: theme.colors.bg_color
+            borderTopLeftRadius: 10, borderTopRightRadius: 10,
+            paddingHorizontal: 32, marginTop: -10, height: 57,
           }
         }}
         sceneContainerStyle={{
@@ -61,42 +50,43 @@ export default function TabLayout() {
         <Tabs.Screen
           name="feed"
           options={{
-            tabBarIcon: ({color}) => <Icon name={"home"} size={30} color={color}/>,
-            tabBarLabel: "Главная"
+            tabBarIcon: ({color}) => <Icon name={"home"} size={32} color={color}/>,
+            tabBarShowLabel: false,
           }}
         />
 
         <Tabs.Screen
           name="tags"
           options={{
-            tabBarIcon: ({color}) => <Icon name={"tags"} size={30} color={color}/>,
-            tabBarLabel: "Категории"
+            tabBarIcon: ({color}) => <Icon name={"tags"} size={32} color={color}/>,
+            tabBarShowLabel: false,
           }}
         />
 
         <Tabs.Screen
           name="likes"
           options={{
-            tabBarIcon: ({color}) => <Icon name={"likeFilled"} size={28} color={color}/>,
-            tabBarLabel: "Избранное"
+            tabBarIcon: ({color}) => <Icon name={"likeFilled"} size={32} color={color}/>,
+            tabBarShowLabel: false,
           }}
         />
 
         <Tabs.Screen
           name="calendar"
           options={{
-            tabBarIcon: ({color}) => <Icon name={"calendar"} size={30} color={color}/>,
-            tabBarLabel: "Календарь"
+            tabBarIcon: ({color}) => <Icon name={"calendar"} size={32} color={color}/>,
+            tabBarShowLabel: false,
           }}
         />
       </Tabs>
-      <Pressable
+
+      {!isCalendarScreen && (
+        <Pressable
           onPress={ () => { router.push("/profile") }}
           style={{
             zIndex: 3,
             position: "absolute",
-            right: 24,
-            top: 24,
+            right: 20, top: 20,
           }}
         >
           <Image
@@ -108,6 +98,7 @@ export default function TabLayout() {
             }}
           />
         </Pressable>
+      )}
     </Box>
   );
 }

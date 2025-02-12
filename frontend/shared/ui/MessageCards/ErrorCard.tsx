@@ -1,16 +1,18 @@
 import React from "react";
 import {Box} from "@/shared/ui/Base/Box";
 import {Text} from "@/shared/ui/Base/Text";
-import {StyleProp, ViewStyle} from "react-native";
+import {StyleProp, TextStyle, ViewStyle} from "react-native";
 
 interface ErrorCardProps {
   text?: string;
-  style?: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>,
+  textStyle?: StyleProp<TextStyle>,
 }
 
 export const ErrorCard: React.FC<ErrorCardProps> = ({
   text = "😬 Упс... Что-то пошло не так.",
-  style = {}
+  style,
+  textStyle
 }) => {
   return (
     <Box
@@ -24,6 +26,7 @@ export const ErrorCard: React.FC<ErrorCardProps> = ({
         variant="body"
         color="text_color"
         textAlign="center"
+        style={textStyle}
       >
         { text }
       </Text>
