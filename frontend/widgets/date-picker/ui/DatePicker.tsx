@@ -85,14 +85,15 @@ export const DatePicker: React.FC = () => {
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <Image
-          source={require("@/shared/assets/images/BlurredCircles.png")}
+          source={require("@/shared/assets/images/Circles.gif")}
           resizeMode="stretch"
+          blurRadius={22}
           style={{
             position: "absolute",
             zIndex: -1,
-            width: "100%",
-            height: 120,
-            top: -15,
+            width: "130%",
+            height: 250,
+            top: -160,
             opacity: 0.75,
             alignSelf: "center"
           }}

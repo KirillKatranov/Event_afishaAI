@@ -7,7 +7,7 @@ import {colors} from "@/entities/tag";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
-  interpolate
+  interpolate, withTiming, withSequence, useSharedValue, withSpring
 } from "react-native-reanimated";
 import Icon from "@/shared/ui/Icons/Icon";
 import DropShadow from "react-native-drop-shadow";
@@ -30,6 +30,10 @@ export const TagCard: React.FC<TagCardProps> = ({
   onPress, onLike,
   scrollY
 }) => {
+  const scale = useSharedValue(1);
+  const rotate = useSharedValue(0);
+  const translateX = useSharedValue(0);
+
   const opacity = useAnimatedStyle(() => ({
     opacity: interpolate(
       scrollY.value,
@@ -57,6 +61,40 @@ export const TagCard: React.FC<TagCardProps> = ({
     ],
   }));
 
+  const handleLike = () => {
+    if (liked) {
+      translateX.value = withSequence(
+        withTiming(-5, { duration: 50 }),
+        withTiming(5, { duration: 50 }),
+        withTiming(-5, { duration: 50 }),
+        withTiming(5, { duration: 50 }),
+        withTiming(0, { duration: 50 })
+      );
+
+      rotate.value = withSequence(
+        withTiming(-10, { duration: 100 }),
+        withTiming(10, { duration: 100 }),
+        withTiming(-10, { duration: 100 }),
+        withTiming(10, { duration: 100 }),
+        withTiming(0, { duration: 100 })
+      );
+    } else {
+      scale.value = withSequence(
+        withTiming(1.4, { duration: 150 }),
+        withSpring(1, { damping: 5, stiffness: 100 })
+      );
+    }
+
+    onLike();
+  };
+
+  const likeAnimationStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: scale.value },
+      { rotate: `${rotate.value}deg` },
+      { translateX: translateX.value },
+    ],
+  }));
 
   return (
     <Animated.View
@@ -118,14 +156,14 @@ export const TagCard: React.FC<TagCardProps> = ({
                 { tag.name }
               </Text>
 
-              <Pressable
-                onPress={onLike}
-              >
-                <Icon
-                  name={ liked ? "likeFilled" : "like" }
-                  color={ service == "places" ? "#A533FF" : "#E1F44B" }
-                  size={32}
-                />
+              <Pressable onPress={handleLike}>
+                <Animated.View style={likeAnimationStyle}>
+                  <Icon
+                    name={ liked ? "likeFilled" : "like" }
+                    color={ service == "places" ? "#A533FF" : "#E1F44B" }
+                    size={32}
+                  />
+                </Animated.View>
               </Pressable>
             </Box>
 

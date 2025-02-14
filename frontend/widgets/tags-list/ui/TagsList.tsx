@@ -66,7 +66,7 @@ export const TagsList: React.FC<TagsListProps> = ({
         tags.map((item, index) => (
           <Animated.View
             key={item.id}
-            layout={LinearTransition.duration(200)}
+            layout={LinearTransition.duration(200).delay(100)}
           >
             <TagCard
               key={item.id}

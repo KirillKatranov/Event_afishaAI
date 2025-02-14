@@ -34,13 +34,10 @@ export default function TabLayout() {
           tabBarActiveTintColor: theme.colors.text_color,
           tabBarInactiveTintColor: theme.colors.subtitle_text_color,
           headerShown: false,
-          tabBarIconStyle: {
-            color: "white"
-          },
           tabBarStyle: {
             backgroundColor: theme.colors.bg_color,
-            borderTopLeftRadius: 10, borderTopRightRadius: 10,
-            paddingHorizontal: 32, marginTop: -10, height: 57,
+            paddingHorizontal: 32, height: 57,
+            borderTopWidth: 0,
           }
         }}
         sceneContainerStyle={{
