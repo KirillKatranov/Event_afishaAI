@@ -8,20 +8,15 @@ import DropShadow from "react-native-drop-shadow";
 import { ServicesColors } from "@/entities/service";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
+import {Event} from "@/entities/event";
 
 interface LikedEventCardProps {
-  image?: string;
-  name: string;
-  date: string;
-  macro_category?: "events" | "places" | "organizers" | "trips";
+  event: Event;
   onPress: () => void;
 }
 
 export const LikedEventCard: React.FC<LikedEventCardProps> = ({
-  image,
-  name,
-  date,
-  macro_category,
+  event,
   onPress,
 }) => {
   const theme = useTheme<Theme>();
@@ -56,7 +51,7 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
         >
 
           <Image
-            source={{ uri: image ? image : undefined }}
+            source={{ uri: event.image ? event.image : undefined }}
             resizeMode={"cover"}
             blurRadius={10}
             style={{
@@ -68,7 +63,7 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
           />
 
           <Image
-            source={{ uri: image ? image : undefined }}
+            source={{ uri: event.image ? event.image : undefined }}
             resizeMode={"contain"}
             style={{
               height: "100%",
@@ -80,7 +75,7 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
             flex={1}
             flexDirection="column"
             style={{
-              backgroundColor: macro_category ? ServicesColors[macro_category] : "",
+              backgroundColor: event.macro_category ? ServicesColors[event.macro_category] : "",
               paddingHorizontal: 16, paddingVertical: 20
             }}
           >
@@ -88,15 +83,17 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
               variant={"reactionsCardTitle"}
               color={"text_color"}
             >
-              { name }
+              { event.name }
             </Text>
 
-            <Text
-              variant={"reactionsCardSubtitle"}
-              color={"subtitle_text_color"}
-            >
-              { formatDate(date) }
-            </Text>
+            {event.date_start && (
+              <Text
+                variant={"reactionsCardSubtitle"}
+                color={"subtitle_text_color"}
+              >
+                { `${formatDate(event.date_start)} ${ event.date_end && event.date_start != event.date_end ? '- ' + formatDate(event.date_end): ""}` }
+              </Text>
+            )}
 
             <LinearGradient
               colors={[theme.colors.bg_color, `${theme.colors.bg_color}E0`, `${theme.colors.bg_color}B5`, `${theme.colors.bg_color}7F`, `${theme.colors.bg_color}00`]}

@@ -9,6 +9,7 @@ import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import {useReactionsStore} from "@/features/likes-dislikes";
+import {formatDate} from "@/shared/scripts/date";
 
 interface SelectedEventProps {
   type: "liked" | "disliked";
@@ -111,6 +112,54 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
             </Box>
           </Box>
 
+          <Box flexDirection="column" gap="s">
+            {
+              props.selectedEvent && props.selectedEvent.location && (
+                <Box flexDirection="row" gap="xs" alignItems="center">
+                  <Icon name="location" color={theme.colors.white} size={16} />
+
+                  <Text variant="cardSubInfo" color="cardMainTextColor">
+                    {props.selectedEvent.location}
+                  </Text>
+                </Box>
+              )
+            }
+
+            {/* Cost */}
+            {
+              props.selectedEvent && props.selectedEvent.cost != undefined && props.selectedEvent.cost != "0" && (
+                <Box flexDirection="row" gap="xs" alignItems="center">
+                  <Icon name="cost" color={theme.colors.gray} size={16} />
+
+                  <Text variant="cardSubInfo" color="cardMainTextColor">
+                    { `${props.selectedEvent && props.selectedEvent.cost} руб.`}
+                  </Text>
+                </Box>
+              )
+            }
+
+            {/* Date */}
+            {
+              props.selectedEvent && props.selectedEvent.date_start && (
+                <Box flexDirection="row" gap="xs" alignItems="center">
+                  <Icon name="calendar" color={theme.colors.gray} size={16} />
+
+                  <Text variant={"cardSubInfo"} color={"cardMainTextColor"}>
+                    { `${formatDate(props.selectedEvent.date_start)} ${ props.selectedEvent.date_end && props.selectedEvent.date_start != props.selectedEvent.date_end ? '- ' + formatDate(props.selectedEvent.date_end): ""}` }
+                  </Text>
+
+                  {
+                    props.selectedEvent && props.selectedEvent.time && props.selectedEvent.time !== "00:00" && (
+                      <Text variant={"cardSubInfo"} color={"cardMainTextColor"}>
+                        {`В ${props.selectedEvent.time}`}
+                      </Text>
+                    )
+                  }
+                </Box>
+              )
+            }
+          </Box>
+
           <Text
             variant="body"
             style={{
@@ -124,6 +173,7 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
             props.selectedEvent != undefined &&
             props.selectedEvent.contact &&
             props.selectedEvent.contact!.length > 0 &&
+            props.selectedEvent.contact.every(obj => Object.keys(obj).length === 0) &&
             (
               <Box
                 gap={"s"}

@@ -1,6 +1,6 @@
 import React from "react";
 import {Service} from "@/entities/service/model/types/services.types";
-import {Box, Text} from "@/shared/ui";
+import {Box, Text, WebLottieView} from "@/shared/ui";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 interface ServiceCardProps {
@@ -34,7 +34,9 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         {service.name}
       </Text>
 
-      <Illustration name={service.illustration} width={"100%"} height={"100%"}/>
+      {service.id == "events" && <WebLottieView src={require("@/shared/assets/lottie/events.json")}/>}
+      {service.id == "places" && <WebLottieView src={require("@/shared/assets/lottie/places.json")}/>}
+      {(service.id == "trips" || service.id == "organizers") && <Illustration name={service.illustration} width={"100%"} height={"100%"}/>}
 
       <Text variant={"serviceDescription"} textAlign={"center"} color={"black"} selectable={false}>
         {service.description}

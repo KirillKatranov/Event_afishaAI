@@ -9,7 +9,8 @@ export type Event = {
   description: string;
   image: string;
   contact?: Contact[];
-  date: string;
+  date_start?: string;
+  date_end?: string;
   tags?: Tag[];
   time?: string;
   cost?: string;

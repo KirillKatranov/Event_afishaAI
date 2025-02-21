@@ -240,7 +240,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
 
                   {/* Cost */}
                   {
-                    event.cost && (
+                    event.cost != undefined && event.cost != "0" && (
                       <Box flexDirection="row" gap="xs" alignItems="center">
                         <Icon name="cost" color={theme.colors.gray} size={16} />
 
@@ -253,16 +253,16 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
 
                   {/* Date */}
                   {
-                    event.date && (
+                    event.date_start && (
                       <Box flexDirection="row" gap="xs" alignItems="center">
                         <Icon name="calendar" color={theme.colors.gray} size={16} />
 
                         <Text variant={"cardSubInfo"} color={"cardMainTextColor"}>
-                          {formatDate(event.date)}
+                          { `${formatDate(event.date_start)} ${ event.date_end && event.date_start != event.date_end ? '- ' + formatDate(event.date_end): ""}` }
                         </Text>
 
                         {
-                          event.time && (
+                          event.time && event.time !== "00:00" && (
                             <Text variant={"cardSubInfo"} color={"cardMainTextColor"}>
                               {`В ${event.time}`}
                             </Text>
@@ -311,7 +311,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                       }
 
                       {
-                        event.contact && event.contact.length > 0 && (
+                        event.contact && event.contact.length > 0 && !event.contact.every(obj => Object.keys(obj).length === 0) && (
                           <Box
                             gap={"s"}
                           >

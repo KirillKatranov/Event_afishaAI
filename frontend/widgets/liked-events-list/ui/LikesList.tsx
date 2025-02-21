@@ -79,10 +79,7 @@ export const LikesList = React.memo(() => {
         data={ likes }
         renderItem={({ item }) => (
           <LikedEventCard
-            name={item.name}
-            date={item.date}
-            image={item.image}
-            macro_category={item.macro_category}
+            event={item}
             onPress={() => {
               setEventSelected(item);
               setModalVisible(true);

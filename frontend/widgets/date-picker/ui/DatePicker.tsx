@@ -87,7 +87,7 @@ export const DatePicker: React.FC = () => {
         <Image
           source={require("@/shared/assets/images/Circles.gif")}
           resizeMode="stretch"
-          blurRadius={22}
+          blurRadius={18}
           style={{
             position: "absolute",
             zIndex: -1,
