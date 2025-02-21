@@ -1,6 +1,6 @@
 from ninja import Schema
 from datetime import date
-from pydantic import field_validator
+from pydantic import field_validator, Field
 
 
 class TagSchema(Schema):
@@ -30,7 +30,7 @@ class ContentSchema(Schema):
     description: str
     image: str | None = None
     contact: list[dict] | None = None
-    date: date
+    date: date = Field(alias='date_start')
     tags: list[TagSchema]
     time: str | None = None
     cost: int | None = None
