@@ -292,13 +292,6 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                       style={{ flex: 1 }}
                       contentContainerStyle={{ gap: 10 }}
                     >
-                      <Text
-                        variant={"cardSubheader"}
-                        color={"cardDescriptionTextColor"}
-                      >
-                        {"О МЕРОПРИЯТИИ"}
-                      </Text>
-
                       {
                         event.description && (
                           <Text
@@ -315,13 +308,6 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                           <Box
                             gap={"s"}
                           >
-                            <Text
-                              variant={"cardText"}
-                              color={"cardDescriptionTextColor"}
-                            >
-                              { "Ссылки:" }
-                            </Text>
-
                             {event.contact.map((con, index) => {
                               return (
                                 <Hyperlink

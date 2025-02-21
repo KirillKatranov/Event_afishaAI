@@ -173,18 +173,11 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
             props.selectedEvent != undefined &&
             props.selectedEvent.contact &&
             props.selectedEvent.contact!.length > 0 &&
-            props.selectedEvent.contact.every(obj => Object.keys(obj).length === 0) &&
+            !props.selectedEvent.contact.every(obj => Object.keys(obj).length === 0) &&
             (
               <Box
                 gap={"s"}
               >
-                <Text
-                  variant={"body"}
-                  color={"cardSubtextColor"}
-                >
-                  { "Ссылки:" }
-                </Text>
-
                 {props.selectedEvent.contact?.map((con, index) => {
                   return (
                     <Hyperlink
