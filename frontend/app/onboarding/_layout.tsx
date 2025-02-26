@@ -17,7 +17,7 @@ const StackLayout = () => {
     >
       <Stack >
         <Stack.Screen name='index' options={{ headerShown: false }}/>
-        <Stack.Screen name='feedback' options={{ headerShown: false }}/>
+        <Stack.Screen name='city' options={{ headerShown: false }}/>
       </Stack>
     </Box>
   )

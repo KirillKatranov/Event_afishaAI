@@ -76,16 +76,14 @@ export const TagCard: React.FC<TagCardProps> = ({
         withTiming(10, { duration: 100 }),
         withTiming(-10, { duration: 100 }),
         withTiming(10, { duration: 100 }),
-        withTiming(0, { duration: 100 })
+        withTiming(0, { duration: 100 }, () => onLike()),
       );
     } else {
       scale.value = withSequence(
         withTiming(1.4, { duration: 150 }),
-        withSpring(1, { damping: 5, stiffness: 100 })
+        withSpring(1, { damping: 5, stiffness: 100 }, () => onLike())
       );
     }
-
-    onLike();
   };
 
   const likeAnimationStyle = useAnimatedStyle(() => ({
@@ -123,7 +121,7 @@ export const TagCard: React.FC<TagCardProps> = ({
             <Text
               variant={"tagCardDescription"}
               color={service == "places" ? "white" : "black"}
-              textTransform={"lowercase"}
+              textTransform={"lowercase"} numberOfLines={1}
               style={{
                 alignSelf: "flex-start", justifyContent: "center",
                 maxWidth: "100%",
@@ -139,6 +137,7 @@ export const TagCard: React.FC<TagCardProps> = ({
             <Box
               flexDirection={"row"}
               justifyContent={"space-between"}
+              alignItems={"center"}
               gap={"xs"}
             >
               <Text
@@ -161,7 +160,7 @@ export const TagCard: React.FC<TagCardProps> = ({
                   <Icon
                     name={ liked ? "likeFilled" : "like" }
                     color={ service == "places" ? "#A533FF" : "#E1F44B" }
-                    size={32}
+                    size={26}
                   />
                 </Animated.View>
               </Pressable>

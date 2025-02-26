@@ -103,6 +103,8 @@ export const Text = {
     fontFamily: 'MontserratMedium',
     fontSize: 12,
   },
+  profileMenuButton: { fontFamily: 'MontserratMedium', fontSize: 20 },
+  profileCity: { fontFamily: 'MontserratMedium', fontSize: 14 },
   serviceName: { fontFamily: 'UnboundedExtraBold', fontSize: 26, },
   serviceDescription: { fontFamily: 'MontserratSemiBold', fontSize: 16, },
   defaults: {},

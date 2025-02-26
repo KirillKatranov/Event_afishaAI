@@ -66,13 +66,13 @@ export const TagsList: React.FC<TagsListProps> = ({
         tags.map((item, index) => (
           <Animated.View
             key={item.id}
-            layout={LinearTransition.duration(200).delay(100)}
+            layout={LinearTransition.duration(200)}
           >
             <TagCard
               key={item.id}
               service={service}
               index={index}
-              liked={!!preferences.find((elem) => elem == item.id)}
+              liked={preferences.includes(item.id)}
               tag={item}
               onPress={() => {
                 router.push({

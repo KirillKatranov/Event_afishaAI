@@ -24,3 +24,31 @@ export const Colors = {
   organizers: "#6361DD",
   trips: "#930CFF",
 }
+
+export const getTint = (color: string): "default" | "dark" => {
+  const hexToRgb = (hex: string) => {
+    hex = hex.replace(/^#/, "");
+    if (hex.length === 3) {
+      hex = hex.split("").map((char) => char + char).join("");
+    }
+    const bigint = parseInt(hex, 16);
+    return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+  };
+
+  const getLuminance = (r: number, g: number, b: number) => {
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+
+  let r, g, b;
+
+  if (color.startsWith("#")) {
+    [r, g, b] = hexToRgb(color);
+  } else if (color.startsWith("rgb")) {
+    [r, g, b] = color.match(/\d+/g)?.map(Number) ?? [0, 0, 0];
+  } else {
+    throw new Error("Invalid color format");
+  }
+
+  const luminance = getLuminance(r, g, b);
+  return luminance > 128 ? "default" : "dark";
+};

@@ -11,17 +11,10 @@ export const OnboardingIllustration = () => {
   const opacity = useSharedValue(0);
 
   useEffect(() => {
-    if (page != 1) {
-      opacity.value = withTiming(0, { duration: 250 }, () => {
-        runOnJS(setPageSubTick)(page);
-        opacity.value = withTiming(1, { duration: 250 });
-      });
-    } else {
-      opacity.value = withTiming(0, { duration: 250 }, () => {
-        runOnJS(setPageSubTick)(page);
-        opacity.value = withTiming(1, { duration: 250 })
-      })
-    }
+    opacity.value = withTiming(0, { duration: 0 }, () => {
+      runOnJS(setPageSubTick)(page);
+      opacity.value = withTiming(1, { duration: 250 });
+    })
   }, [page]);
 
   const animatedOpacity = useAnimatedStyle(() => ({

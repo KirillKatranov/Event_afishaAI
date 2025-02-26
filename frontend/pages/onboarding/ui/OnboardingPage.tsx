@@ -1,77 +1,98 @@
 import React, { useEffect } from "react";
-import Animated, {useSharedValue, withTiming} from "react-native-reanimated";
-import {OnboardingIllustration, OnboardingNav, OnboardingText, useOnboardingStore} from "@/widgets/onboarding-elements";
-import {Box} from "@/shared/ui";
-import { ImageBackground } from "react-native";
+import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
+import { OnboardingIllustration, OnboardingNav, OnboardingText, useOnboardingStore } from "@/widgets/onboarding-elements";
+import { Box } from "@/shared/ui";
+import { Dimensions, ImageBackground } from "react-native";
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useRouter } from "expo-router";
+import { useConfig } from "@/shared/providers/TelegramConfig";
+import { useUserStore } from "@/entities/user";
+
+const width = Dimensions.get("window").width;
 
 export const OnboardingPage: React.FC = () => {
-  const backgroundAnimation = useSharedValue(0)
-  const offsetX = useSharedValue(0)
-  const startX = useSharedValue(0)
+  const backgroundAnimation = useSharedValue(0);
+  const offsetX = useSharedValue(0);
+  const startX = useSharedValue(0);
 
   let { page, incPage, decPage } = useOnboardingStore();
 
   useEffect(() => {
-    backgroundAnimation.value = withTiming(page, { duration: page == 1 ? 0 : 400 });
+    backgroundAnimation.value = withTiming(page - 1, { duration: 400 });
   }, [page]);
 
-  const router = useRouter()
+  const tgUser = useConfig().initDataUnsafe.user;
+  const { user, getUser } = useUserStore();
 
-  let direction = '';
+  useEffect(() => {
+    if (!user) getUser(tgUser.username ? tgUser.username : tgUser.id.toString());
+  }, [user, getUser]);
+
+  const router = useRouter();
 
   const swipeGestureHandler = Gesture.Pan()
     .onStart(() => {
-      startX.value = offsetX.value
+      startX.value = offsetX.value;
     })
     .onUpdate((e) => {
-      offsetX.value = startX.value + e.translationX
+      offsetX.value = startX.value + e.translationX;
     })
     .onEnd((e) => {
       const { velocityX } = e;
-      console.log(e)
       if ((velocityX < -150) && page < 3 && page >= 1) {
-        direction = 'left';
-        offsetX.value = withTiming(100, { duration: 200 }, () => {
-          incPage()
-          offsetX.value = withTiming(0)
-        })
+        offsetX.value = withTiming(-width, { duration: 200 }, () => {
+          incPage();
+          offsetX.value = 0;
+        });
+      } else if (velocityX > 150 && page > 1 && page <= 3) {
+        offsetX.value = withTiming(width, { duration: 200 }, () => {
+          decPage();
+          offsetX.value = 0;
+        });
+      } else if ((velocityX < -150) && page === 3) {
+        if (user && user.city) router.replace("/feed");
+        else router.replace("/onboarding/city");
+      } else {
+        offsetX.value = withTiming(0, { duration: 200 });
       }
-      else if (velocityX > 150 && page > 1 && page <= 3) {
-        direction = 'right';
-        offsetX.value = withTiming(-100, { duration: 200 }, () => {
-          decPage()
-          offsetX.value = withTiming(0)
-        })
-      }
-      else if ((velocityX < -150) && page === 3) {
-        router.replace("/(tabs)/feed")
-      }
-      else {
-        offsetX.value = withTiming(0)
-      }
-    })
+    });
 
-  const backgroundImage = `../../../shared/assets/images/onboardingBackgroundPage`;
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: offsetX.value }],
+  }));
+
+  const backgroundStyle1 = useAnimatedStyle(() => ({
+    opacity: interpolate(backgroundAnimation.value, [0, 1, 2], [1, 0, 0]),
+  }));
+
+  const backgroundStyle2 = useAnimatedStyle(() => ({
+    opacity: interpolate(backgroundAnimation.value, [0, 1, 2], [0, 1, 0]),
+  }));
+
+  const backgroundStyle3 = useAnimatedStyle(() => ({
+    opacity: interpolate(backgroundAnimation.value, [0, 1, 2], [0, 0, 1]),
+  }));
 
   return (
     <GestureDetector gesture={swipeGestureHandler}>
-      <ImageBackground
-        source={page === 1 ? require(backgroundImage + '1.png') : (page === 2 ? require(backgroundImage + '2.png') : require(backgroundImage + '3.png'))}
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%"
-        }}
-      >
-        <Animated.View
-          style={[
-            {
-              flex: 1
-            }
-          ]}
-        >
+      <Box style={{ flex: 1, position: "absolute", width: "100%", height: "100%" }}>
+        {/* First Background */}
+        <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle1]}>
+          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage1.png")} style={{ flex: 1 }} />
+        </Animated.View>
+
+        {/* Second Background */}
+        <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle2]}>
+          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage2.png")} style={{ flex: 1 }} />
+        </Animated.View>
+
+        {/* Third Background */}
+        <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle3]}>
+          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage3.png")} style={{ flex: 1 }} />
+        </Animated.View>
+
+
+        <Animated.View style={[{ flex: 1 }, animatedStyle]}>
           <Box
             flex={1}
             justifyContent={"flex-end"}
@@ -87,7 +108,7 @@ export const OnboardingPage: React.FC = () => {
             <OnboardingNav />
           </Box>
         </Animated.View>
-      </ImageBackground>
+      </Box>
     </GestureDetector>
   )
 }

@@ -3,6 +3,7 @@ export { default as Calendar } from "./svgs/Calendar";
 export { default as ChevronLeft } from "./svgs/ChevronLeft";
 export { default as ChevronDown } from "./svgs/ChevronDown";
 export { default as ChevronUp } from "./svgs/ChevronUp";
+export { default as ChevronRight } from "./svgs/ChevronRight";
 export { default as Cost } from "./svgs/Cost";
 export { default as Home } from "./svgs/Home";
 export { default as Like } from "./svgs/Like";

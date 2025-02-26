@@ -8,6 +8,7 @@ const icons = {
   chevronLeft: Icons.ChevronLeft,
   chevronDown: Icons.ChevronDown,
   chevronUp: Icons.ChevronUp,
+  chevronRight: Icons.ChevronRight,
   cost: Icons.Cost,
   home: Icons.Home,
   like: Icons.Like,

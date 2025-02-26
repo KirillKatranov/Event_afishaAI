@@ -2,15 +2,18 @@ import * as React from "react";
 import Svg, {Path} from "react-native-svg";
 import {IconComponentProps} from "@/shared/ui/Icons/IconComponentProps";
 
-const LikeFilled: React.FC<IconComponentProps> = ({width = 25, height = 24, fill = 'black'}) => (
+const LikeFilled: React.FC<IconComponentProps> = ({width = 26, height = 24, fill = 'black'}) => (
   <Svg
     width={width}
     height={height}
-    viewBox="0 0 25 24"
+    viewBox="0 0 26 24"
+    fill="none"
   >
     <Path
-      d="M4.95 13.908l6.953 6.531c.24.225.36.338.5.366a.5.5 0 00.193 0c.142-.028.261-.14.5-.366l6.953-6.53a5.203 5.203 0 00.549-6.983l-.31-.399c-1.968-2.536-5.918-2.111-7.301.787a.54.54 0 01-.974 0C10.63 4.416 6.68 3.99 4.712 6.527l-.31.4a5.203 5.203 0 00.549 6.981z"
+      d="M12.241 3.355L13 4.24l.759-.884C14.993 1.917 16.89 1 18.85 1 22.303 1 25 3.686 25 7.15c0 2.122-.948 4.131-2.821 6.423-1.884 2.305-4.599 4.772-7.966 7.825l-.001.002L13 22.503l-1.212-1.104h-.001c-3.367-3.054-6.082-5.521-7.966-7.826C1.948 11.28 1 9.272 1 7.15 1 3.686 3.697 1 7.15 1c1.96 0 3.857.917 5.091 2.355z"
       fill={fill}
+      stroke={fill}
+      strokeWidth={2}
     />
   </Svg>
 );

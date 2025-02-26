@@ -9,7 +9,7 @@ export const OnboardingText: React.FC = () => {
 
   const opacity = useSharedValue(0);
   useEffect(() => {
-    opacity.value = withTiming(0, { duration: 250 }, () => {
+    opacity.value = withTiming(0, { duration: 0 }, () => {
       runOnJS(setPageText)();
       setText(page == 1 ? 'для тебя' : (page == 2 ? 'под рукой' : ''));
       opacity.value = withTiming(1, { duration: 250 });

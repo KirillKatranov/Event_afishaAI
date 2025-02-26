@@ -63,7 +63,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="likes"
           options={{
-            tabBarIcon: ({color}) => <Icon name={"likeFilled"} size={32} color={color}/>,
+            tabBarIcon: ({color}) => <Icon name={"likeFilled"} size={24} color={color}/>,
             tabBarShowLabel: false,
           }}
         />

@@ -33,7 +33,6 @@ export const LikesPage = React.memo(() => {
     }
   }
 
-  // Shared Value for controlling animations
   const animationValue = useSharedValue(index);
 
   const indicatorTranslateX = useAnimatedStyle(() => {
@@ -83,7 +82,7 @@ export const LikesPage = React.memo(() => {
       <Box
         flexDirection="row"
         height={44}
-        alignItems={"center"}
+        alignItems={"center"} overflow={"hidden"}
         style={{ paddingHorizontal: 40, gap: 20 }}
       >
         <Pressable
@@ -114,14 +113,17 @@ export const LikesPage = React.memo(() => {
         <Animated.View
           style={[
             {
-              position: "absolute", bottom: 0,
-              height: 4, width: (layout.width - 80 - 20) / 2,
-              borderRadius: 10,
-              backgroundColor: "#BA25F7",
+              position: "absolute", bottom: -15,
+              height: "100%", width: (layout.width - 80 - 20) / 2, overflow: "visible"
             },
             indicatorTranslateX,
           ]}
-        />
+        >
+          <Image
+            source={require("@/shared/assets/images/selectedFavPage.png")}
+            style={{ width: "100%", height: "120%", opacity: 0.5}} resizeMode={"stretch"}
+          />
+        </Animated.View>
       </Box>
 
       <TabView

@@ -9,10 +9,17 @@ import Animated, {
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
 import {useLocalSearchParams} from "expo-router";
-import {Services} from "@/entities/service";
+import {Services, ServicesColors} from "@/entities/service";
+import {BlurView} from "expo-blur";
+import {useTheme} from "@shopify/restyle";
+import {Theme} from "@/shared/providers/Theme";
+import {getTint} from "@/shared/constants";
+import {Dimensions} from "react-native";
 
+const window = Dimensions.get("window");
 
 export const TagsPage = () => {
+  const theme = useTheme<Theme>();
   const { service } = useLocalSearchParams<{ service: "events" | "places" | "organizers" | "trips" }>()
 
   const { isLoading } = useTagsStore();
@@ -38,24 +45,50 @@ export const TagsPage = () => {
     };
   });
 
-  return (
-    <Box flex={1} backgroundColor={"bg_color"}>
-      <Animated.ScrollView
-        onScroll={onScroll}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
-        scrollEnabled={!isLoading}
-      >
-        {/* Parallax Header */}
-        <Animated.View style={[headerStyle]}>
-          <TagsHeader
-            title={Services.find((ser) => ser.id == service)?.name as string}
-            service={service}
-          />
-        </Animated.View>
+  const gradientStyle = useAnimatedStyle(() => {
+    const translateY = interpolate(
+      scrollY.value,
+      [0, 250],
+      [0, 100],
+      'clamp'
+    );
 
-        <TagsList scrollY={scrollY}/>
-      </Animated.ScrollView>
+    return { top: -(window.height * 0.05) - translateY };
+  });
+
+  const tint = getTint(theme.colors.bg_color);
+
+  return (
+    <Box flex={1} backgroundColor={"bg_color"} alignItems={"center"}>
+      <BlurView intensity={tint == "dark" ? 70 : 100} tint={tint} style={{ width: "100%", height: "100%", zIndex: 1 }}>
+        <Animated.ScrollView
+          onScroll={onScroll}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
+          scrollEnabled={!isLoading}
+        >
+          {/* Parallax Header */}
+          <Animated.View style={[headerStyle]}>
+            <TagsHeader
+              title={Services.find((ser) => ser.id == service)?.name as string}
+              service={service}
+            />
+          </Animated.View>
+
+          <TagsList scrollY={scrollY}/>
+        </Animated.ScrollView>
+      </BlurView>
+
+      <Animated.View
+        style={[{
+          backgroundColor: ServicesColors[service], opacity: 0.75,
+          position: "absolute", zIndex: -1,
+          width: window.height * 0.1,
+          height: window.height * 0.1,
+          borderRadius: window.height * 0.1 / 2,
+          transform: [{ scaleX: window.width / (window.height * 0.1) }],
+        }, gradientStyle]}
+      />
     </Box>
   );
 };

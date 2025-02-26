@@ -231,7 +231,9 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                       <Box flexDirection="row" gap="xs" alignItems="center">
                         <Icon name="location" color={theme.colors.white} size={16} />
 
-                        <Text variant="cardSubInfo" color="cardMainTextColor">
+                        <Text
+                          variant={"cardSubInfo"} color={"cardMainTextColor"}
+                          onPress={() => config.openLink(`https://yandex.ru/maps/?text=${event.location}`, { try_instant_view: true })}>
                           {event.location}
                         </Text>
                       </Box>

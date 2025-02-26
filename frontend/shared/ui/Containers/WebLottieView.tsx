@@ -32,7 +32,7 @@ export const WebLottieView: React.FC<LottieViewProps> = ({ src }) => {
           source={src}
           autoPlay
           loop
-          style={{ width: 300, height: 300 }}
+          style={{ width: "100%", height: "100%" }}
         />
       )}
     </Box>
