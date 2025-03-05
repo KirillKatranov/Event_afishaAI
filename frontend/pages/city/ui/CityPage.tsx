@@ -1,9 +1,12 @@
 import React, {useEffect} from "react";
 import {Box, Text} from "@/shared/ui";
-import {Image, Pressable} from "react-native";
+import {Dimensions, Image, Pressable} from "react-native";
 import {CityCard, useCitySelectStore} from "@/features/city-select";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useRouter} from "expo-router";
+import Carousel from "react-native-reanimated-carousel";
+
+const window = Dimensions.get("window");
 
 export const CityPage = () => {
   const {
@@ -32,10 +35,25 @@ export const CityPage = () => {
         <Text color={"lime"} style={{ fontFamily: "MontserratBold", fontWeight: "800", fontSize: 24 }}>{"НУЖНЫЙ ГОРОД"}</Text>
       </Box>
 
-      <Box flex={1} width={"100%"} style={{ gap: 30 }}>
-        {!cities && Array(2).map((_item, index) => <CityCard key={index}/>)}
-        {cities && cities.map((item) => <CityCard city={item} selected={item.id === citySelected?.id} onPress={() => onCitySelected(item)}/>)}
-      </Box>
+      {cities && (
+        <Carousel
+          data={cities}
+          loop={true}
+          pagingEnabled={true}
+          snapEnabled={true}
+          width={Dimensions.get("window").width * 0.9}
+          height={Math.min(window.height - 328, 650)}
+          onSnapToItem={(index) => onCitySelected(cities[index])}
+          style={{ zIndex: 1, overflow: "visible" }}
+          mode="parallax"
+          modeConfig={{
+            parallaxScrollingScale: 0.9,
+            parallaxScrollingOffset: window.width * 0.1,
+            parallaxAdjacentItemScale: 0.8
+          }}
+          renderItem={({item}) => <CityCard city={item}/>}
+        />
+      )}
 
       <Box
         flexDirection={"column"}

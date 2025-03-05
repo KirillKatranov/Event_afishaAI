@@ -78,17 +78,17 @@ export const OnboardingPage: React.FC = () => {
       <Box style={{ flex: 1, position: "absolute", width: "100%", height: "100%" }}>
         {/* First Background */}
         <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle1]}>
-          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage1.png")} style={{ flex: 1 }} />
+          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage1.png")} resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
         </Animated.View>
 
         {/* Second Background */}
         <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle2]}>
-          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage2.png")} style={{ flex: 1 }} />
+          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage2.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
         </Animated.View>
 
         {/* Third Background */}
         <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle3]}>
-          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage3.png")} style={{ flex: 1 }} />
+          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage3.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
         </Animated.View>
 
 

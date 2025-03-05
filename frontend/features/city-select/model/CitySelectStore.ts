@@ -31,7 +31,7 @@ export const useCitySelectStore = create<CitySelectState & CitySelectActions>((s
     set({ cities: [
         { id: "msk", name: "Москва", image: "https://cdn.culture.ru/images/0ed8639c-ed61-5cf3-af66-2fc0015e2ce5" },
         { id: "nn", name: "Нижний Новгород", image: "https://i.pinimg.com/originals/29/16/6d/29166dcfbb40d7199c0f08cb4734a007.jpg" },
-      ]})
+      ], citySelected: { id: "msk", name: "Москва", image: "https://cdn.culture.ru/images/0ed8639c-ed61-5cf3-af66-2fc0015e2ce5" } })
 
     set({ isLoading: false });
   },

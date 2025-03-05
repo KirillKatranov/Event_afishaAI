@@ -1,12 +1,13 @@
 import React from "react";
-import { Platform } from "react-native";
+import {Platform} from "react-native";
 import {Box} from "@/shared/ui/Base/Box";
 
 interface LottieViewProps {
   src: string;
+  maxWidth?: number; maxHeight?: number;
 }
 
-export const WebLottieView: React.FC<LottieViewProps> = ({ src }) => {
+export const WebLottieView: React.FC<LottieViewProps> = ({ src, maxHeight, maxWidth }) => {
   let LottieView: any;
 
   if (Platform.OS === "web") {
@@ -22,10 +23,7 @@ export const WebLottieView: React.FC<LottieViewProps> = ({ src }) => {
           autoplay
           loop
           src={src}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
+          style={{ width: "100%", maxWidth: maxWidth, height: "100%", maxHeight: maxHeight }}
         />
       ) : (
         <LottieView

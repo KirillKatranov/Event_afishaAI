@@ -34,6 +34,9 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
 
   const [cardHeight, setCardHeight] = useState(0);
   const [titleHeight, setTitleHeight] = useState(0);
+  const [descriptionHeight, setDescriptionHeight] = useState(0);
+  const [contactsHeight, setContactsHeight] = useState(0);
+  const [additionalInfoHeight, setAdditionalInfoHeight] = useState(0);
 
   const [tagsScrolling, setTagsScrolling] = useState(false);
   const [descriptionScrolling, setDescriptionScrolling] = useState(false);
@@ -45,7 +48,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
 
   useEffect(() => {
     heightValue.value = withTiming(
-      descriptionExpanded ? (cardHeight - titleHeight) : 0,
+      descriptionExpanded ? Math.min((cardHeight - titleHeight), descriptionHeight + contactsHeight + 42 + 32 + additionalInfoHeight + 80) : 0,
       { duration: 250 },
     );
   }, [descriptionExpanded, cardHeight]);
@@ -66,9 +69,9 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
     heightValue.value = Math.max(
       0,
       Math.min(
-        (cardHeight - titleHeight),
+        Math.min((cardHeight - titleHeight), descriptionHeight + contactsHeight + 42 + 32 + additionalInfoHeight + 80),
         descriptionExpanded
-          ? (cardHeight - titleHeight) - event.translationY
+          ? Math.min((cardHeight - titleHeight), descriptionHeight + contactsHeight + 42 + 32 + additionalInfoHeight + 80) - event.translationY
           : 0 - event.translationY
       )
     );
@@ -86,7 +89,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
         setDescriptionExpanded(false);
       } else {
         heightValue.value = withTiming(
-          descriptionExpanded ? (cardHeight - titleHeight) : 0,
+          descriptionExpanded ? Math.min((cardHeight - titleHeight), descriptionHeight + contactsHeight + 42 + 32 + additionalInfoHeight + 80) : 0,
           { duration: 250 }
         );
       }
@@ -225,7 +228,9 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                 { backgroundColor: theme.colors.cardBGColor, gap: theme.spacing.m }]}
               >
                 {/* Location */}
-                <Box flexDirection="column" gap="s" paddingHorizontal="eventCardPadding">
+                <Box flexDirection="column" gap="s" paddingHorizontal="eventCardPadding"
+                     onLayout={(e) => setAdditionalInfoHeight(e.nativeEvent.layout.height)}
+                >
                   {
                     event.location && (
                       <Box flexDirection="row" gap="xs" alignItems="center">
@@ -283,6 +288,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                     borderRadius="l"
                     padding={"m"}
                     style={{ backgroundColor: "#ECEBE8" }}
+                    maxHeight={descriptionHeight + contactsHeight + 42}
                   >
                     <ScrollView
                       onScroll={(e) =>
@@ -299,6 +305,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                           <Text
                             variant={"cardText"}
                             color={"cardDescriptionTextColor"}
+                            onLayout={(e) => setDescriptionHeight(e.nativeEvent.layout.height)}
                           >
                             {event.description}
                           </Text>
@@ -309,6 +316,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
                         event.contact && event.contact.length > 0 && !event.contact.every(obj => Object.keys(obj).length === 0) && (
                           <Box
                             gap={"s"}
+                            onLayout={(e) => setContactsHeight(e.nativeEvent.layout.height)}
                           >
                             {event.contact.map((con, index) => {
                               return (

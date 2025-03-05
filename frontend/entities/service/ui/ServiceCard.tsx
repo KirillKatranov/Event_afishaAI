@@ -2,7 +2,7 @@ import React from "react";
 import {Service} from "@/entities/service/model/types/services.types";
 import {Box, Text, WebLottieView} from "@/shared/ui";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
-import {Pressable} from "react-native";
+import {LayoutChangeEvent, Pressable} from "react-native";
 
 interface ServiceCardProps {
   service: Service;
@@ -14,6 +14,13 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   onPress
 }) => {
   let startX = 0;
+  const [boxWidth, setBoxWidth] = React.useState(280);
+  const [boxHeight, setBoxHeight] = React.useState(400);
+
+  const layoutMeasure = (e: LayoutChangeEvent) => {
+    setBoxWidth(e.nativeEvent.layout.width)
+    setBoxHeight(e.nativeEvent.layout.height)
+  }
 
   return (
     <Pressable
@@ -32,7 +39,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     >
       <Box
         flex={1}
-        alignItems={"center"} justifyContent={"center"}
+        alignContent={"center"} justifyContent={"center"}
         borderWidth={3}
         gap={"m"}
         style={{
@@ -54,8 +61,16 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           {service.name}
         </Text>
 
-        {service.id == "events" && <Box width={"100%"}><WebLottieView src={require("@/shared/assets/lottie/events.json")}/></Box>}
-        {service.id == "places" && <Box width={"100%"}><WebLottieView src={require("@/shared/assets/lottie/places.json")}/></Box>}
+        {service.id == "events" && (
+            <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure}>
+              <WebLottieView src={require("@/shared/assets/lottie/events.json")} maxHeight={boxHeight} maxWidth={boxWidth} />
+            </Box>
+          )}
+        {service.id == "places" && (
+          <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure}>
+            <WebLottieView src={require("@/shared/assets/lottie/places.json")} maxHeight={boxHeight} maxWidth={boxWidth}/>
+          </Box>
+        )}
         {(service.id == "trips" || service.id == "organizers") && <Illustration name={service.illustration} width={"100%"} height={"100%"}/>}
 
         <Text variant={"serviceDescription"} textAlign={"center"} color={"black"} selectable={false}>
