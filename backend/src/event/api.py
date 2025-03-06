@@ -8,6 +8,7 @@ from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchem
 from django.db.models import Q, Prefetch
 from datetime import date
 from ninja.errors import HttpError
+from ninja.pagination import paginate
 
 
 @api_controller(
@@ -124,14 +125,17 @@ class ContentController:
         removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
         return contents_not_mark.exclude(id__in=removed_contents)
 
+    # todo: сделать кэширование ленты! + сделать пагинацию для снижения нагрузки на БД.
     @route.get(
         path="/contents/liked",
         response={
             200: list[ContentSchema],
         },
     )
+    @paginate
     def get_liked_content(self, username: str, value: bool = True,
-                          date_start: date | None = None, date_end: date | None = None) -> list[ContentSchema]:
+                          date_start: date | None = None, date_end: date | None = None,
+                          ) -> list[ContentSchema]:
         current_user = User.objects.filter(username=username).first()
         if not current_user:
             current_user = User.objects.create(username=username)
@@ -326,7 +330,7 @@ class UserController:
             200: UserSchema,
         },
     )
-    def change_city(self, username: str) -> UserSchema:
+    def get_users(self, username: str) -> UserSchema:
         user = User.objects.filter(username=username).first()
         if not user:
             raise HttpError(404, "User not found")
