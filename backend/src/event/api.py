@@ -132,7 +132,6 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    @paginate
     def get_liked_content(self, username: str, value: bool = True,
                           date_start: date | None = None, date_end: date | None = None,
                           ) -> list[ContentSchema]:
