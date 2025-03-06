@@ -74,9 +74,9 @@ class ContentController:
                              date_end: date | None = None) -> list[ContentSchema]:
         q_filter = Q()
         if date_start and date_end:
-            q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
+            q_filter &= Q(date_start__gte=date_start) & Q(date_start__lte=date_end)
         if date_start and not date_end:
-            q_filter &= Q(date=date_start)
+            q_filter &= Q(date_start=date_start)
 
         current_user = User.objects.filter(username=username).first()
         if not current_user:
@@ -108,9 +108,9 @@ class ContentController:
                     date_end: date | None = None) -> list[ContentSchema]:
         q_filter = Q(tags__name=tag) if tag else Q()
         if date_start and date_end:
-            q_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
+            q_filter &= Q(date_start__gte=date_start) & Q(date_start__lte=date_end)
         if date_start and not date_end:
-            q_filter &= Q(date=date_start)
+            q_filter &= Q(date_start=date_start)
         contents = Content.objects.filter(q_filter)
         current_user = User.objects.filter(username=username).first()
         if not current_user:
@@ -141,9 +141,9 @@ class ContentController:
 
         content_filter = Q(id__in=liked_content_ids)
         if date_start and date_end:
-            content_filter &= Q(date__gte=date_start) & Q(date__lte=date_end)
+            content_filter &= Q(date_start__gte=date_start) & Q(date_start__lte=date_end)
         if date_start and not date_end:
-            content_filter &= Q(date=date_start)
+            content_filter &= Q(date_start=date_start)
 
         content = Content.objects.filter(content_filter).distinct()
 
