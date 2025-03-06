@@ -1,44 +1,60 @@
 import { create } from 'zustand';
-import {City} from "@/features/city-select";
+import {CityID} from "@/features/city-select";
+import CityService from "@/features/city-select/api/CityService";
+import {useUserStore} from "@/entities/user";
 
 interface CitySelectState {
-  citySelected: City | undefined;
-  cities: City[] | undefined;
+  citySelected: CityID | undefined;
+  availableCities: CityID[] | undefined;
   isLoading: boolean;
   hasError: boolean;
 }
 
 interface CitySelectActions {
-  getCities: (username: string) => void,
-  onCitySelected: (city: City) => void,
-  saveCity: (username: string) => void,
+  getCities: () => void,
+  onCitySelected: (city: CityID) => void,
+  saveCity: (username: string, onSuccess?: () => void) => void,
 }
 
 const initialState: CitySelectState = {
   citySelected: undefined,
-  cities: undefined,
+  availableCities: undefined,
   isLoading: false, hasError: false
 }
 
 export const useCitySelectStore = create<CitySelectState & CitySelectActions>((set, get) => ({
   ...initialState,
 
-  getCities: (username) => {
+  getCities: () => {
     set({ isLoading: true, hasError: false });
 
-    console.log(username);
-
-    set({ cities: [
-        { id: "msk", name: "Москва", image: "https://cdn.culture.ru/images/0ed8639c-ed61-5cf3-af66-2fc0015e2ce5" },
-        { id: "nn", name: "Нижний Новгород", image: "https://i.pinimg.com/originals/29/16/6d/29166dcfbb40d7199c0f08cb4734a007.jpg" },
-      ], citySelected: { id: "msk", name: "Москва", image: "https://cdn.culture.ru/images/0ed8639c-ed61-5cf3-af66-2fc0015e2ce5" } })
+    CityService.getCities()
+      .then((response) => {
+        if (response && response.error) {
+          set({ hasError: true })
+        } else if (response && response.data) {
+          set({ availableCities: response.data.cities, citySelected: response.data.cities[0] })
+        }
+      })
+      .catch(() => {
+        set({ hasError: true })
+      })
+      .finally(() => set({ isLoading: false }));
 
     set({ isLoading: false });
   },
 
   onCitySelected: (city) => set({ citySelected: city }),
 
-  saveCity: (username) => {
+  saveCity: (username, onSuccess) => {
+    set({ isLoading: true, hasError: false });
 
+    CityService.saveCity({ username: username, city: get().citySelected! })
+      .then(() => {
+        useUserStore.getState().getUser(username);
+        if (onSuccess) onSuccess();
+      })
+      .catch(() => set({ hasError: true }))
+      .finally(() => set({ isLoading: false }))
   },
 }));

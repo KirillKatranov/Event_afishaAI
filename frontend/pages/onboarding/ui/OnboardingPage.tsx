@@ -5,8 +5,6 @@ import { Box } from "@/shared/ui";
 import { Dimensions, ImageBackground } from "react-native";
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useRouter } from "expo-router";
-import { useConfig } from "@/shared/providers/TelegramConfig";
-import { useUserStore } from "@/entities/user";
 
 const width = Dimensions.get("window").width;
 
@@ -20,13 +18,6 @@ export const OnboardingPage: React.FC = () => {
   useEffect(() => {
     backgroundAnimation.value = withTiming(page - 1, { duration: 400 });
   }, [page]);
-
-  const tgUser = useConfig().initDataUnsafe.user;
-  const { user, getUser } = useUserStore();
-
-  useEffect(() => {
-    if (!user) getUser(tgUser.username ? tgUser.username : tgUser.id.toString());
-  }, [user, getUser]);
 
   const router = useRouter();
 
@@ -50,8 +41,7 @@ export const OnboardingPage: React.FC = () => {
           offsetX.value = 0;
         });
       } else if ((velocityX < -150) && page === 3) {
-        if (user && user.city) router.replace("/feed");
-        else router.replace("/onboarding/city");
+        router.replace("/onboarding/city")
       } else {
         offsetX.value = withTiming(0, { duration: 200 });
       }

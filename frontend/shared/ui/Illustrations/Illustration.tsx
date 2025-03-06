@@ -16,6 +16,10 @@ const illustrations = {
   places: Illustrations.Places,
   events: Illustrations.Events,
   organizers: Illustrations.Organizers,
+  ticket: Illustrations.Ticket,
+  createEvent: Illustrations.CreateEvent,
+  strelka: Illustrations.Strelka,
+  feedback: Illustrations.Feedback,
 };
 
 export interface IconProps extends SvgProps {

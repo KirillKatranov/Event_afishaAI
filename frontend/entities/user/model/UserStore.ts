@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import {User} from "@/entities/user";
+import UserService from "@/entities/user/api/UserService";
 
 interface UserState {
   user: User | undefined;
@@ -17,13 +18,18 @@ const initialState: UserState = {
   isLoading: false, hasError: false, errorMessage: "",
 }
 
-export const useUserStore = create<UserState & UserActions>((set, get) => ({
+export const useUserStore = create<UserState & UserActions>((set) => ({
   ...initialState,
 
   getUser: (username) => {
     set({ isLoading: true, hasError: false });
 
-    set({ user: { username: username, city: undefined} });
+    UserService.getUser({ username: username })
+      .then((response) => {
+        set({ user: response.data })
+      })
+      .catch(() => set({ hasError: true }))
+      .finally(() => set({ isLoading: false }));
 
     set({ isLoading: false });
   },

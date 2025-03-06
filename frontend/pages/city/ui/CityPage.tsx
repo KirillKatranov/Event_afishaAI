@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
-import {Box, Text} from "@/shared/ui";
+import {Box, LoadingCard, Text} from "@/shared/ui";
 import {Dimensions, Image, Pressable} from "react-native";
-import {CityCard, useCitySelectStore} from "@/features/city-select";
+import {cities, City, CityCard, useCitySelectStore} from "@/features/city-select";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useRouter} from "expo-router";
 import Carousel from "react-native-reanimated-carousel";
@@ -10,15 +10,15 @@ const window = Dimensions.get("window");
 
 export const CityPage = () => {
   const {
-    citySelected, cities,
+    citySelected, availableCities, isLoading,
     getCities, saveCity, onCitySelected
   } = useCitySelectStore();
   const user = useConfig().initDataUnsafe.user;
   const router = useRouter();
 
   useEffect(() => {
-    if (!cities) getCities(user.username ? user.username : user.id.toString())
-  }, [cities, getCities, user]);
+    if (!availableCities) getCities()
+  }, [availableCities, getCities, user]);
 
   return (
     <Box
@@ -35,15 +35,19 @@ export const CityPage = () => {
         <Text color={"lime"} style={{ fontFamily: "MontserratBold", fontWeight: "800", fontSize: 24 }}>{"НУЖНЫЙ ГОРОД"}</Text>
       </Box>
 
-      {cities && (
+      {isLoading && (
+        <LoadingCard style={{ width: Dimensions.get("window").width * 0.9, height: Math.min(window.height - 328, 650), borderRadius: 25}}/>
+      )}
+
+      {availableCities && !isLoading && (
         <Carousel
-          data={cities}
+          data={availableCities}
           loop={true}
           pagingEnabled={true}
           snapEnabled={true}
           width={Dimensions.get("window").width * 0.9}
           height={Math.min(window.height - 328, 650)}
-          onSnapToItem={(index) => onCitySelected(cities[index])}
+          onSnapToItem={(index) => onCitySelected(availableCities[index])}
           style={{ zIndex: 1, overflow: "visible" }}
           mode="parallax"
           modeConfig={{
@@ -51,19 +55,25 @@ export const CityPage = () => {
             parallaxScrollingOffset: window.width * 0.1,
             parallaxAdjacentItemScale: 0.8
           }}
-          renderItem={({item}) => <CityCard city={item}/>}
+          renderItem={({item}) => <CityCard city={cities[item] as City}/>}
         />
       )}
 
       <Box
         flexDirection={"column"}
         width={"100%"}
-        alignItems={"center"}
+        alignContent={"center"}
         justifyContent={"center"}
         gap={"s"}
         paddingHorizontal={"l"}
       >
-        <Pressable onPress={() => saveCity(user.username ? user.username : user.id.toString())} disabled={!citySelected}>
+        <Pressable
+          onPress={() => saveCity(
+            user.username ? user.username : user.id.toString(),
+            () => router.replace('/profile')
+          )}
+          disabled={!citySelected}
+        >
           <Box
             width={254} height={32}
             alignItems={"center"} justifyContent={"center"}

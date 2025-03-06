@@ -3,6 +3,10 @@ export type UserRequest = {
 }
 
 export type UserResponse = {
-  username: string;
+  status: number;
+  data: {
+    city: string,
+    username: string
+  }
 }
 

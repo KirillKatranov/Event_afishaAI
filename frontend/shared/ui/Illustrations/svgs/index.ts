@@ -11,3 +11,7 @@ export {Trips} from "./Trips";
 export {Places} from "./Places";
 export {Events} from "./Events";
 export {Organizers} from "./Organizers";
+export {CreateEvent} from "./CreateEvent";
+export {Strelka} from "./Strelka";
+export {Ticket} from "./Ticket";
+export {Feedback} from "./Feedback";

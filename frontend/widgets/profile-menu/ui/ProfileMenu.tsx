@@ -1,11 +1,12 @@
 import React from "react";
 import {Box, Text} from "@/shared/ui";
-import {Image, Pressable} from "react-native";
+import {Pressable} from "react-native";
 import {useRouter} from "expo-router";
 import Icon from "@/shared/ui/Icons/Icon";
 import DropShadow from "react-native-drop-shadow";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
+import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 export const ProfileMenu = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ export const ProfileMenu = () => {
           opacity: onPress ? 1 : 0.4,
         }}
       >
-        <Image source={illustration} height={36} width={36} />
+        <Illustration name={illustration} height={36} width={36}/>
 
         <Text selectable={false} variant={"profileMenuButton"} color={"text_color"} style={{ width: "100%" }}>
           { text }
@@ -45,14 +46,14 @@ export const ProfileMenu = () => {
     }}
     >
       <MenuItem
-        illustration={require("@/shared/assets/images/ticket.svg")}
+        illustration={"ticket"}
         text={"Мои билеты"}
       />
 
       <Spacer/>
 
       <MenuItem
-        illustration={require("@/shared/assets/images/create.svg")}
+        illustration={"createEvent"}
         text={"Создать мероприятие"}
       />
 
@@ -60,7 +61,7 @@ export const ProfileMenu = () => {
 
       <MenuItem
         onPress={() => { router.replace("/profile/feedback") }}
-        illustration={require("@/shared/assets/images/feedback.svg")}
+        illustration={"feedback"}
         text={"Обратная связь"}
       />
 
@@ -68,7 +69,7 @@ export const ProfileMenu = () => {
 
       <MenuItem
         onPress={() => { router.replace("/onboarding") }}
-        illustration={require("@/shared/assets/images/strelka.svg")}
+        illustration={"strelka"}
         text={"О нас"}
       />
     </DropShadow>

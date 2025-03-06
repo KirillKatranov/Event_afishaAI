@@ -1,13 +1,14 @@
 import axiosInstance from "@/shared/api/AxiosConfig";
+import {UserRequest, UserResponse} from "@/entities/user";
 
 class UserService {
   async getUser(
-    params: {}
+    params: UserRequest
   ) {
-    console.log("Send GET available cities list with params: ", params);
+    console.log("Send GET user request");
 
-    const response = await axiosInstance.get(
-      '',
+    const response: UserResponse = await axiosInstance.get(
+      '/users',
       {
         params: params
       });
