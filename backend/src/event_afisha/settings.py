@@ -157,7 +157,7 @@ CELERY_TIMEZONE = 'UTC'  # Or your local timezone
 CELERY_BEAT_SCHEDULE = {
     "sample_task": {
         "task": "event.tasks.sample_task",
-        "schedule": crontab(hour=12, minute=45),
+        "schedule": crontab(hour=9, minute=50),
     },
     # "notification_task": {
     #         "task": "event.tasks.notification_task",
