@@ -8,7 +8,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "event_afisha.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 from event.models import Content, User, Like
-from datetime import datetime, date
+from datetime import date
+from django.utils.timezone import now
 import requests
 from pyrogram.errors import FloodWait
 
@@ -60,10 +61,9 @@ def resolve_username_to_user_id(username: str) -> int | None:
 @shared_task
 def sample_task():
     """Task to delete old events."""
-    date_now = date.today()
-    content = Content.objects.filter(date__lt=date_now).all()
-    for event in content:
-        event.delete()
+    today = now().date()
+    deleted_count, _ = Content.objects.filter(date_end__lte=today).delete()
+    print(f"Deleted {deleted_count} events with date_end = {today}")
 
 
 @shared_task
