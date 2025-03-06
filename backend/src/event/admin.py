@@ -38,7 +38,7 @@ class LikeAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("username",)
+    list_display = ("username", "city",)
 
 
 @admin.register(MacroCategory)

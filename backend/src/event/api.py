@@ -2,9 +2,9 @@ from ninja_extra import NinjaExtraAPI
 
 from http import HTTPStatus
 from ninja_extra import api_controller, route
-from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite, UserCategoryPreference
+from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite, UserCategoryPreference, CITY_CHOICES
 from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema, \
-    UserPreferencesResponseSchema, TagsResponseSchema
+    UserPreferencesResponseSchema, TagsResponseSchema, UserSchema, CitiesResponseSchema
 from django.db.models import Q, Prefetch
 from datetime import date
 from ninja.errors import HttpError
@@ -51,7 +51,6 @@ class TagsController:
                 id=tag.id,
                 name=tag.name,
                 description=tag.description,
-                image=tag.image.url if tag.image else None,
                 # todo: ИСПРАВИТЬ!
                 # todo: это не count, нужно убрать отсюда те меро которые уже не показыватся поль-лям
                 count=tag.content_count
@@ -301,6 +300,56 @@ class PreferencesController:
         return UserPreferencesResponseSchema(categories=categories)
 
 
+@api_controller(
+    prefix_or_class="/api/v1",
+)
+class UserController:
+    @route.patch(
+        path="/users",
+        response={
+            200: dict,
+        },
+    )
+    def change_city(self, request_data: UserSchema) -> dict:
+        user = User.objects.filter(username=request_data.username).first()
+        if not user:
+            raise HttpError(404, "User not found")
+        if request_data.city not in [item[0] for item in CITY_CHOICES]:
+            raise HttpError(400, "Invalid city")
+        user.city = request_data.city
+        user.save()
+        return {"status": "ok"}
+
+    @route.get(
+        path="/users",
+        response={
+            200: UserSchema,
+        },
+    )
+    def change_city(self, username: str) -> UserSchema:
+        user = User.objects.filter(username=username).first()
+        if not user:
+            raise HttpError(404, "User not found")
+        return UserSchema(
+            city=user.city,
+            username=user.username
+        )
+
+
+@api_controller(
+    prefix_or_class="/api/v1",
+)
+class CityController:
+    @route.get(
+        path="/cities",
+        response={
+            200: CitiesResponseSchema,
+        },
+    )
+    def get_cities(self) -> CitiesResponseSchema:
+        return CitiesResponseSchema(cities=[city[0] for city in CITY_CHOICES])
+
+
 api = NinjaExtraAPI(title="afisha", version="0.0.1")
 api.register_controllers(
     HealthController,
@@ -308,5 +357,7 @@ api.register_controllers(
     ContentController,
     LikeController,
     FeedbackController,
-    PreferencesController
+    PreferencesController,
+    UserController,
+    CityController
 )
