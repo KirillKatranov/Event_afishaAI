@@ -89,15 +89,15 @@ class TagsController:
                                     ELSE NULL
                                 END
                             ) AS content_count
-                        FROM data_manager_tags t
-                        LEFT JOIN data_manager_content_tags ct ON t.id = ct.tags_id
-                        LEFT JOIN data_manager_content c ON ct.content_id = c.id
-                        LEFT JOIN data_manager_like l ON c.id = l.content_id 
-                            AND l.user_id = (SELECT id FROM data_manager_user WHERE username = %s)
-                        LEFT JOIN data_manager_removedfavorite rf ON c.id = rf.content_id 
-                            AND rf.user_id = (SELECT id FROM data_manager_user WHERE username = %s)
+                        FROM event_tags t
+                        LEFT JOIN event_content_tags ct ON t.id = ct.tags_id
+                        LEFT JOIN event_content c ON ct.content_id = c.id
+                        LEFT JOIN event_like l ON c.id = l.content_id 
+                            AND l.user_id = (SELECT id FROM event_user WHERE username = %s)
+                        LEFT JOIN event_removedfavorite rf ON c.id = rf.content_id 
+                            AND rf.user_id = (SELECT id FROM event_user WHERE username = %s)
                         WHERE 
-                            t.macro_category_id = (SELECT id FROM data_manager_macrocategory WHERE name = %s LIMIT 1)
+                            t.macro_category_id = (SELECT id FROM event_macrocategory WHERE name = %s LIMIT 1)
                         GROUP BY t.id, t.name, t.description;
                     """, [username, username, macro_category])
 
