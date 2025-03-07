@@ -57,15 +57,16 @@ class TagsController:
             content_ids = [like.content.id for like in current_user.likes.all()]
             contents_not_mark = contents.filter(~Q(id__in=content_ids))
             removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
-            contents_not_mark.exclude(id__in=removed_contents)
-            tag_schemas.append([
+            contents_not_mark = contents_not_mark.exclude(id__in=removed_contents)
+            count = len(contents_not_mark) if isinstance(contents_not_mark, list) else contents_not_mark.count()
+            tag_schemas.append(
                 TagSchema(
                     id=tag.id,
                     name=tag.name,
                     description=tag.description,
-                    count=contents_not_mark.count()
+                    count=count
                 )
-            ])
+            )
         # tag_schemas = [
         #     TagSchema(
         #         id=tag.id,
