@@ -86,25 +86,25 @@ class TagsController:
         # return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
         user, _ = User.objects.get_or_create(username=username)
 
-        # Получаем ID контента, который пользователь лайкнул
-        liked_content_subquery = Like.objects.filter(
-            user=user, content=OuterRef('id')
-        ).values('id')
+        # Подзапрос для проверки, лайкнул ли пользователь контент
+        liked_content_exists = Exists(
+            Like.objects.filter(user=user, content=OuterRef("id"))
+        )
 
-        # Получаем ID контента, который пользователь удалил
-        removed_content_subquery = RemovedFavorite.objects.filter(
-            user=user, content=OuterRef('id')
-        ).values('id')
+        # Подзапрос для проверки, удалил ли пользователь контент из избранного
+        removed_content_exists = Exists(
+            RemovedFavorite.objects.filter(user=user, content=OuterRef("id"))
+        )
 
-        # Получаем теги с актуальным количеством контента (исключая лайкнутый и удаленный)
+        # Получаем теги с актуальным количеством контента (исключая лайкнутый и удаленный контент)
         tags = Tags.objects.filter(macro_category__name=macro_category).annotate(
             content_count=Count(
                 'contents',
-                filter=~Exists(liked_content_subquery) & ~Exists(removed_content_subquery)
+                filter=~liked_content_exists & ~removed_content_exists
             )
         ).filter(content_count__gt=0)
 
-        # Предпочтения пользователя
+        # Получаем предпочтения пользователя
         preferences = UserCategoryPreference.objects.filter(user=user).values_list('tag_id', flat=True)
 
         # Формируем JSON-ответ
