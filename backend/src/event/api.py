@@ -102,7 +102,7 @@ class TagsController:
                     """, [username, username, macro_category])
 
             tags = cursor.fetchall()
-
+            print(f"{tags=}")
         return TagsResponseSchema(
             tags=[
                 TagSchema(id=row[0], name=row[1], description=row[2], count=row[3])
