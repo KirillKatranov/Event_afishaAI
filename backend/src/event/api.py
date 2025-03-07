@@ -86,21 +86,29 @@ class TagsController:
         # return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
         user, _ = User.objects.get_or_create(username=username)
 
-        # Подзапрос для проверки, лайкнул ли пользователь контент
-        liked_content_exists = Exists(
-            Like.objects.filter(user=user, content=OuterRef("id"))
-        )
+        # Подзапрос для получения ID контента, который пользователь лайкнул
+        liked_content_subquery = Like.objects.filter(
+            user=user, content=OuterRef("id")
+        ).values("id")
 
-        # Подзапрос для проверки, удалил ли пользователь контент из избранного
-        removed_content_exists = Exists(
-            RemovedFavorite.objects.filter(user=user, content=OuterRef("id"))
-        )
+        # Подзапрос для получения ID контента, который пользователь удалил
+        removed_content_subquery = RemovedFavorite.objects.filter(
+            user=user, content=OuterRef("id")
+        ).values("id")
 
-        # Получаем теги с актуальным количеством контента (исключая лайкнутый и удаленный контент)
+        # Фильтруем контент, исключая лайкнутый и удаленный пользователем
+        filtered_contents = Content.objects.annotate(
+            is_liked=Exists(liked_content_subquery),
+            is_removed=Exists(removed_content_subquery)
+        ).filter(is_liked=False, is_removed=False)
+
+        # Считаем количество оставшегося контента для каждого тега
         tags = Tags.objects.filter(macro_category__name=macro_category).annotate(
             content_count=Count(
                 'contents',
-                filter=~liked_content_exists & ~removed_content_exists
+                filter=Exists(
+                    filtered_contents.filter(tags=OuterRef("id"))  # Связываем с тегами
+                )
             )
         ).filter(content_count__gt=0)
 
