@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0013_alter_content_contact'),
+        ("event", "0013_alter_content_contact"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='content',
-            name='contact',
+            model_name="content",
+            name="contact",
             field=models.JSONField(blank=True, default={}, null=True),
         ),
     ]

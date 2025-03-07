@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0008_tags_image'),
+        ("event", "0008_tags_image"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='content',
-            name='date',
+            model_name="content",
+            name="date",
             field=models.DateField(blank=True, null=True),
         ),
     ]

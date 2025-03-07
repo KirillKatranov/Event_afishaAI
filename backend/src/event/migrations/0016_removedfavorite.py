@@ -5,22 +5,39 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0015_content_cost_content_location_content_time'),
+        ("event", "0015_content_cost_content_location_content_time"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='RemovedFavorite',
+            name="RemovedFavorite",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('removed_at', models.DateTimeField(auto_now_add=True)),
-                ('content', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='event.content')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='event.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("removed_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "content",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="event.content"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="event.user"
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'content')},
+                "unique_together": {("user", "content")},
             },
         ),
     ]

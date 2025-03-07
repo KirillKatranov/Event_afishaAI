@@ -5,20 +5,27 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0010_alter_content_options_alter_like_unique_together'),
+        ("event", "0010_alter_content_options_alter_like_unique_together"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='like',
-            name='content',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='likes', to='event.content'),
+            model_name="like",
+            name="content",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="likes",
+                to="event.content",
+            ),
         ),
         migrations.AlterField(
-            model_name='like',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='likes', to='event.user'),
+            model_name="like",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="likes",
+                to="event.user",
+            ),
         ),
     ]

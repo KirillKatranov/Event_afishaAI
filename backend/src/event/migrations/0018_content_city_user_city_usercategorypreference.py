@@ -5,31 +5,72 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0017_macrocategory_tags_macro_category'),
+        ("event", "0017_macrocategory_tags_macro_category"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='content',
-            name='city',
-            field=models.CharField(choices=[('spb', 'Санкт-Петербург'), ('msk', 'Москва'), ('ekb', 'Екатеринбург'), ('nsk', 'Новосибирск'), ('nn', 'Нижний Новгород')], default='nn', max_length=50),
+            model_name="content",
+            name="city",
+            field=models.CharField(
+                choices=[
+                    ("spb", "Санкт-Петербург"),
+                    ("msk", "Москва"),
+                    ("ekb", "Екатеринбург"),
+                    ("nsk", "Новосибирск"),
+                    ("nn", "Нижний Новгород"),
+                ],
+                default="nn",
+                max_length=50,
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='city',
-            field=models.CharField(choices=[('spb', 'Санкт-Петербург'), ('msk', 'Москва'), ('ekb', 'Екатеринбург'), ('nsk', 'Новосибирск'), ('nn', 'Нижний Новгород')], default='nn', max_length=50),
+            model_name="user",
+            name="city",
+            field=models.CharField(
+                choices=[
+                    ("spb", "Санкт-Петербург"),
+                    ("msk", "Москва"),
+                    ("ekb", "Екатеринбург"),
+                    ("nsk", "Новосибирск"),
+                    ("nn", "Нижний Новгород"),
+                ],
+                default="nn",
+                max_length=50,
+            ),
         ),
         migrations.CreateModel(
-            name='UserCategoryPreference',
+            name="UserCategoryPreference",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_preferences', to='event.tags')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='category_preferences', to='event.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "tag",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="user_preferences",
+                        to="event.tags",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="category_preferences",
+                        to="event.user",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'tag')},
+                "unique_together": {("user", "tag")},
             },
         ),
     ]

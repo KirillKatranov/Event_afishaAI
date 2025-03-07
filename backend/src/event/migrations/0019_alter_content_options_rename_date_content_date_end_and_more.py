@@ -4,39 +4,42 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0018_content_city_user_city_usercategorypreference'),
+        ("event", "0018_content_city_user_city_usercategorypreference"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='content',
-            options={'ordering': ['date_start']},
+            name="content",
+            options={"ordering": ["date_start"]},
         ),
         migrations.RenameField(
-            model_name='content',
-            old_name='date',
-            new_name='date_end',
+            model_name="content",
+            old_name="date",
+            new_name="date_end",
         ),
         migrations.RemoveField(
-            model_name='tags',
-            name='image',
+            model_name="tags",
+            name="image",
         ),
         migrations.AddField(
-            model_name='content',
-            name='date_start',
+            model_name="content",
+            name="date_start",
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='content',
-            name='unique_id',
-            field=models.CharField(default='', editable=False, max_length=250, unique=True),
+            model_name="content",
+            name="unique_id",
+            field=models.CharField(
+                default="", editable=False, max_length=250, unique=True
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='content',
-            name='image',
-            field=models.ImageField(blank=True, max_length=300, null=True, upload_to='images'),
+            model_name="content",
+            name="image",
+            field=models.ImageField(
+                blank=True, max_length=300, null=True, upload_to="images"
+            ),
         ),
     ]

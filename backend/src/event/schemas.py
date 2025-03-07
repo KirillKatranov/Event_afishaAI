@@ -10,7 +10,7 @@ class TagSchema(Schema):
     image: str | None = None
     count: int | None = None
 
-    @field_validator('image')
+    @field_validator("image")
     @classmethod
     def validate_x(cls, image: str) -> str:
         if image is None:
@@ -38,7 +38,7 @@ class ContentSchema(Schema):
     location: str | None = None
     macro_category: str | None = None
 
-    @field_validator('image')
+    @field_validator("image")
     @classmethod
     def validate_x(cls, image: str) -> str:
         if image is None:

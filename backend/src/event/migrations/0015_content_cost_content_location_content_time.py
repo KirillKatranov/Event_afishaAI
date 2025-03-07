@@ -4,25 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0014_alter_content_contact'),
+        ("event", "0014_alter_content_contact"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='content',
-            name='cost',
+            model_name="content",
+            name="cost",
             field=models.IntegerField(blank=True, default=None, null=True),
         ),
         migrations.AddField(
-            model_name='content',
-            name='location',
+            model_name="content",
+            name="location",
             field=models.CharField(blank=True, default=None, max_length=250, null=True),
         ),
         migrations.AddField(
-            model_name='content',
-            name='time',
+            model_name="content",
+            name="time",
             field=models.CharField(blank=True, default=None, max_length=250, null=True),
         ),
     ]

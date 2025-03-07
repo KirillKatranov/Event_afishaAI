@@ -4,5 +4,5 @@ from event.api import api
 
 urlpatterns = [
     path("", api.urls),
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
 ]

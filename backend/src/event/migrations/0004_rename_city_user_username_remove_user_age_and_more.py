@@ -4,35 +4,34 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0003_content_date'),
+        ("event", "0003_content_date"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='user',
-            old_name='city',
-            new_name='username',
+            model_name="user",
+            old_name="city",
+            new_name="username",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='age',
+            model_name="user",
+            name="age",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='gender',
+            model_name="user",
+            name="gender",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='name',
+            model_name="user",
+            name="name",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='tags',
+            model_name="user",
+            name="tags",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='type',
+            model_name="user",
+            name="type",
         ),
     ]

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0005_alter_like_unique_together'),
+        ("event", "0005_alter_like_unique_together"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='tags',
-            name='name',
+            model_name="tags",
+            name="name",
             field=models.CharField(db_index=True, max_length=250),
         ),
     ]

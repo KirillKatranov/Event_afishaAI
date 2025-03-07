@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0007_alter_content_tags'),
+        ("event", "0007_alter_content_tags"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tags',
-            name='image',
-            field=models.ImageField(default='', max_length=300, upload_to='images_tag'),
+            model_name="tags",
+            name="image",
+            field=models.ImageField(default="", max_length=300, upload_to="images_tag"),
             preserve_default=False,
         ),
     ]

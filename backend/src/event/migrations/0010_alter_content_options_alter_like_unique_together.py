@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0009_alter_content_date'),
+        ("event", "0009_alter_content_date"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='content',
-            options={'ordering': ['date']},
+            name="content",
+            options={"ordering": ["date"]},
         ),
         migrations.AlterUniqueTogether(
-            name='like',
-            unique_together={('user', 'content')},
+            name="like",
+            unique_together={("user", "content")},
         ),
     ]

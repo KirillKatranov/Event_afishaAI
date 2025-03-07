@@ -2,13 +2,31 @@ from ninja_extra import NinjaExtraAPI
 
 from http import HTTPStatus
 from ninja_extra import api_controller, route
-from event.models import Tags, Content, User, Like, Feedback, RemovedFavorite, UserCategoryPreference, CITY_CHOICES
-from event.schemas import TagSchema, ContentSchema, LikeSchema, LikeRequestSchema, FeedbackRequestSchema, \
-    UserPreferencesResponseSchema, TagsResponseSchema, UserSchema, CitiesResponseSchema
+from event.models import (
+    Tags,
+    Content,
+    User,
+    Like,
+    Feedback,
+    RemovedFavorite,
+    UserCategoryPreference,
+    CITY_CHOICES,
+)
+from event.schemas import (
+    TagSchema,
+    ContentSchema,
+    LikeSchema,
+    LikeRequestSchema,
+    FeedbackRequestSchema,
+    UserPreferencesResponseSchema,
+    TagsResponseSchema,
+    UserSchema,
+    CitiesResponseSchema,
+)
 from django.db.models import Q, Prefetch
 from datetime import date
 from ninja.errors import HttpError
-from ninja.pagination import paginate
+from django.db import connection
 
 
 @api_controller(
@@ -36,50 +54,13 @@ class TagsController:
         },
     )
     def get_tags(self, username: str, macro_category: str):
-        from django.db.models import Count, OuterRef, Exists, Subquery
-        from django.db import connection
-        # tags = (
-        #     Tags.objects.filter(macro_category__name=macro_category)
-        #     .annotate(content_count=Count('contents'))
-        #     .filter(content_count__gt=0)
-        # )
-        #
-        # user, _ = User.objects.get_or_create(username=username)
-        #
-        # liked_content_subquery = Like.objects.filter(
-        #     user=user, content=OuterRef('id')
-        # ).values('id')
-        #
-        # preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
-        # preferences_categories = [pref.tag.id for pref in preferences]
-        # current_user = User.objects.filter(username=username).first()
-        #
-        # tag_schemas = []
-        #
-        # # todo: тут нужно все оптимизировать
-        # for tag in tags:
-        #     q_filter_tags = Q(tags__name=tag)
-        #     contents = Content.objects.filter(q_filter_tags)
-        #     content_ids = [like.content.id for like in current_user.likes.all()]
-        #     contents_not_mark = contents.filter(~Q(id__in=content_ids))
-        #     removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
-        #     contents_not_mark = contents_not_mark.exclude(id__in=removed_contents)
-        #     count = len(contents_not_mark) if isinstance(contents_not_mark, list) else contents_not_mark.count()
-        #     tag_schemas.append(
-        #         TagSchema(
-        #             id=tag.id,
-        #             name=tag.name,
-        #             description=tag.description,
-        #             count=count
-        #         )
-        #     )
-        # return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
         with connection.cursor() as cursor:
-            cursor.execute("""
-                        SELECT 
-                            t.id, 
-                            t.name, 
-                            t.description, 
+            cursor.execute(
+                """
+                        SELECT
+                            t.id,
+                            t.name,
+                            t.description,
                             COUNT(
                                 CASE
                                     -- Считаем контент, если он не был лайкнут пользователем и не удален из избранного
@@ -92,29 +73,30 @@ class TagsController:
                         FROM event_tags t
                         LEFT JOIN event_content_tags ct ON t.id = ct.tags_id
                         LEFT JOIN event_content c ON ct.content_id = c.id
-                        LEFT JOIN event_like l ON c.id = l.content_id 
+                        LEFT JOIN event_like l ON c.id = l.content_id
                             AND l.user_id = (SELECT id FROM event_user WHERE username = %s)
-                        LEFT JOIN event_removedfavorite rf ON c.id = rf.content_id 
+                        LEFT JOIN event_removedfavorite rf ON c.id = rf.content_id
                             AND rf.user_id = (SELECT id FROM event_user WHERE username = %s)
-                        WHERE 
+                        WHERE
                             t.macro_category_id = (SELECT id FROM event_macrocategory WHERE name = %s LIMIT 1)
                         GROUP BY t.id, t.name, t.description;
-                    """, [username, username, macro_category])
+                    """,
+                [username, username, macro_category],
+            )
 
             tags = cursor.fetchall()
-            print(f"{tags=}")
         return TagsResponseSchema(
             tags=[
                 TagSchema(id=row[0], name=row[1], description=row[2], count=row[3])
                 for row in tags
             ],
             preferences=[
-                pref.tag.id for pref in UserCategoryPreference.objects.filter(
-                    user__username='adbogatov'
+                pref.tag.id
+                for pref in UserCategoryPreference.objects.filter(
+                    user__username="adbogatov"
                 ).select_related("tag")
-            ]
+            ],
         )
-
 
 
 @api_controller(
@@ -127,8 +109,12 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_content_for_feed(self, username: str, date_start: date | None = None,
-                             date_end: date | None = None) -> list[ContentSchema]:
+    def get_content_for_feed(
+        self,
+        username: str,
+        date_start: date | None = None,
+        date_end: date | None = None,
+    ) -> list[ContentSchema]:
         q_filter = Q()
         if date_start and date_end:
             q_filter &= Q(date_start__gte=date_start) & Q(date_start__lte=date_end)
@@ -139,19 +125,25 @@ class ContentController:
         if not current_user:
             current_user = User.objects.create(username=username)
 
-        preferred_tags = current_user.category_preferences.values_list("tag_id", flat=True)
+        preferred_tags = current_user.category_preferences.values_list(
+            "tag_id", flat=True
+        )
 
         # Если у пользователя нет предпочтений, возвращаем весь контент
         if not preferred_tags:
             contents = Content.objects.filter(q_filter).distinct()
         else:
-            contents = Content.objects.filter(q_filter, tags__id__in=preferred_tags).distinct()
+            contents = Content.objects.filter(
+                q_filter, tags__id__in=preferred_tags
+            ).distinct()
 
         likes = current_user.likes
         content_ids = [like.content.id for like in likes.all()]
         contents_not_mark = contents.filter(~Q(id__in=content_ids))
 
-        removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
+        removed_contents = RemovedFavorite.objects.filter(
+            user=current_user
+        ).values_list("content_id", flat=True)
         result_contents = contents_not_mark.exclude(id__in=removed_contents)
         return result_contents
 
@@ -161,8 +153,13 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_content(self, username: str, tag: str | None = None, date_start: date | None = None,
-                    date_end: date | None = None) -> list[ContentSchema]:
+    def get_content(
+        self,
+        username: str,
+        tag: str | None = None,
+        date_start: date | None = None,
+        date_end: date | None = None,
+    ) -> list[ContentSchema]:
         q_filter = Q(tags__name=tag) if tag else Q()
         if date_start and date_end:
             q_filter &= Q(date_start__gte=date_start) & Q(date_start__lte=date_end)
@@ -171,14 +168,15 @@ class ContentController:
         contents = Content.objects.filter(q_filter)
         current_user = User.objects.filter(username=username).first()
         if not current_user:
-
             # todo: при таком раскладе пользователь никогда не увидит приветственных экранов,
             #  тут я должен генерить исключение для редиректа.
             current_user = User.objects.create(username=username)
         likes = current_user.likes
         content_ids = [like.content.id for like in likes.all()]
         contents_not_mark = contents.filter(~Q(id__in=content_ids))
-        removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
+        removed_contents = RemovedFavorite.objects.filter(
+            user=current_user
+        ).values_list("content_id", flat=True)
         return contents_not_mark.exclude(id__in=removed_contents)
 
     # todo: сделать кэширование ленты! + сделать пагинацию для снижения нагрузки на БД.
@@ -188,19 +186,25 @@ class ContentController:
             200: list[ContentSchema],
         },
     )
-    def get_liked_content(self, username: str, value: bool = True,
-                          date_start: date | None = None, date_end: date | None = None,
-                          ) -> list[ContentSchema]:
+    def get_liked_content(
+        self,
+        username: str,
+        value: bool = True,
+        date_start: date | None = None,
+        date_end: date | None = None,
+    ) -> list[ContentSchema]:
         current_user = User.objects.filter(username=username).first()
         if not current_user:
             current_user = User.objects.create(username=username)
 
-        likes = Like.objects.filter(user=current_user, value=value).order_by('created')
-        liked_content_ids = likes.values_list('content_id', flat=True)
+        likes = Like.objects.filter(user=current_user, value=value).order_by("created")
+        liked_content_ids = likes.values_list("content_id", flat=True)
 
         content_filter = Q(id__in=liked_content_ids)
         if date_start and date_end:
-            content_filter &= Q(date_start__gte=date_start) & Q(date_start__lte=date_end)
+            content_filter &= Q(date_start__gte=date_start) & Q(
+                date_start__lte=date_end
+            )
         if date_start and not date_end:
             content_filter &= Q(date_start=date_start)
 
@@ -208,21 +212,24 @@ class ContentController:
 
         # Предзагрузка макрокатегорий через связь тегов
         content = content.prefetch_related(
-            Prefetch(
-                'tags',
-                queryset=Tags.objects.select_related('macro_category')
-            )
+            Prefetch("tags", queryset=Tags.objects.select_related("macro_category"))
         )
 
         content_sorted_by_likes = sorted(
             content,
-            key=lambda c: next(like.created for like in likes if like.content_id == c.id),
-            reverse=True
+            key=lambda c: next(
+                like.created for like in likes if like.content_id == c.id
+            ),
+            reverse=True,
         )
 
         for item in content_sorted_by_likes:
-            macro_categories = [tag.macro_category.name for tag in item.tags.all() if tag.macro_category]
-            item.macro_category = macro_categories[0] if macro_categories else None  # Берем первую найденную
+            macro_categories = [
+                tag.macro_category.name for tag in item.tags.all() if tag.macro_category
+            ]
+            item.macro_category = (
+                macro_categories[0] if macro_categories else None
+            )  # Берем первую найденную
 
         return content_sorted_by_likes
 
@@ -254,8 +261,14 @@ class LikeController:
         if not user:
             user = User.objects.create(username=request_data.username)
         content = Content.objects.filter(id=request_data.content_id).first()
-        Like.objects.update_or_create(user=user, content=content, defaults={"value": True})
-        return {'user': request_data.username, 'content': request_data.content_id, 'value': True}
+        Like.objects.update_or_create(
+            user=user, content=content, defaults={"value": True}
+        )
+        return {
+            "user": request_data.username,
+            "content": request_data.content_id,
+            "value": True,
+        }
 
     @route.post(
         path="/dislike",
@@ -268,8 +281,14 @@ class LikeController:
         if not user:
             user = User.objects.create(username=request_data.username)
         content = Content.objects.filter(id=request_data.content_id).first()
-        Like.objects.update_or_create(user=user, content=content, defaults={"value": False})
-        return {'user': request_data.username, 'content': request_data.content_id, 'value': False}
+        Like.objects.update_or_create(
+            user=user, content=content, defaults={"value": False}
+        )
+        return {
+            "user": request_data.username,
+            "content": request_data.content_id,
+            "value": False,
+        }
 
     @route.post(
         path="/delete_mark",
@@ -337,7 +356,9 @@ class PreferencesController:
         Удаляет конкретное предпочтение пользователя по категории (тегу).
         """
         user, _ = User.objects.get_or_create(username=username)
-        preference = UserCategoryPreference.objects.filter(user=user, tag_id=tag_id).first()
+        preference = UserCategoryPreference.objects.filter(
+            user=user, tag_id=tag_id
+        ).first()
 
         if not preference:
             raise HttpError(404, "Preference not found for the specified tag")
@@ -354,7 +375,9 @@ class PreferencesController:
         Возвращает список всех предпочтений пользователя по категориям (тегам).
         """
         user, _ = User.objects.get_or_create(username=username)
-        preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
+        preferences = UserCategoryPreference.objects.filter(user=user).select_related(
+            "tag"
+        )
         categories = [pref.tag.name for pref in preferences]
         return UserPreferencesResponseSchema(categories=categories)
 
@@ -389,10 +412,7 @@ class UserController:
         user = User.objects.filter(username=username).first()
         if not user:
             raise HttpError(404, "User not found")
-        return UserSchema(
-            city=user.city,
-            username=user.username
-        )
+        return UserSchema(city=user.city, username=user.username)
 
 
 @api_controller(
@@ -418,7 +438,7 @@ api.register_controllers(
     FeedbackController,
     PreferencesController,
     UserController,
-    CityController
+    CityController,
 )
 
 # SELECT

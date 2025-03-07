@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0002_remove_content_user'),
+        ("event", "0002_remove_content_user"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='content',
-            name='date',
+            model_name="content",
+            name="date",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

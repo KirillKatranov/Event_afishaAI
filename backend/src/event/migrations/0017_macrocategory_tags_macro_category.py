@@ -5,24 +5,45 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0016_removedfavorite'),
+        ("event", "0016_removedfavorite"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MacroCategory',
+            name="MacroCategory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=250)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('image', models.ImageField(blank=True, max_length=300, null=True, upload_to='images_macrocategory')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(db_index=True, max_length=250)),
+                ("description", models.TextField(blank=True, null=True)),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True,
+                        max_length=300,
+                        null=True,
+                        upload_to="images_macrocategory",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='tags',
-            name='macro_category',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tags', to='event.macrocategory'),
+            model_name="tags",
+            name="macro_category",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="tags",
+                to="event.macrocategory",
+            ),
         ),
     ]

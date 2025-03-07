@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('event', '0012_feedback'),
+        ("event", "0012_feedback"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='content',
-            name='contact',
+            model_name="content",
+            name="contact",
             field=models.CharField(blank=True, max_length=250, null=True),
         ),
     ]
