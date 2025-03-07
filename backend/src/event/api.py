@@ -86,31 +86,23 @@ class TagsController:
         # return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
         user, _ = User.objects.get_or_create(username=username)
 
-        # Подзапрос для получения ID контента, который пользователь лайкнул
-        liked_content_subquery = Like.objects.filter(
-            user=user, content=OuterRef("id")
-        ).values("id")
+        # Проверяем, лайкнул ли пользователь контент
+        liked_content_exists = Exists(
+            Like.objects.filter(user=user, content=OuterRef("id"))
+        )
 
-        # Подзапрос для получения ID контента, который пользователь удалил
-        removed_content_subquery = RemovedFavorite.objects.filter(
-            user=user, content=OuterRef("id")
-        ).values("id")
+        # Проверяем, удалил ли пользователь контент
+        removed_content_exists = Exists(
+            RemovedFavorite.objects.filter(user=user, content=OuterRef("id"))
+        )
 
-        # Фильтруем контент, исключая лайкнутый и удаленный пользователем
-        filtered_contents = Content.objects.annotate(
-            is_liked=Exists(liked_content_subquery),
-            is_removed=Exists(removed_content_subquery)
-        ).filter(is_liked=False, is_removed=False)
-
-        # Считаем количество оставшегося контента для каждого тега
+        # Считаем количество доступного контента для каждого тега
         tags = Tags.objects.filter(macro_category__name=macro_category).annotate(
             content_count=Count(
                 'contents',
-                filter=Exists(
-                    filtered_contents.filter(tags=OuterRef("id"))  # Связываем с тегами
-                )
+                filter=~liked_content_exists & ~removed_content_exists  # Исключаем лайкнутые и удаленные
             )
-        ).filter(content_count__gt=0)
+        )
 
         # Получаем предпочтения пользователя
         preferences = UserCategoryPreference.objects.filter(user=user).values_list('tag_id', flat=True)
@@ -121,7 +113,7 @@ class TagsController:
                 id=tag.id,
                 name=tag.name,
                 description=tag.description,
-                count=tag.content_count
+                count=tag.content_count  # Показываем даже если count=0
             ) for tag in tags
         ]
 
