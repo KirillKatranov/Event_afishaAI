@@ -37,53 +37,84 @@ class TagsController:
     )
     def get_tags(self, username: str, macro_category: str):
         from django.db.models import Count, OuterRef, Exists, Subquery
+        from django.db import connection
+        # tags = (
+        #     Tags.objects.filter(macro_category__name=macro_category)
+        #     .annotate(content_count=Count('contents'))
+        #     .filter(content_count__gt=0)
+        # )
+        #
+        # user, _ = User.objects.get_or_create(username=username)
+        #
+        # liked_content_subquery = Like.objects.filter(
+        #     user=user, content=OuterRef('id')
+        # ).values('id')
+        #
+        # preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
+        # preferences_categories = [pref.tag.id for pref in preferences]
+        # current_user = User.objects.filter(username=username).first()
+        #
+        # tag_schemas = []
+        #
+        # # todo: тут нужно все оптимизировать
+        # for tag in tags:
+        #     q_filter_tags = Q(tags__name=tag)
+        #     contents = Content.objects.filter(q_filter_tags)
+        #     content_ids = [like.content.id for like in current_user.likes.all()]
+        #     contents_not_mark = contents.filter(~Q(id__in=content_ids))
+        #     removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
+        #     contents_not_mark = contents_not_mark.exclude(id__in=removed_contents)
+        #     count = len(contents_not_mark) if isinstance(contents_not_mark, list) else contents_not_mark.count()
+        #     tag_schemas.append(
+        #         TagSchema(
+        #             id=tag.id,
+        #             name=tag.name,
+        #             description=tag.description,
+        #             count=count
+        #         )
+        #     )
+        # return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                        SELECT 
+                            t.id, 
+                            t.name, 
+                            t.description, 
+                            COUNT(
+                                CASE
+                                    -- Считаем контент, если он не был лайкнут пользователем и не удален из избранного
+                                    WHEN l.id IS NULL AND rf.id IS NULL THEN c.id
+                                    -- Считаем контент, который был лайкнут пользователем, но не исключаем его из выборки
+                                    WHEN l.id IS NOT NULL AND rf.id IS NULL THEN NULL
+                                    ELSE NULL
+                                END
+                            ) AS content_count
+                        FROM data_manager_tags t
+                        LEFT JOIN data_manager_content_tags ct ON t.id = ct.tags_id
+                        LEFT JOIN data_manager_content c ON ct.content_id = c.id
+                        LEFT JOIN data_manager_like l ON c.id = l.content_id 
+                            AND l.user_id = (SELECT id FROM data_manager_user WHERE username = %s)
+                        LEFT JOIN data_manager_removedfavorite rf ON c.id = rf.content_id 
+                            AND rf.user_id = (SELECT id FROM data_manager_user WHERE username = %s)
+                        WHERE 
+                            t.macro_category_id = (SELECT id FROM data_manager_macrocategory WHERE name = %s LIMIT 1)
+                        GROUP BY t.id, t.name, t.description;
+                    """, [username, username, macro_category])
 
-        tags = (
-            Tags.objects.filter(macro_category__name=macro_category)
-            .annotate(content_count=Count('contents'))
-            .filter(content_count__gt=0)
+            tags = cursor.fetchall()
+
+        return TagsResponseSchema(
+            tags=[
+                TagSchema(id=row[0], name=row[1], description=row[2], count=row[3])
+                for row in tags
+            ],
+            preferences=[
+                pref.tag.id for pref in UserCategoryPreference.objects.filter(
+                    user__username='adbogatov'
+                ).select_related("tag")
+            ]
         )
 
-        user, _ = User.objects.get_or_create(username=username)
-
-        liked_content_subquery = Like.objects.filter(
-            user=user, content=OuterRef('id')
-        ).values('id')
-
-        preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
-        preferences_categories = [pref.tag.id for pref in preferences]
-        current_user = User.objects.filter(username=username).first()
-
-        tag_schemas = []
-
-        for tag in tags:
-            q_filter_tags = Q(tags__name=tag)
-            contents = Content.objects.filter(q_filter_tags)
-            content_ids = [like.content.id for like in current_user.likes.all()]
-            contents_not_mark = contents.filter(~Q(id__in=content_ids))
-            removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
-            contents_not_mark = contents_not_mark.exclude(id__in=removed_contents)
-            count = len(contents_not_mark) if isinstance(contents_not_mark, list) else contents_not_mark.count()
-            tag_schemas.append(
-                TagSchema(
-                    id=tag.id,
-                    name=tag.name,
-                    description=tag.description,
-                    count=count
-                )
-            )
-        # tag_schemas = [
-        #     TagSchema(
-        #         id=tag.id,
-        #         name=tag.name,
-        #         description=tag.description,
-        #         # todo: ИСПРАВИТЬ!
-        #         # todo: это не count, нужно убрать отсюда те меро которые уже не показыватся поль-лям
-        #         count=tag.content_count
-        #     )
-        #     for tag in tags
-        # ]
-        return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
 
 
 @api_controller(
@@ -389,3 +420,21 @@ api.register_controllers(
     UserController,
     CityController
 )
+
+# SELECT
+#     t.id,
+#     t.name,
+#     t.description,
+#     COUNT(c.id) AS content_count
+# FROM event_tags t
+# LEFT JOIN event_content_tags ct ON t.id = ct.tags_id
+# LEFT JOIN event_content c ON ct.content_id = c.id
+# LEFT JOIN event_like l ON c.id = l.content_id
+#     AND l.user_id = (SELECT id FROM event_user WHERE username = 'adbogatov')
+# LEFT JOIN event_removedfavorite rf ON c.id = rf.content_id
+#     AND rf.user_id = (SELECT id FROM event_user WHERE username = 'adbogatov')
+# WHERE
+#     t.macro_category_id = (SELECT id FROM event_macrocategory WHERE name = 'events' LIMIT 1)
+#     AND l.id IS NULL  -- Исключаем лайкнутый контент
+#     AND rf.id IS NULL -- Исключаем удалённый контент
+# GROUP BY t.id, t.name, t.description;
