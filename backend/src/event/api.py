@@ -115,37 +115,41 @@ class ContentController:
         date_start: date | None = None,
         date_end: date | None = None,
     ) -> list[ContentSchema]:
+        # Фильтрация по датам
         q_filter = Q()
-        if date_start and date_end:
-            q_filter &= Q(date_start__gte=date_start) & Q(date_start__lte=date_end)
-        if date_start and not date_end:
-            q_filter &= Q(date_start=date_start)
+        if date_start:
+            q_filter &= Q(date_start__gte=date_start)
+        if date_end:
+            q_filter &= Q(date_start__lte=date_end)
 
-        current_user = User.objects.filter(username=username).first()
-        if not current_user:
-            current_user = User.objects.create(username=username)
+        # Получаем или создаем пользователя
+        current_user, created = User.objects.get_or_create(username=username)
 
+        # Получаем предпочтения пользователя (теги)
         preferred_tags = current_user.category_preferences.values_list(
             "tag_id", flat=True
         )
 
-        # Если у пользователя нет предпочтений, возвращаем весь контент
-        if not preferred_tags:
-            contents = Content.objects.filter(q_filter).distinct()
-        else:
+        # Предпочтения пользователя могут быть пустыми, если их нет
+        if preferred_tags:
             contents = Content.objects.filter(
                 q_filter, tags__id__in=preferred_tags
             ).distinct()
+        else:
+            contents = Content.objects.filter(q_filter).distinct()
 
-        likes = current_user.likes
-        content_ids = [like.content.id for like in likes.all()]
-        contents_not_mark = contents.filter(~Q(id__in=content_ids))
-
-        removed_contents = RemovedFavorite.objects.filter(
+        # Используем prefetch_related для загрузки связанных данных (лайков и удалённых контентов)
+        likes_ids = current_user.likes.values_list("content_id", flat=True)
+        removed_contents_ids = RemovedFavorite.objects.filter(
             user=current_user
         ).values_list("content_id", flat=True)
-        result_contents = contents_not_mark.exclude(id__in=removed_contents)
-        return result_contents
+
+        # Исключаем лайкнутый контент и контент, удалённый из избранного
+        contents_not_mark = contents.exclude(id__in=likes_ids).exclude(
+            id__in=removed_contents_ids
+        )
+
+        return contents_not_mark
 
     @route.get(
         path="/contents",
