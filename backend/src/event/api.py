@@ -47,17 +47,36 @@ class TagsController:
         user, _ = User.objects.get_or_create(username=username)
         preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
         preferences_categories = [pref.tag.id for pref in preferences]
-        tag_schemas = [
-            TagSchema(
-                id=tag.id,
-                name=tag.name,
-                description=tag.description,
-                # todo: ИСПРАВИТЬ!
-                # todo: это не count, нужно убрать отсюда те меро которые уже не показыватся поль-лям
-                count=tag.content_count
-            )
-            for tag in tags
-        ]
+        current_user = User.objects.filter(username=username).first()
+
+        tag_schemas = []
+
+        for tag in tags:
+            q_filter_tags = Q(tags__name=tag)
+            contents = Content.objects.filter(q_filter_tags)
+            content_ids = [like.content.id for like in current_user.likes.all()]
+            contents_not_mark = contents.filter(~Q(id__in=content_ids))
+            removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
+            contents_not_mark.exclude(id__in=removed_contents)
+            tag_schemas.append([
+                TagSchema(
+                    id=tag.id,
+                    name=tag.name,
+                    description=tag.description,
+                    count=contents_not_mark.count()
+                )
+            ])
+        # tag_schemas = [
+        #     TagSchema(
+        #         id=tag.id,
+        #         name=tag.name,
+        #         description=tag.description,
+        #         # todo: ИСПРАВИТЬ!
+        #         # todo: это не count, нужно убрать отсюда те меро которые уже не показыватся поль-лям
+        #         count=tag.content_count
+        #     )
+        #     for tag in tags
+        # ]
         return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
 
 

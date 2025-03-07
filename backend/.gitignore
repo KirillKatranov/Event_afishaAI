@@ -2,3 +2,4 @@ venv/
 .idea
 src/event_afisha/__pycache__
 src/event/__pycache__
+src/celerybeat-schedule
