@@ -36,49 +36,88 @@ class TagsController:
         },
     )
     def get_tags(self, username: str, macro_category: str):
-        from django.db.models import Count
+        from django.db.models import Count, OuterRef, Exists, Subquery
 
-        tags = (
-            Tags.objects.filter(macro_category__name=macro_category)
-            .annotate(content_count=Count('contents'))
-            .filter(content_count__gt=0)
-        )
-
-        user, _ = User.objects.get_or_create(username=username)
-        preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
-        preferences_categories = [pref.tag.id for pref in preferences]
-        current_user = User.objects.filter(username=username).first()
-
-        tag_schemas = []
-
-        for tag in tags:
-            q_filter_tags = Q(tags__name=tag)
-            contents = Content.objects.filter(q_filter_tags)
-            content_ids = [like.content.id for like in current_user.likes.all()]
-            contents_not_mark = contents.filter(~Q(id__in=content_ids))
-            removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
-            contents_not_mark = contents_not_mark.exclude(id__in=removed_contents)
-            count = len(contents_not_mark) if isinstance(contents_not_mark, list) else contents_not_mark.count()
-            tag_schemas.append(
-                TagSchema(
-                    id=tag.id,
-                    name=tag.name,
-                    description=tag.description,
-                    count=count
-                )
-            )
-        # tag_schemas = [
-        #     TagSchema(
-        #         id=tag.id,
-        #         name=tag.name,
-        #         description=tag.description,
-        #         # todo: ИСПРАВИТЬ!
-        #         # todo: это не count, нужно убрать отсюда те меро которые уже не показыватся поль-лям
-        #         count=tag.content_count
+        # tags = (
+        #     Tags.objects.filter(macro_category__name=macro_category)
+        #     .annotate(content_count=Count('contents'))
+        #     .filter(content_count__gt=0)
+        # )
+        #
+        # user, _ = User.objects.get_or_create(username=username)
+        #
+        # liked_content_subquery = Like.objects.filter(
+        #     user=user, content=OuterRef('id')
+        # ).values('id')
+        #
+        # preferences = UserCategoryPreference.objects.filter(user=user).select_related("tag")
+        # preferences_categories = [pref.tag.id for pref in preferences]
+        # current_user = User.objects.filter(username=username).first()
+        #
+        # tag_schemas = []
+        #
+        # for tag in tags:
+        #     q_filter_tags = Q(tags__name=tag)
+        #     contents = Content.objects.filter(q_filter_tags)
+        #     content_ids = [like.content.id for like in current_user.likes.all()]
+        #     contents_not_mark = contents.filter(~Q(id__in=content_ids))
+        #     removed_contents = RemovedFavorite.objects.filter(user=current_user).values_list('content_id', flat=True)
+        #     contents_not_mark = contents_not_mark.exclude(id__in=removed_contents)
+        #     count = len(contents_not_mark) if isinstance(contents_not_mark, list) else contents_not_mark.count()
+        #     tag_schemas.append(
+        #         TagSchema(
+        #             id=tag.id,
+        #             name=tag.name,
+        #             description=tag.description,
+        #             count=count
+        #         )
         #     )
-        #     for tag in tags
-        # ]
-        return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
+        # # tag_schemas = [
+        # #     TagSchema(
+        # #         id=tag.id,
+        # #         name=tag.name,
+        # #         description=tag.description,
+        # #         # todo: ИСПРАВИТЬ!
+        # #         # todo: это не count, нужно убрать отсюда те меро которые уже не показыватся поль-лям
+        # #         count=tag.content_count
+        # #     )
+        # #     for tag in tags
+        # # ]
+        # return TagsResponseSchema(tags=tag_schemas, preferences=preferences_categories)
+        user, _ = User.objects.get_or_create(username=username)
+
+        # Получаем ID контента, который пользователь лайкнул
+        liked_content_subquery = Like.objects.filter(
+            user=user, content=OuterRef('id')
+        ).values('id')
+
+        # Получаем ID контента, который пользователь удалил
+        removed_content_subquery = RemovedFavorite.objects.filter(
+            user=user, content=OuterRef('id')
+        ).values('id')
+
+        # Получаем теги с актуальным количеством контента (исключая лайкнутый и удаленный)
+        tags = Tags.objects.filter(macro_category__name=macro_category).annotate(
+            content_count=Count(
+                'contents',
+                filter=~Exists(liked_content_subquery) & ~Exists(removed_content_subquery)
+            )
+        ).filter(content_count__gt=0)
+
+        # Предпочтения пользователя
+        preferences = UserCategoryPreference.objects.filter(user=user).values_list('tag_id', flat=True)
+
+        # Формируем JSON-ответ
+        tag_schemas = [
+            TagSchema(
+                id=tag.id,
+                name=tag.name,
+                description=tag.description,
+                count=tag.content_count
+            ) for tag in tags
+        ]
+
+        return TagsResponseSchema(tags=tag_schemas, preferences=list(preferences))
 
 
 @api_controller(
