@@ -44,7 +44,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         gap={"m"}
         style={{
           height: "100%",
-          backgroundColor: service.id == "organizers" || service.id == "trips" ? "#E1E1E1" : "#F8F8F8",
+          backgroundColor: "#F8F8F8",
           borderRadius: 30, borderColor: "#DBDFFB",
           paddingVertical: 100,
           paddingHorizontal: 32,
@@ -57,7 +57,10 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           shadowRadius: 15,
         }}
       >
-        <Text variant={"serviceName"} textAlign={"center"} color={"black"} selectable={false}>
+        <Text
+          variant={"serviceName"} textAlign={"center"} color={"black"} selectable={false}
+          opacity={service.id == "organizers" || service.id == "trips" ? 0.5 : 1}
+        >
           {service.name}
         </Text>
 
@@ -71,7 +74,14 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
             <WebLottieView src={require("@/shared/assets/lottie/places.json")} maxHeight={boxHeight} maxWidth={boxWidth}/>
           </Box>
         )}
-        {(service.id == "trips" || service.id == "organizers") && <Illustration name={service.illustration} width={"100%"} height={"100%"}/>}
+        {(service.id == "trips" || service.id == "organizers") && (
+          <Box
+            flex={1} justifyContent={"center"} onLayout={layoutMeasure}
+            opacity={service.id == "organizers" || service.id == "trips" ? 0.5 : 1}
+          >
+            <Illustration name={service.illustration} width={"100%"} height={"100%"} opacity={""}/>
+          </Box>
+        )}
 
         <Text variant={"serviceDescription"} textAlign={"center"} color={"black"} selectable={false}>
           {service.description}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Pressable, Image} from "react-native";
 import {Box} from "@/shared/ui/Base/Box";
 import {Text} from "@/shared/ui/Base/Text";
@@ -9,6 +9,7 @@ import { ServicesColors } from "@/entities/service";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import {Event} from "@/entities/event";
+import {LoadingCard} from "@/shared/ui";
 
 interface LikedEventCardProps {
   event: Event;
@@ -20,6 +21,7 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
   onPress,
 }) => {
   const theme = useTheme<Theme>();
+  const [imageLoading, setImageLoading] = useState(true);
 
   return (
     <Pressable
@@ -65,11 +67,19 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
           <Image
             source={{ uri: event.image ? event.image : undefined }}
             resizeMode={"contain"}
+            onLoadEnd={() => setImageLoading(false)}
             style={{
               height: "100%",
               width: "40%",
+              display: imageLoading ? "none" : "flex"
             }}
           />
+
+          {imageLoading && (
+            <Box width={"40%"} height={"100%"} alignItems={"center"} justifyContent={"center"}>
+              <LoadingCard style={{ width: "100%", height: "100%" }}/>
+            </Box>
+          )}
 
           <Box
             flex={1}

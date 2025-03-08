@@ -11,7 +11,7 @@ import {formatDate} from "@/shared/scripts/date";
 import {Theme} from "@/shared/providers/Theme";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
-import {ActionButton, TagChip} from "@/shared/ui";
+import {ActionButton, LoadingCard, TagChip} from "@/shared/ui";
 import {Gesture, GestureDetector, GestureHandlerRootView, ScrollView} from "react-native-gesture-handler";
 import { WEB_APP_URL } from '@env';
 import {ServicesColors} from "@/entities/service";
@@ -43,6 +43,8 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
   const [descriptionScrollOnTop, setDescriptionScrollOnTop] = useState(true);
   const [descriptionSwiping, setDescriptionSwiping] = useState(false);
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+
+  const [imageLoading, setImageLoading] = useState(true);
 
   const { setSwipeEnabled } = useEventCardStore();
 
@@ -128,12 +130,18 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
         <Image
           source={{ uri: event.image || undefined }}
           resizeMode="contain"
+          onLoadEnd={() => setImageLoading(false)}
           style={{
             width: "100%",
             height: "100%",
             position: "absolute",
+            display: imageLoading ? "none" : "flex"
           }}
         />
+
+        <Box position={"absolute"} width={"100%"} height={"100%"} alignItems={"center"} justifyContent={"center"}>
+          <LoadingCard style={{ width: "100%", height: "100%", display: imageLoading ? "flex" : "none" }}/>
+        </Box>
 
         {/* Buttons area */}
         <Box

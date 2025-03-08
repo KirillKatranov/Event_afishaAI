@@ -167,13 +167,32 @@ export const TagCard: React.FC<TagCardProps> = ({
             </Box>
 
             {/* Events count chip */}
-            <Text
-              variant={"tagCardEventsCount"}
-              style={{ color: service == "places" ? "#A533FF" : "#FFFFFF"}}
-              selectable={false}
-            >
-              { tag.count }
-            </Text>
+            {tag.count === 0 && (
+              <Text
+                variant={"tagCardEventsCount"}
+                color={service == "places" ? "white" : "black"}
+                textTransform={"lowercase"} numberOfLines={1}
+                style={{
+                  alignSelf: "flex-start", justifyContent: "center",
+                  maxWidth: "100%",
+                  paddingHorizontal: 6, borderRadius: 10,
+                  backgroundColor: service == "places" ? "#A533FF" : "#E1F44B"
+                }}
+                selectable={false} opacity={0.9}
+              >
+                { "Всё просмотрено" }
+              </Text>
+            )}
+
+            {tag.count !== 0 && (
+              <Text
+                variant={"tagCardEventsCount"}
+                style={{ color: service == "places" ? "#A533FF" : "#FFFFFF"}}
+                selectable={false}
+              >
+                { tag.count }
+              </Text>
+            )}
 
             <LinearGradient
               colors={[

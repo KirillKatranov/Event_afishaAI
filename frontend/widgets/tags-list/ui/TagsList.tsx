@@ -1,5 +1,5 @@
-import React, {useEffect} from "react";
-import {useLocalSearchParams, useRouter} from "expo-router";
+import React, {useCallback} from "react";
+import {useFocusEffect, useLocalSearchParams, useRouter} from "expo-router";
 import {useTagsStore} from "@/widgets/tags-list/model/store/useTagsStore";
 import {TagCard} from "@/entities/tag";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
@@ -19,11 +19,13 @@ export const TagsList: React.FC<TagsListProps> = ({
   const { tags, preferences, isLoading, hasError, fetchTags, onTagLike } = useTagsStore();
   const router = useRouter();
   const username = useConfig().initDataUnsafe.user.username;
-  const theme = useTheme<Theme>()
+  const theme = useTheme<Theme>();
 
-  useEffect(() => {
-    fetchTags({ username: username, macro_category: service });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchTags({ username: username, macro_category: service });
+    }, [])
+  )
 
   if (isLoading) {
     return (
