@@ -53,7 +53,13 @@ class TagsController:
             200: TagsResponseSchema,
         },
     )
-    def get_tags(self, username: str, macro_category: str):
+    def get_tags(
+        self,
+        username: str,
+        macro_category: str,
+        date_start: date = None,
+        date_end: date = None,
+    ):
         with connection.cursor() as cursor:
             cursor.execute(
                 """
@@ -115,41 +121,46 @@ class ContentController:
         date_start: date | None = None,
         date_end: date | None = None,
     ) -> list[ContentSchema]:
-        # Фильтрация по датам
         q_filter = Q()
         if date_start:
             q_filter &= Q(date_start__gte=date_start)
         if date_end:
             q_filter &= Q(date_start__lte=date_end)
 
-        # Получаем или создаем пользователя
-        current_user, created = User.objects.get_or_create(username=username)
+        try:
+            current_user = User.objects.prefetch_related(
+                "category_preferences", "likes"
+            ).get(username=username)
+        except User.DoesNotExist:
+            return []
 
-        # Получаем предпочтения пользователя (теги)
-        preferred_tags = current_user.category_preferences.values_list(
-            "tag_id", flat=True
+        preferred_tags = list(
+            current_user.category_preferences.values_list("tag_id", flat=True)
         )
+        content_query = Content.objects.filter(q_filter)
 
-        # Предпочтения пользователя могут быть пустыми, если их нет
         if preferred_tags:
-            contents = Content.objects.filter(
-                q_filter, tags__id__in=preferred_tags
-            ).distinct()
-        else:
-            contents = Content.objects.filter(q_filter).distinct()
+            content_query = content_query.filter(tags__id__in=preferred_tags)
 
-        # Используем prefetch_related для загрузки связанных данных (лайков и удалённых контентов)
-        likes_ids = current_user.likes.values_list("content_id", flat=True)
-        removed_contents_ids = RemovedFavorite.objects.filter(
-            user=current_user
-        ).values_list("content_id", flat=True)
-
-        # Исключаем лайкнутый контент и контент, удалённый из избранного
-        contents_not_mark = contents.exclude(id__in=likes_ids).exclude(
-            id__in=removed_contents_ids
+        content_query = content_query.prefetch_related(
+            "tags",
+            Prefetch(
+                "likes",
+                queryset=Like.objects.filter(user=current_user),
+                to_attr="user_likes",
+            ),
+        ).distinct()
+        excluded_content_ids = set(
+            current_user.likes.values_list("content_id", flat=True)
+        ) | set(
+            RemovedFavorite.objects.filter(user=current_user).values_list(
+                "content_id", flat=True
+            )
         )
+        content_query = content_query.exclude(id__in=excluded_content_ids)
 
-        return contents_not_mark
+        result = list(content_query)
+        return result
 
     @route.get(
         path="/contents",

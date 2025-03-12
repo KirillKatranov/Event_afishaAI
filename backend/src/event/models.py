@@ -18,7 +18,7 @@ class GenericModel(models.Model):
 
 
 class User(GenericModel):
-    username = models.CharField(max_length=250)
+    username = models.CharField(max_length=250, db_index=True)
     city = models.CharField(max_length=50, choices=CITY_CHOICES, default="nn")
 
     def __str__(self):
@@ -57,8 +57,8 @@ class Content(GenericModel):
     tags = models.ManyToManyField(Tags, related_name="contents")
     image = models.ImageField(upload_to="images", max_length=300, null=True, blank=True)
     contact = models.JSONField(default={}, null=True, blank=True)
-    date_start = models.DateField(null=True, blank=True)
-    date_end = models.DateField(null=True, blank=True)
+    date_start = models.DateField(null=True, blank=True, db_index=True)
+    date_end = models.DateField(null=True, blank=True, db_index=True)
     time = models.CharField(max_length=250, null=True, blank=True, default=None)
     location = models.CharField(max_length=250, null=True, blank=True, default=None)
     cost = models.IntegerField(null=True, blank=True, default=None)
@@ -76,15 +76,17 @@ class Content(GenericModel):
 
 
 class Like(GenericModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
-    content = models.ForeignKey(Content, on_delete=models.CASCADE, related_name="likes")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="likes", db_index=True
+    )
+    content = models.ForeignKey(
+        Content, on_delete=models.CASCADE, related_name="likes", db_index=True
+    )
     value = models.BooleanField()
 
     class Meta:
-        unique_together = (
-            "user",
-            "content",
-        )
+        unique_together = ("user", "content")
+        indexes = [models.Index(fields=["user", "content"])]
 
     def __str__(self):
         return f"{self.user.username} - {self.content.name} - {self.value} - {self.created}"
@@ -98,12 +100,13 @@ class Feedback(GenericModel):
 class RemovedFavorite(models.Model):
     """Эта таблица будет фиксировать, что пользователь исключил конкретный контент из избранного."""
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.ForeignKey(Content, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
+    content = models.ForeignKey(Content, on_delete=models.CASCADE, db_index=True)
     removed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("user", "content")
+        indexes = [models.Index(fields=["user", "content"])]
 
 
 class UserCategoryPreference(models.Model):
