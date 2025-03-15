@@ -25,9 +25,10 @@ interface EventCardProps {
   event: Event;
   onLike: () => void;
   onDislike: () => void;
+  expanded?: boolean;
 }
 
-export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDislike }) => {
+export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDislike, expanded }) => {
   const theme = useTheme<Theme>();
   const config = useConfig();
   const heightValue = useSharedValue(0);
@@ -42,7 +43,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
   const [descriptionScrolling, setDescriptionScrolling] = useState(false);
   const [descriptionScrollOnTop, setDescriptionScrollOnTop] = useState(true);
   const [descriptionSwiping, setDescriptionSwiping] = useState(false);
-  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(expanded ? expanded : false);
 
   const [imageLoading, setImageLoading] = useState(true);
 

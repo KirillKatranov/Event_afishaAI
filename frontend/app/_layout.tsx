@@ -21,6 +21,7 @@ export default function RootLayout() {
     MontserratSemiBold: require('@/shared/assets/fonts/Montserrat-SemiBold.ttf'),
     MontserratBold: require('@/shared/assets/fonts/Montserrat-Bold.ttf'),
     TTTravelsDemiBold: require('@/shared/assets/fonts/TT-Travels-DemiBold.otf'),
+    InterRegular: require('@/shared/assets/fonts/Inter-Regular.otf'),
   });
 
   const [firstLaunch, setFirstLaunch] = useState<boolean | null>(null);

@@ -41,7 +41,7 @@ export const ServicesPage = () => {
           pagingEnabled={true}
           snapEnabled={true}
           width={window.width * 0.9}
-          height={Math.min(window.height - 64, 650)}
+          height={Math.min(window.height - 64, 550)}
           style={{
             zIndex: 1, overflow: "visible",
           }}

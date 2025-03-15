@@ -5,6 +5,7 @@ import * as Icons from "@/shared/ui/Icons";
 const icons = {
   back: Icons.Back,
   calendar: Icons.Calendar,
+  catalog: Icons.Catalog,
   chevronLeft: Icons.ChevronLeft,
   chevronDown: Icons.ChevronDown,
   chevronUp: Icons.ChevronUp,
@@ -15,6 +16,7 @@ const icons = {
   likeFilled: Icons.LikeFilled,
   location: Icons.Location,
   share: Icons.Share,
+  swiper: Icons.Swiper,
   tags: Icons.Tags,
   user: Icons.User,
   dislike: Icons.Dislike,

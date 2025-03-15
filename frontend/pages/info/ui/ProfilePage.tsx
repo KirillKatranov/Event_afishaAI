@@ -46,7 +46,10 @@ export const ProfilePage = () => {
       />
 
       <Pressable
-        onPress={() => { router.back() }}
+        onPress={() => {
+          if (router.canGoBack()) router.back()
+          else router.replace("/feed")
+        }}
         style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}
       >
         <Box
