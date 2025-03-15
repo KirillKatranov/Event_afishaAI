@@ -15,6 +15,7 @@ import {ActionButton, LoadingCard, TagChip} from "@/shared/ui";
 import {Gesture, GestureDetector, GestureHandlerRootView, ScrollView} from "react-native-gesture-handler";
 import { WEB_APP_URL } from '@env';
 import {ServicesColors} from "@/entities/service";
+import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 const DraggableScrollView = Platform.select({
   web: () => require('@/shared/providers/DraggableScroll').DraggableScrollView,
@@ -140,9 +141,12 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
           }}
         />
 
-        <Box position={"absolute"} width={"100%"} height={"100%"} alignItems={"center"} justifyContent={"center"}>
-          <LoadingCard style={{ width: "100%", height: "100%", display: imageLoading ? "flex" : "none" }}/>
-        </Box>
+        {imageLoading && (
+          <Box position={"absolute"} width={"100%"} height={"100%"} alignItems={"center"} justifyContent={"center"}>
+            <LoadingCard style={{ width: "100%", height: "100%", position: "absolute", zIndex: -1, borderRadius: 8 }}/>
+            <Illustration name={"strelka"} width={64} height={64}/>
+          </Box>
+        )}
 
         {/* Buttons area */}
         <Box

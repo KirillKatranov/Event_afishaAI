@@ -10,6 +10,7 @@ import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import {Event} from "@/entities/event";
 import {LoadingCard} from "@/shared/ui";
+import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 interface LikedEventCardProps {
   event: Event;
@@ -77,7 +78,8 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
 
           {imageLoading && (
             <Box width={"40%"} height={"100%"} alignItems={"center"} justifyContent={"center"}>
-              <LoadingCard style={{ width: "100%", height: "100%" }}/>
+              <LoadingCard style={{ width: "100%", height: "100%", position: "absolute", zIndex: -1, borderRadius: 8 }}/>
+              <Illustration name={"strelka"} width={64} height={64}/>
             </Box>
           )}
 

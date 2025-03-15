@@ -151,6 +151,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                   contentId: events[cardIndex].id,
                   username: username
                 }).then(() => {
+                  addLikeID(events[cardIndex].id);
                   addLikedEvent(events[cardIndex]);
                   removeDislikedEvent(events[cardIndex].id);
                 })
@@ -161,6 +162,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                   contentId: events[cardIndex].id,
                   username: username
                 }).then(() => {
+                  removeLikeID(events[cardIndex].id)
                   addDislikedEvent(events[cardIndex])
                   removeLikedEvent(events[cardIndex].id);
                 })
@@ -284,6 +286,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                     contentId: selectedEvent.id,
                     username: username
                   }).then(() => {
+                    addLikeID(selectedEvent.id);
                     addLikedEvent(selectedEvent);
                     removeDislikedEvent(selectedEvent.id);
                     setModalVisible(false);
@@ -294,6 +297,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                       contentId: selectedEvent.id,
                       username: username
                     }).then(() => {
+                      removeLikeID(selectedEvent.id);
                       addDislikedEvent(selectedEvent);
                       removeLikedEvent(selectedEvent.id);
                       setModalVisible(false);

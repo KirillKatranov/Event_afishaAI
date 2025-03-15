@@ -7,6 +7,7 @@ import {WEB_APP_URL} from "@env";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import Animated, {useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming} from "react-native-reanimated";
+import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 interface CatalogEventCardProps {
   event: Event
@@ -52,8 +53,9 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
         />
 
         {imageLoading && (
-          <Box width={"100%"} height={173}>
-            <LoadingCard style={{ width: "100%", height: "100%", display: imageLoading ? "flex" : "none", borderRadius: 8 }}/>
+          <Box width={"100%"} height={173} alignItems={"center"} justifyContent={"center"}>
+            <LoadingCard style={{ width: "100%", height: "100%", position: "absolute", zIndex: -1, borderRadius: 8 }}/>
+            <Illustration name={"strelka"} width={64} height={64}/>
           </Box>
         )}
 
@@ -74,7 +76,7 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
           </DropShadow>
         )}
 
-        <Text style={{ fontFamily: "MontserratSemiBold", fontSize: 14 }} color={"text_color"}>
+        <Text style={{ fontFamily: "MontserratSemiBold", fontSize: 14 }} numberOfLines={2} color={"text_color"}>
           {props.event.name}
         </Text>
 
