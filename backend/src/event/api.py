@@ -63,34 +63,47 @@ class TagsController:
         with connection.cursor() as cursor:
             cursor.execute(
                 """
-                        SELECT
-                            t.id,
-                            t.name,
-                            t.description,
-                            COUNT(
-                                CASE
-                                    -- Считаем контент, если он не был лайкнут пользователем и не удален из избранного
-                                    WHEN l.id IS NULL AND rf.id IS NULL THEN c.id
-                                    -- Считаем контент, который был лайкнут пользователем, но не исключаем его из выборки
-                                    WHEN l.id IS NOT NULL AND rf.id IS NULL THEN NULL
-                                    ELSE NULL
-                                END
-                            ) AS content_count
-                        FROM event_tags t
-                        LEFT JOIN event_content_tags ct ON t.id = ct.tags_id
-                        LEFT JOIN event_content c ON ct.content_id = c.id
-                        LEFT JOIN event_like l ON c.id = l.content_id
-                            AND l.user_id = (SELECT id FROM event_user WHERE username = %s)
-                        LEFT JOIN event_removedfavorite rf ON c.id = rf.content_id
-                            AND rf.user_id = (SELECT id FROM event_user WHERE username = %s)
-                        WHERE
-                            t.macro_category_id = (SELECT id FROM event_macrocategory WHERE name = %s LIMIT 1)
-                        GROUP BY t.id, t.name, t.description;
-                    """,
-                [username, username, macro_category],
+                SELECT
+                    t.id,
+                    t.name,
+                    t.description,
+                    COUNT(
+                        CASE
+                            WHEN l.id IS NULL AND rf.id IS NULL THEN c.id
+                            WHEN l.id IS NOT NULL AND rf.id IS NULL THEN NULL
+                            ELSE NULL
+                        END
+                    ) AS content_count
+                FROM event_tags t
+                LEFT JOIN event_content_tags ct ON t.id = ct.tags_id
+                LEFT JOIN event_content c ON ct.content_id = c.id
+                LEFT JOIN event_like l ON c.id = l.content_id
+                    AND l.user_id = (SELECT id FROM event_user WHERE username = %s)
+                LEFT JOIN event_removedfavorite rf ON c.id = rf.content_id
+                    AND rf.user_id = (SELECT id FROM event_user WHERE username = %s)
+                WHERE
+                    t.macro_category_id = (SELECT id FROM event_macrocategory WHERE name = %s LIMIT 1)
+                    AND (
+                        (%s IS NOT NULL AND %s IS NOT NULL AND c.date_start >= %s AND c.date_end <= %s) OR
+                        (%s IS NOT NULL AND %s IS NULL AND c.date_start >= %s)
+                    )
+                GROUP BY t.id, t.name, t.description;
+                """,
+                [
+                    username,
+                    username,
+                    macro_category,
+                    date_start,
+                    date_end,
+                    date_start,
+                    date_end,
+                    date_start,
+                    date_end,
+                    date_start,
+                ],
             )
 
-            tags = cursor.fetchall()
+        tags = cursor.fetchall()
         return TagsResponseSchema(
             tags=[
                 TagSchema(id=row[0], name=row[1], description=row[2], count=row[3])
@@ -99,7 +112,7 @@ class TagsController:
             preferences=[
                 pref.tag.id
                 for pref in UserCategoryPreference.objects.filter(
-                    user__username="adbogatov"
+                    user__username=username
                 ).select_related("tag")
             ],
         )

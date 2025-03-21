@@ -1,0 +1,23 @@
+version: "3.4"
+
+services:
+  fastapi:
+    build:
+      context: .
+    volumes:
+      - ./:/app
+    ports:
+      - "8001:8000"
+    image: fastapi_backend
+    restart: unless-stopped
+    command: uvicorn fast:app --host 0.0.0.0 --port 8000
+
+volumes:
+  pg_data:
+  media_value:
+  static_value:
+
+networks:
+  default:
+    external:
+      name: afisha

@@ -69,6 +69,7 @@ def notification_task():
     today = date.today()
     for user in users:
         # todo: проверить что по датам все корректно отрабатывает
+        # likes = user.likes
         likes = Like.objects.filter(user=user, value=True, content__date__lte=today)
         print(f"{likes}")
         if likes:
