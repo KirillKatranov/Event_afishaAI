@@ -39,6 +39,7 @@ export default function TabLayout() {
             paddingHorizontal: 32, height: 57,
             borderTopWidth: 0,
           },
+          tabBarItemStyle: { alignItems: 'center', flexDirection: 'row'},
           sceneStyle: {
             backgroundColor: theme.colors.bg_color,
           }

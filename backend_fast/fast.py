@@ -16,7 +16,7 @@ from models import (
     SessionLocal,
     MacroCategory,
 )
-from schemas import ContentSchema, TagsResponseSchema, TagSchema
+from schemas import ContentSchema, TagsResponseSchema, TagSchema, UserSchema
 
 app = FastAPI()
 router = APIRouter(prefix="/api/v1", tags=["contents"])
@@ -105,7 +105,7 @@ def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == username).first()
 
     if not user:
-        return TagsResponseSchema(tags=[], preferences=[])
+        raise HTTPException(status_code=404, detail="User not found")
 
     macro_category_obj = (
         db.query(MacroCategory).filter(MacroCategory.name == macro_category).first()
@@ -172,10 +172,7 @@ def get_content(
     current_user = db.query(User).filter(User.username == username).first()
 
     if not current_user:
-        user = User(username=username)
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+        raise HTTPException(status_code=404, detail="User not found")
 
     excluded_content_subquery = create_filter_excluded_contend(db, current_user)
     content_query = (
@@ -233,6 +230,20 @@ def get_liked_content(
         item.macro_category = macro_category
 
     return content
+
+
+@app.post("/api/v1/register", status_code=201)
+def register_user(user_data: UserSchema, db: Session = Depends(get_db)):
+    existing_user = db.query(User).filter(User.username == user_data.username).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Пользователь уже существует")
+
+    new_user = User(username=user_data.username, city=user_data.city)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return {"message": "Пользователь успешно зарегистрирован", "user_id": new_user.id}
 
 
 app.include_router(router)
