@@ -13,20 +13,15 @@ from event.models import (
     CITY_CHOICES,
 )
 from event.schemas import (
-    TagSchema,
     ContentSchema,
     LikeSchema,
     LikeRequestSchema,
     FeedbackRequestSchema,
     UserPreferencesResponseSchema,
-    TagsResponseSchema,
     UserSchema,
     CitiesResponseSchema,
 )
-from django.db.models import Q, Prefetch
-from datetime import date
 from ninja.errors import HttpError
-from django.db import connection
 
 
 @api_controller(
@@ -46,221 +41,7 @@ class HealthController:
 @api_controller(
     prefix_or_class="/api/v1",
 )
-class TagsController:
-    @route.get(
-        path="/tags",
-        response={
-            200: TagsResponseSchema,
-        },
-    )
-    def get_tags(
-        self,
-        username: str,
-        macro_category: str,
-        date_start: date = None,
-        date_end: date = None,
-    ):
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                SELECT
-                    t.id,
-                    t.name,
-                    t.description,
-                    COUNT(
-                        CASE
-                            WHEN l.id IS NULL AND rf.id IS NULL THEN c.id
-                            WHEN l.id IS NOT NULL AND rf.id IS NULL THEN NULL
-                            ELSE NULL
-                        END
-                    ) AS content_count
-                FROM event_tags t
-                LEFT JOIN event_content_tags ct ON t.id = ct.tags_id
-                LEFT JOIN event_content c ON ct.content_id = c.id
-                LEFT JOIN event_like l ON c.id = l.content_id
-                    AND l.user_id = (SELECT id FROM event_user WHERE username = %s)
-                LEFT JOIN event_removedfavorite rf ON c.id = rf.content_id
-                    AND rf.user_id = (SELECT id FROM event_user WHERE username = %s)
-                WHERE
-                    t.macro_category_id = (SELECT id FROM event_macrocategory WHERE name = %s LIMIT 1)
-                    AND (
-                        (%s IS NOT NULL AND %s IS NOT NULL AND c.date_start >= %s AND c.date_end <= %s) OR
-                        (%s IS NOT NULL AND %s IS NULL AND c.date_start >= %s)
-                    )
-                GROUP BY t.id, t.name, t.description;
-                """,
-                [
-                    username,
-                    username,
-                    macro_category,
-                    date_start,
-                    date_end,
-                    date_start,
-                    date_end,
-                    date_start,
-                    date_end,
-                    date_start,
-                ],
-            )
-
-        tags = cursor.fetchall()
-        return TagsResponseSchema(
-            tags=[
-                TagSchema(id=row[0], name=row[1], description=row[2], count=row[3])
-                for row in tags
-            ],
-            preferences=[
-                pref.tag.id
-                for pref in UserCategoryPreference.objects.filter(
-                    user__username=username
-                ).select_related("tag")
-            ],
-        )
-
-
-@api_controller(
-    prefix_or_class="/api/v1",
-)
 class ContentController:
-    @route.get(
-        path="/contents_feed",
-        response={
-            200: list[ContentSchema],
-        },
-    )
-    def get_content_for_feed(
-        self,
-        username: str,
-        date_start: date | None = None,
-        date_end: date | None = None,
-    ) -> list[ContentSchema]:
-        q_filter = Q()
-        if date_start:
-            q_filter &= Q(date_start__gte=date_start)
-        if date_end:
-            q_filter &= Q(date_start__lte=date_end)
-
-        try:
-            current_user = User.objects.prefetch_related(
-                "category_preferences", "likes"
-            ).get(username=username)
-        except User.DoesNotExist:
-            return []
-
-        preferred_tags = list(
-            current_user.category_preferences.values_list("tag_id", flat=True)
-        )
-        content_query = Content.objects.filter(q_filter)
-
-        if preferred_tags:
-            content_query = content_query.filter(tags__id__in=preferred_tags)
-
-        content_query = content_query.prefetch_related(
-            "tags",
-            Prefetch(
-                "likes",
-                queryset=Like.objects.filter(user=current_user),
-                to_attr="user_likes",
-            ),
-        ).distinct()
-        excluded_content_ids = set(
-            current_user.likes.values_list("content_id", flat=True)
-        ) | set(
-            RemovedFavorite.objects.filter(user=current_user).values_list(
-                "content_id", flat=True
-            )
-        )
-        content_query = content_query.exclude(id__in=excluded_content_ids)
-
-        result = list(content_query)
-        return result
-
-    @route.get(
-        path="/contents",
-        response={
-            200: list[ContentSchema],
-        },
-    )
-    def get_content(
-        self,
-        username: str,
-        tag: str | None = None,
-        date_start: date | None = None,
-        date_end: date | None = None,
-    ) -> list[ContentSchema]:
-        q_filter = Q(tags__name=tag) if tag else Q()
-        if date_start and date_end:
-            q_filter &= Q(date_start__gte=date_start) & Q(date_start__lte=date_end)
-        if date_start and not date_end:
-            q_filter &= Q(date_start=date_start)
-        contents = Content.objects.filter(q_filter)
-        current_user = User.objects.filter(username=username).first()
-        if not current_user:
-            # todo: при таком раскладе пользователь никогда не увидит приветственных экранов,
-            #  тут я должен генерить исключение для редиректа.
-            current_user = User.objects.create(username=username)
-        likes = current_user.likes
-        content_ids = [like.content.id for like in likes.all()]
-        contents_not_mark = contents.filter(~Q(id__in=content_ids))
-        removed_contents = RemovedFavorite.objects.filter(
-            user=current_user
-        ).values_list("content_id", flat=True)
-        return contents_not_mark.exclude(id__in=removed_contents)
-
-    # todo: сделать кэширование ленты! + сделать пагинацию для снижения нагрузки на БД.
-    @route.get(
-        path="/contents/liked",
-        response={
-            200: list[ContentSchema],
-        },
-    )
-    def get_liked_content(
-        self,
-        username: str,
-        value: bool = True,
-        date_start: date | None = None,
-        date_end: date | None = None,
-    ) -> list[ContentSchema]:
-        current_user = User.objects.filter(username=username).first()
-        if not current_user:
-            current_user = User.objects.create(username=username)
-
-        likes = Like.objects.filter(user=current_user, value=value).order_by("created")
-        liked_content_ids = likes.values_list("content_id", flat=True)
-
-        content_filter = Q(id__in=liked_content_ids)
-        if date_start and date_end:
-            content_filter &= Q(date_start__gte=date_start) & Q(
-                date_start__lte=date_end
-            )
-        if date_start and not date_end:
-            content_filter &= Q(date_start=date_start)
-
-        content = Content.objects.filter(content_filter).distinct()
-
-        # Предзагрузка макрокатегорий через связь тегов
-        content = content.prefetch_related(
-            Prefetch("tags", queryset=Tags.objects.select_related("macro_category"))
-        )
-
-        content_sorted_by_likes = sorted(
-            content,
-            key=lambda c: next(
-                like.created for like in likes if like.content_id == c.id
-            ),
-            reverse=True,
-        )
-
-        for item in content_sorted_by_likes:
-            macro_categories = [
-                tag.macro_category.name for tag in item.tags.all() if tag.macro_category
-            ]
-            item.macro_category = (
-                macro_categories[0] if macro_categories else None
-            )  # Берем первую найденную
-
-        return content_sorted_by_likes
-
     @route.get(
         path="/contents/{content_id}",
         response={
@@ -460,7 +241,6 @@ class CityController:
 api = NinjaExtraAPI(title="afisha", version="0.0.1")
 api.register_controllers(
     HealthController,
-    TagsController,
     ContentController,
     LikeController,
     FeedbackController,
@@ -468,21 +248,3 @@ api.register_controllers(
     UserController,
     CityController,
 )
-
-# SELECT
-#     t.id,
-#     t.name,
-#     t.description,
-#     COUNT(c.id) AS content_count
-# FROM event_tags t
-# LEFT JOIN event_content_tags ct ON t.id = ct.tags_id
-# LEFT JOIN event_content c ON ct.content_id = c.id
-# LEFT JOIN event_like l ON c.id = l.content_id
-#     AND l.user_id = (SELECT id FROM event_user WHERE username = 'adbogatov')
-# LEFT JOIN event_removedfavorite rf ON c.id = rf.content_id
-#     AND rf.user_id = (SELECT id FROM event_user WHERE username = 'adbogatov')
-# WHERE
-#     t.macro_category_id = (SELECT id FROM event_macrocategory WHERE name = 'events' LIMIT 1)
-#     AND l.id IS NULL  -- Исключаем лайкнутый контент
-#     AND rf.id IS NULL -- Исключаем удалённый контент
-# GROUP BY t.id, t.name, t.description;

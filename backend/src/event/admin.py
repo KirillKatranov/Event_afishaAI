@@ -5,6 +5,7 @@ from event.models import (
     Like,
     User,
     MacroCategory,
+    UserCategoryPreference,
 )
 
 
@@ -47,3 +48,8 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(MacroCategory)
 class MacroCategoryAdmin(admin.ModelAdmin):
     list_display = ("name",)
+
+
+@admin.register(UserCategoryPreference)
+class UserCategoryPreferenceAdmin(admin.ModelAdmin):
+    list_display = ("user", "tag")

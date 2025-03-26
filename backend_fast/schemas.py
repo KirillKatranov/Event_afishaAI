@@ -47,6 +47,10 @@ class ContentSchema(BaseModel):
         # Если изображение присутствует, формируем полный URL
         return "https://afishabot.ru/afisha-files/" + image  # Отрезаем начало пути
 
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
 
 # Схема для Like (лайк контента)
 class LikeSchema(BaseModel):
