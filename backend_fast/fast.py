@@ -4,6 +4,7 @@ from sqlalchemy import and_, exists
 from datetime import date
 from sqlalchemy.sql import func, select, case
 from typing import Optional, List
+from fastapi.middleware.cors import CORSMiddleware
 
 from models import (
     User,
@@ -19,6 +20,14 @@ from schemas import ContentSchema, TagsResponseSchema, TagSchema
 
 app = FastAPI()
 router = APIRouter(prefix="/api/v1", tags=["contents"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_db():
