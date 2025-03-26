@@ -88,6 +88,7 @@ def get_content_for_feed(
     content_query = (
         db.query(Content)
         .filter(and_(*q_filter))
+        .filter(Content.city == current_user.city)
         .filter(~Content.id.in_(select(excluded_content_subquery)))
         .options(selectinload(Content.tags))
     )
@@ -128,7 +129,7 @@ def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
             Tags.name,
             Tags.description,
             func.coalesce(
-                func.count(Content.id)
+                func.count(case((Content.city == user.city, Content.id)))
                 - func.count(case((Content.id.in_(liked_content_ids), Content.id)))
                 - func.count(case((Content.id.in_(removed_content_ids), Content.id))),
                 0,
@@ -136,6 +137,7 @@ def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
         )
         .outerjoin(Tags.contents)
         .filter(Tags.macro_category_id == macro_category_obj.id)
+        .filter(Content.city == user.city)
         .group_by(Tags.id, Tags.name, Tags.description)
     )
     tags = tags_query.all()
@@ -173,6 +175,9 @@ def get_content(
 
     if not current_user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    if current_user.city:
+        q_filter.append(Content.city == current_user.city)
 
     excluded_content_subquery = create_filter_excluded_contend(db, current_user)
     content_query = (
