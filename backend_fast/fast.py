@@ -29,7 +29,7 @@ def get_db():
         db.close()
 
 
-def create_date_filter(date_start, date_end):
+def create_date_filter(date_start: date, date_end: date):
     q_filter = []
 
     if date_start and date_end:
@@ -75,7 +75,6 @@ def get_content_for_feed(
         .filter(UserCategoryPreference.user_id == current_user.id)
         .subquery()
     )
-
     excluded_content_subquery = create_filter_excluded_contend(db, current_user)
     content_query = (
         db.query(Content)
@@ -109,13 +108,11 @@ def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
     liked_content_ids = (
         db.query(Like.content_id).filter(Like.user_id == user.id).subquery()
     )
-
     removed_content_ids = (
         db.query(RemovedFavorite.content_id)
         .filter(RemovedFavorite.user_id == user.id)
         .subquery()
     )
-
     tags_query = (
         db.query(
             Tags.id,
@@ -132,9 +129,7 @@ def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
         .filter(Tags.macro_category_id == macro_category_obj.id)
         .group_by(Tags.id, Tags.name, Tags.description)
     )
-
     tags = tags_query.all()
-
     preferences = (
         db.query(UserCategoryPreference.tag_id)
         .filter(UserCategoryPreference.user_id == user.id)
@@ -174,7 +169,6 @@ def get_content(
         db.refresh(user)
 
     excluded_content_subquery = create_filter_excluded_contend(db, current_user)
-
     content_query = (
         db.query(Content)
         .filter(and_(*q_filter))
@@ -190,6 +184,7 @@ def get_liked_content(
     username: str,
     date_start: date | None = None,
     date_end: date | None = None,
+    value: bool = True,
     db: Session = Depends(get_db),
 ) -> list[ContentSchema]:
     user_id = db.query(User.id).filter(User.username == username).scalar()
@@ -200,11 +195,12 @@ def get_liked_content(
     likes_subquery = (
         db.query(Like.content_id, Like.created)
         .filter(
-            Like.user_id == user_id, Like.value.is_(True), Like.content_id == Content.id
+            Like.user_id == user_id,
+            Like.value.is_(value),
+            Like.content_id == Content.id,
         )
         .subquery()
     )
-
     likes_exists = (
         exists().where(likes_subquery.c.content_id == Content.id).correlate(Content)
     )
@@ -218,7 +214,6 @@ def get_liked_content(
         .join(likes_subquery, Content.id == likes_subquery.c.content_id)
         .order_by(likes_subquery.c.created.desc())
     )
-
     content = content_query.all()
 
     for item in content:
