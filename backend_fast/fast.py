@@ -217,7 +217,10 @@ def get_liked_content(
     content = content_query.all()
 
     for item in content:
-        macro_category = item.tags[0].macro_category.name if item.tags else None
+        if item.tags and item.tags[0].macro_category:
+            macro_category = item.tags[0].macro_category.name
+        else:
+            macro_category = None
         item.macro_category = macro_category
 
     return content
