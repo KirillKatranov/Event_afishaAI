@@ -36,7 +36,7 @@ def create_date_filter(date_start: date, date_end: date):
         q_filter.append(Content.date_start <= date_end)
         q_filter.append(Content.date_end >= date_start)
     elif date_start:
-        q_filter.append(Content.date_start >= date_start)
+        q_filter.append(Content.date_start == date_start)
     elif date_end:
         q_filter.append(Content.date_end <= date_end)
 
