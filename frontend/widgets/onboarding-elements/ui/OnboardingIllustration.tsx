@@ -27,18 +27,10 @@ export const OnboardingIllustration = () => {
       <Animated.View
         style={[
           animatedOpacity,
-          {
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-          }
+          { flex: 1, marginTop: 100, gap: 16 }
         ]}
       >
-        <Box
-          position={"absolute"}
-          top={100}
-          alignSelf={"center"}
-        >
+        <Box alignSelf={"center"}>
           <Text variant={"onboardingIam"} style={{ color: "#000000" }}>
             ВЫБИРАЙ ИЗ{" "}
             <Text style={{ color: "#8E00FF" }}>10 КАТЕГОРИЙ</Text>
@@ -87,20 +79,13 @@ export const OnboardingIllustration = () => {
 
   if (pageSubTick == 2) {
     return (
-      <Animated.View style={[
-        animatedOpacity,
-        {
-          position: "absolute",
-          height: "100%",
-          width: "100%"
-        }
-      ]}>
-        <Box
-          position={"absolute"}
-          top={92}
-          alignSelf={"center"}
-          zIndex={2}
-        >
+      <Animated.View
+        style={[
+          animatedOpacity,
+          { flex: 1, marginTop: 100, gap: 16 }
+        ]}
+      >
+        <Box alignSelf={"center"}>
           <Text
             variant={"onboardingTitle"}
             textAlign={"center"}
@@ -118,28 +103,9 @@ export const OnboardingIllustration = () => {
           flex={1}
           justifyContent={"center"}
           alignItems={"center"}
-          style={{
-            marginBottom: 93
-          }}
         >
-          <Box
-            style={{
-              position: "relative",
-              right: 5,
-            }}
-          >
-            <Illustration name={"onboardingLike"}/>
-          </Box>
-          <Box
-            style={{
-              display: "flex",
-              alignItems: "center",
-              position: "relative",
-              right: 15,
-            }}
-          >
-            <Illustration name={"onboardingLikes"}/>
-          </Box>
+          <Illustration name={"onboardingLike"}/>
+          <Illustration name={"onboardingLikes"}/>
           <Illustration name={"secondPageArrow"}/>
         </Box>
       </Animated.View>
@@ -148,19 +114,13 @@ export const OnboardingIllustration = () => {
 
   {/* page == 3 */}
   return (
-    <Animated.View style={[
-      animatedOpacity,
-      {
-        position: "absolute",
-        height: "100%",
-        width: "100%"
-      }
-    ]}>
-      <Box
-        position={"absolute"}
-        top={100}
-        alignSelf={"center"}
-      >
+    <Animated.View
+      style={[
+        animatedOpacity,
+        { flex: 1, marginTop: 100, gap: 16 }
+      ]}
+    >
+      <Box alignSelf={"center"}>
         <Text
           variant={"onboardingTitle"}
           textAlign={"center"}
@@ -172,15 +132,11 @@ export const OnboardingIllustration = () => {
           {pageTitle}
         </Text>
       </Box>
+
       <Box
         flex={1}
-        paddingHorizontal={"xl"}
-        flexDirection={"row"}
         justifyContent={"center"}
         alignItems={"center"}
-        style={{
-          marginBottom: 60
-        }}
       >
         <Illustration name={"thirdPageArrow"}/>
       </Box>

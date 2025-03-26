@@ -5,7 +5,6 @@ import Icon from "@/shared/ui/Icons/Icon";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
-import {getTint} from "@/shared/constants";
 
 interface TagsHeaderProps {
   title: string;
@@ -26,7 +25,7 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
     >
       <Pressable
         onPress={() => {
-          router.back();
+          router.replace("/tags");
         }}
         style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}
       >
@@ -39,7 +38,7 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
         </Box>
       </Pressable>
 
-      <Text variant="tagsHeader" color={getTint(theme.colors.bg_color) == "dark" ? "white" : "black"} textAlign="center">
+      <Text variant="tagsHeader" color={"text_color"} textAlign="center">
         {props.title}
       </Text>
     </Box>

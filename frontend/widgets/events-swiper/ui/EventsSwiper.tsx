@@ -25,7 +25,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
   events,
   swipedAll, setSwipedAll
 }) => {
-  const { tag } = useLocalSearchParams<{ tag: string }>();
+  const { service, tag } = useLocalSearchParams<{ service: string, tag: string }>();
 
   const theme = useTheme<Theme>();
   const router = useRouter();
@@ -340,9 +340,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
         {
           tag && !swipedAll && (
             <Pressable
-              onPress={() => {
-                router.back();
-              }}
+              onPress={ () => router.navigate({ pathname: "/tags/[service]", params: { service: service }}) }
             >
               <Box
                 backgroundColor={"cardBGColor"}
@@ -398,7 +396,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
               {
                 tag && (
                   <Pressable
-                    onPress={ () => router.back() }
+                    onPress={ () => router.replace({ pathname: "/tags/[service]", params: { service: service }}) }
                   >
                     <Box
                       flexDirection="row"

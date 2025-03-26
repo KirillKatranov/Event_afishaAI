@@ -3,7 +3,6 @@ import {Box, Text, LoadingCard} from "@/shared/ui";
 import {Image, Pressable} from "react-native";
 import {Event} from "@/entities/event";
 import DropShadow from "react-native-drop-shadow";
-import {WEB_APP_URL} from "@env";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import Animated, {useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming} from "react-native-reanimated";
@@ -82,7 +81,7 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
 
         <Pressable
           onPress={() => {
-            const link = `${WEB_APP_URL}?startapp=${props.event.id}`;
+            const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${props.event.id}`;
             const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
 
             console.log("Sharing event with link:", link);

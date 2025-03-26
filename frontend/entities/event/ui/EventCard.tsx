@@ -13,7 +13,6 @@ import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {ActionButton, LoadingCard, TagChip} from "@/shared/ui";
 import {Gesture, GestureDetector, GestureHandlerRootView, ScrollView} from "react-native-gesture-handler";
-import { WEB_APP_URL } from '@env';
 import {ServicesColors} from "@/entities/service";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
 
@@ -161,7 +160,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
         >
           <Pressable
             onPress={ () => {
-              const link = `${WEB_APP_URL}?startapp=${event.id}`;
+              const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${event.id}`;
               const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
 
               console.log("Sharing event with link:", link);

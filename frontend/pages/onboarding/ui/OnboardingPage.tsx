@@ -3,7 +3,7 @@ import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} fro
 import { OnboardingIllustration, OnboardingNav, OnboardingText, useOnboardingStore } from "@/widgets/onboarding-elements";
 import { Box } from "@/shared/ui";
 import { Dimensions, ImageBackground } from "react-native";
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import {GestureDetector, Gesture, GestureHandlerRootView} from 'react-native-gesture-handler';
 import { useRouter } from "expo-router";
 
 const width = Dimensions.get("window").width;
@@ -64,41 +64,43 @@ export const OnboardingPage: React.FC = () => {
   }));
 
   return (
-    <GestureDetector gesture={swipeGestureHandler}>
-      <Box style={{ flex: 1, position: "absolute", width: "100%", height: "100%" }}>
-        {/* First Background */}
-        <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle1]}>
-          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage1.png")} resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
-        </Animated.View>
+    <GestureHandlerRootView>
+      <GestureDetector gesture={swipeGestureHandler}>
+        <Box style={{ flex: 1, position: "absolute", width: "100%", height: "100%" }}>
+          {/* First Background */}
+          <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle1]}>
+            <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage1.png")} resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
+          </Animated.View>
 
-        {/* Second Background */}
-        <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle2]}>
-          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage2.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
-        </Animated.View>
+          {/* Second Background */}
+          <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle2]}>
+            <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage2.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
+          </Animated.View>
 
-        {/* Third Background */}
-        <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle3]}>
-          <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage3.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
-        </Animated.View>
+          {/* Third Background */}
+          <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle3]}>
+            <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage3.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
+          </Animated.View>
 
 
-        <Animated.View style={[{ flex: 1 }, animatedStyle]}>
-          <Box
-            flex={1}
-            justifyContent={"flex-end"}
-            overflow={"hidden"}
-            style={{
-              gap: 36
-            }}
-          >
-            <OnboardingIllustration />
+          <Animated.View style={[{ flex: 1 }, animatedStyle]}>
+            <Box
+              flex={1}
+              justifyContent={"flex-end"}
+              overflow={"hidden"}
+              style={{
+                gap: 36
+              }}
+            >
+              <OnboardingIllustration />
 
-            <OnboardingText/>
+              <OnboardingText/>
 
-            <OnboardingNav />
-          </Box>
-        </Animated.View>
-      </Box>
-    </GestureDetector>
+              <OnboardingNav />
+            </Box>
+          </Animated.View>
+        </Box>
+      </GestureDetector>
+    </GestureHandlerRootView>
   )
 }

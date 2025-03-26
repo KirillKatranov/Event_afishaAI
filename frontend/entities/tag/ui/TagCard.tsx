@@ -115,6 +115,7 @@ export const TagCard: React.FC<TagCardProps> = ({
             style={{
               padding: 20,
               backgroundColor: colors[service],
+              position: "relative"
             }}
           >
             {/* Tag description */}

@@ -62,10 +62,11 @@ export const CityPage = () => {
       <Box
         flexDirection={"column"}
         width={"100%"}
-        alignContent={"center"}
-        justifyContent={"center"}
         gap={"s"}
         paddingHorizontal={"l"}
+        style={{
+          alignItems: "center", justifyContent: "center"
+        }}
       >
         <Pressable
           onPress={() => saveCity(

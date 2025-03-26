@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 import {ImageBackground, Pressable, ScrollView} from "react-native";
 import {Box, Text} from "@/shared/ui";
 import {Event} from "@/entities/event"
-import {WEB_APP_URL} from "@env";
 import Icon from "@/shared/ui/Icons/Icon";
 import {Hyperlink} from "react-native-hyperlink";
 import {useConfig} from "@/shared/providers/TelegramConfig";
@@ -39,9 +38,11 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
     return () => { if (config.BackButton) config.BackButton!.hide(); }
   }, [props.selectedEvent]);
 
+  if (props.selectedEvent == undefined) return null;
+
   return (
     <ImageBackground
-      source={{ uri: props.selectedEvent != undefined ? props.selectedEvent.image : undefined }}
+      source={{ uri: props.selectedEvent.image }}
       blurRadius={4}
       style={{
         flex: 1,
@@ -62,53 +63,47 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
           paddingBottom="l"
         >
           <Box
+            flex={1}
             flexDirection={"row"}
-            alignItems={"center"}
             gap={"s"}
           >
             <Text
-              variant="header"
               color={"white"}
-              style={{
-                flex: 1
-              }}
+              style={{ flex: 1, fontFamily: 'MontserratRegular', fontSize: 22 }}
             >
-              { props.selectedEvent != undefined && props.selectedEvent.name }
+              { props.selectedEvent.name }
             </Text>
 
             <Box
+              width={40}
               flexDirection={"column"}
               gap={"xs"}
             >
-              {
-                props.selectedEvent !== undefined && (
-                  <Pressable
-                    onPress={ () => {
-                      const link = `${WEB_APP_URL}?startapp=${props.selectedEvent!.id}`;
-                      const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
+              <Pressable
+                onPress={ () => {
+                  const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${props.selectedEvent!.id}`;
+                  const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
 
-                      console.log("Sharing event with link:", link);
+                  console.log("Sharing event with link:", link);
 
-                      config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
-                    }}
-                  >
-                    <Box
-                      backgroundColor={"cardBGColor"}
-                      height={40}
-                      width={40}
-                      alignItems={"center"}
-                      justifyContent={"center"}
-                      borderRadius={"xl"}
-                    >
-                      <Icon
-                        name={"share"}
-                        color={theme.colors.white}
-                        size={24}
-                      />
-                    </Box>
-                  </Pressable>
-                )
-              }
+                  config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
+                }}
+              >
+                <Box
+                  backgroundColor={"cardBGColor"}
+                  height={40}
+                  width={40}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  borderRadius={"xl"}
+                >
+                  <Icon
+                    name={"share"}
+                    color={theme.colors.white}
+                    size={24}
+                  />
+                </Box>
+              </Pressable>
             </Box>
           </Box>
 
@@ -166,11 +161,10 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
               color: "white"
             }}
           >
-            { props.selectedEvent != undefined  && props.selectedEvent.description }
+            { props.selectedEvent.description }
           </Text>
 
           {
-            props.selectedEvent != undefined &&
             props.selectedEvent.contact &&
             props.selectedEvent.contact!.length > 0 &&
             !props.selectedEvent.contact.every(obj => Object.keys(obj).length === 0) &&
