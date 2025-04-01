@@ -9,6 +9,7 @@ export {OnboardingLikes} from "./OnboardingLikes"
 export {OnboardingLike} from "./OnboardingLike"
 export {Trips} from "./Trips";
 export {Places} from "./Places";
+export {SadArrow} from "./SadArrow";
 export {Events} from "./Events";
 export {Organizers} from "./Organizers";
 export {CreateEvent} from "./CreateEvent";

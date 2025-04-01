@@ -1,5 +1,5 @@
 import axiosInstance from "@/shared/api/AxiosConfig";
-import {UserRequest, UserResponse} from "@/entities/user";
+import {UserRegisterRequest, UserRegisterResponse, UserRequest, UserResponse} from "@/entities/user";
 
 class UserService {
   async getUser(
@@ -12,6 +12,19 @@ class UserService {
       {
         params: params
       });
+
+    return response;
+  };
+
+  async registerUser(
+    params: UserRegisterRequest
+  ) {
+    console.log("Send POST register user request", params);
+
+    const response: UserRegisterResponse = await axiosInstance.post(
+      '/register/',
+      params
+    );
 
     return response;
   };

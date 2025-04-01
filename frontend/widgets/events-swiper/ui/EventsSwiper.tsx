@@ -15,6 +15,7 @@ import Icon from "@/shared/ui/Icons/Icon";
 import {getEventCardsLayout, setEventCardsLayout} from "@/shared/utils/storage/layoutSettings";
 import {CatalogEventCard} from "@/entities/event/ui/CatalogEventCard";
 import {useCatalogLikesStore} from "@/widgets/events-swiper";
+import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 interface EventsSwiperProps {
   events: Event[];
@@ -61,7 +62,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
 
   const swipedAllInfoStyle = useAnimatedStyle(() => ({
     opacity: swipedAllInfoOpacity.value,
-    gap: 16
+    gap: 40
   }));
 
   const likeOpacity = useSharedValue(0);
@@ -383,7 +384,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
             padding="xl"
           >
             <Animated.View
-              style={ swipedAllInfoStyle }
+              style={swipedAllInfoStyle}
             >
               <Text
                 variant="body"
@@ -393,6 +394,10 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                 { tag ? "Мероприятия в этой категории закончились" : "Мероприятия закончились" }
               </Text>
 
+              <Box alignItems={"center"}>
+                <Illustration name={"sadArrow"}/>
+              </Box>
+
               {
                 tag && (
                   <Pressable
@@ -400,19 +405,15 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                   >
                     <Box
                       flexDirection="row"
-                      height={44}
-                      padding="l"
-                      alignItems="center"
-                      justifyContent="center"
-                      backgroundColor="button_color"
+                      height={62}
+                      alignItems="center" justifyContent="center"
                       style={{
-                        borderRadius: 12
+                        borderRadius: 28,
+                        paddingHorizontal: 30, paddingVertical: 20,
+                        backgroundColor: "#6361DD"
                       }}
                     >
-                      <Text
-                        variant="body"
-                        color="button_text_color"
-                      >
+                      <Text color={"white"} style={{ fontFamily: "MontserratMedium", fontSize: 16 }}>
                         { "Выбрать другую категорию" }
                       </Text>
                     </Box>
@@ -427,20 +428,15 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                   >
                     <Box
                       flexDirection="row"
-                      height={44}
-                      padding="l"
-                      alignItems="center"
-                      justifyContent="center"
-                      backgroundColor="button_color"
+                      height={62}
+                      alignItems="center" justifyContent="center"
                       style={{
-                        borderRadius: 12
+                        borderRadius: 28,
+                        paddingHorizontal: 30, paddingVertical: 20,
+                        backgroundColor: "#6361DD"
                       }}
                     >
-                      <Text
-                        variant="body"
-                        color="button_text_color"
-                        textAlign={"center"}
-                      >
+                      <Text color={"white"} style={{ fontFamily: "MontserratMedium", fontSize: 16 }}>
                         { "Изменить даты мероприятий" }
                       </Text>
                     </Box>

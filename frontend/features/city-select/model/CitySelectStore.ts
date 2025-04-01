@@ -40,8 +40,6 @@ export const useCitySelectStore = create<CitySelectState & CitySelectActions>((s
         set({ hasError: true })
       })
       .finally(() => set({ isLoading: false }));
-
-    set({ isLoading: false });
   },
 
   onCitySelected: (city) => set({ citySelected: city }),

@@ -25,9 +25,11 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   return (
     <Pressable
       onPressIn={(event) => {
+        event.preventDefault()
         startX = event.nativeEvent.pageX;
       }}
       onPressOut={(event) => {
+        event.preventDefault()
         const endX = event.nativeEvent.pageX;
         if (Math.abs(endX - startX) < 10) {
           onPress();

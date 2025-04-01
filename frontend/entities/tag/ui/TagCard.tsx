@@ -1,5 +1,5 @@
 import React from "react";
-import {Pressable} from "react-native";
+import {GestureResponderEvent, Pressable} from "react-native";
 import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
 import {Tag} from "@/entities/tag";
@@ -18,7 +18,7 @@ interface TagCardProps {
   service: "events" | "places" | "organizers" | "trips";
   tag: Tag;
   liked: boolean;
-  onPress: () => void; onLike: () => void;
+  onPress: (event: GestureResponderEvent) => void; onLike: () => void;
   scrollY: SharedValue<number>;
 }
 

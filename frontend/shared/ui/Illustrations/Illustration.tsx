@@ -14,6 +14,7 @@ const illustrations = {
   onboardingLike: Illustrations.OnboardingLike,
   trips: Illustrations.Trips,
   places: Illustrations.Places,
+  sadArrow: Illustrations.SadArrow,
   events: Illustrations.Events,
   organizers: Illustrations.Organizers,
   ticket: Illustrations.Ticket,

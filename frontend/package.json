@@ -56,7 +56,7 @@
     "react-native-shadow-2": "^7.1.1",
     "react-native-svg": "15.8.0",
     "react-native-tab-view": "^4.0.5",
-    "react-native-web": "~0.19.10",
+    "react-native-web": "~0.19.13",
     "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {

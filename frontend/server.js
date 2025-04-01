@@ -29,7 +29,7 @@ app.use(
 app.use(morgan('tiny'));
 
 app.all(
-  '*',
+  /(.*)/,
   createRequestHandler({
     build: SERVER_BUILD_DIR,
   })

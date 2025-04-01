@@ -4,11 +4,13 @@ import { OnboardingIllustration, OnboardingNav, OnboardingText, useOnboardingSto
 import { Box } from "@/shared/ui";
 import { Dimensions, ImageBackground } from "react-native";
 import {GestureDetector, Gesture, GestureHandlerRootView} from 'react-native-gesture-handler';
-import { useRouter } from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
 
 const width = Dimensions.get("window").width;
 
 export const OnboardingPage: React.FC = () => {
+  const { user } = useLocalSearchParams<{ user: string }>();
+
   const backgroundAnimation = useSharedValue(0);
   const offsetX = useSharedValue(0);
   const startX = useSharedValue(0);
@@ -41,7 +43,7 @@ export const OnboardingPage: React.FC = () => {
           offsetX.value = 0;
         });
       } else if ((velocityX < -150) && page === 3) {
-        router.replace("/onboarding/city")
+        router.replace({pathname: "/onboarding/city", params: { user: user }})
       } else {
         offsetX.value = withTiming(0, { duration: 200 });
       }

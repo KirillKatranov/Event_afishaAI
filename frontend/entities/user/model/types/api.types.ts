@@ -10,3 +10,17 @@ export type UserResponse = {
   }
 }
 
+export type UserRegisterRequest = {
+  username: string;
+  city: string;
+}
+
+export type UserRegisterResponse = {
+  status: number;
+  data: {
+    meessage: string,
+    user_id: number
+  }
+}
+
+

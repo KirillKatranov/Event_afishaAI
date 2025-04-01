@@ -3,22 +3,55 @@ import {Box, LoadingCard, Text} from "@/shared/ui";
 import {Dimensions, Image, Pressable} from "react-native";
 import {cities, City, CityCard, useCitySelectStore} from "@/features/city-select";
 import {useConfig} from "@/shared/providers/TelegramConfig";
-import {useRouter} from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import Carousel from "react-native-reanimated-carousel";
+import {getPeriodBorders} from "@/shared/scripts/date";
+import {useCalendarStore} from "@/features/dates";
+import {useFeedStore} from "@/features/content";
+import {NEW_USER} from "@/shared/constants";
+import {useUserStore} from "@/entities/user";
 
 const window = Dimensions.get("window");
 
 export const CityPage = () => {
+  const { user: userParam } = useLocalSearchParams<{ user: string }>();
+
   const {
     citySelected, availableCities, isLoading,
     getCities, saveCity, onCitySelected
   } = useCitySelectStore();
-  const user = useConfig().initDataUnsafe.user;
+  const { user, registerUser } = useUserStore();
+  const tgUser = useConfig().initDataUnsafe.user;
   const router = useRouter();
 
   useEffect(() => {
     if (!availableCities) getCities()
-  }, [availableCities, getCities, user]);
+  }, [availableCities, getCities, tgUser]);
+
+  useEffect(() => {
+    if (userParam == NEW_USER && user !== undefined) router.replace('/feed')
+  }, [user, userParam]);
+
+  const handleNewUser = () => {
+    if (citySelected) {
+      registerUser(tgUser.username ? tgUser.username : tgUser.id.toString(), citySelected)
+    }
+  }
+
+  const handleOldUser = () => {
+    saveCity(
+      tgUser.username ? tgUser.username : tgUser.id.toString(),
+      () => {
+        const borders = getPeriodBorders(Object.keys(useCalendarStore.getState().selectedDays));
+        useFeedStore.getState().fetchFeed({
+          username: tgUser.username ? tgUser.username : tgUser.id.toString(),
+          date_start: borders.date_start,
+          date_end: borders.date_end,
+        })
+        router.replace('/profile')
+      }
+    )
+  }
 
   return (
     <Box
@@ -35,7 +68,7 @@ export const CityPage = () => {
         <Text color={"lime"} style={{ fontFamily: "MontserratBold", fontWeight: "800", fontSize: 24 }}>{"НУЖНЫЙ ГОРОД"}</Text>
       </Box>
 
-      {isLoading && (
+      {(isLoading || !availableCities) && (
         <LoadingCard style={{ width: Dimensions.get("window").width * 0.9, height: Math.min(window.height - 328, 650), borderRadius: 25}}/>
       )}
 
@@ -69,10 +102,7 @@ export const CityPage = () => {
         }}
       >
         <Pressable
-          onPress={() => saveCity(
-            user.username ? user.username : user.id.toString(),
-            () => router.replace('/profile')
-          )}
+          onPress={userParam === NEW_USER ? handleNewUser : handleOldUser}
           disabled={!citySelected}
         >
           <Box
@@ -93,23 +123,25 @@ export const CityPage = () => {
           </Box>
         </Pressable>
 
-        <Pressable onPress={() => router.replace('/feed')}>
-          <Box
-            width={254} height={30}
-            alignItems={"center"} justifyContent={"center"}
-            padding={"s"} borderRadius={"l"}
-            backgroundColor={"white"}
-          >
-            <Text
-              variant={"calendarAcceptButton"}
-              color={"black"}
-              textAlign={"center"}
-              selectable={false}
+        {userParam !== NEW_USER && (
+          <Pressable onPress={() => router.replace('/feed')}>
+            <Box
+              width={254} height={30}
+              alignItems={"center"} justifyContent={"center"}
+              padding={"s"} borderRadius={"l"}
+              backgroundColor={"white"}
             >
-              {"Пропустить"}
-            </Text>
-          </Box>
-        </Pressable>
+              <Text
+                variant={"calendarAcceptButton"}
+                color={"black"}
+                textAlign={"center"}
+                selectable={false}
+              >
+                {"Пропустить"}
+              </Text>
+            </Box>
+          </Pressable>
+        )}
       </Box>
 
       <Image

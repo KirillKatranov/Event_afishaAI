@@ -2,11 +2,10 @@ import React from "react";
 import {Box, Text} from "@/shared/ui";
 import {SharedEventCard} from "@/widgets/shared-event";
 import {Pressable} from "react-native";
-import {useLocalSearchParams, useRouter} from "expo-router";
+import {useRouter} from "expo-router";
 import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
 
 export const SharedEventPage: React.FC = () => {
-  const { firstLaunch } = useLocalSearchParams<{ firstLaunch: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -19,7 +18,7 @@ export const SharedEventPage: React.FC = () => {
       <SharedEventCard/>
 
       <Pressable
-        onPress={() => router.replace(firstLaunch == "true" ? "/onboarding" : "/feed")}
+        onPress={() => router.replace("/feed")}
       >
         <Box
           width={"100%"} height={48}

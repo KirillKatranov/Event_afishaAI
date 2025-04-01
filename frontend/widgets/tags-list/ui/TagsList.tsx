@@ -15,7 +15,7 @@ interface TagsListProps {
 export const TagsList: React.FC<TagsListProps> = ({
   scrollY
 }) => {
-  const { service } = useLocalSearchParams<{ service: "events" | "places" | "organizers" | "trips" }>()
+  const { service } = useLocalSearchParams<{ service: "events" | "places" | "organizers" | "trips" }>();
   const { tags, preferences, isLoading, hasError, fetchTags, onTagLike } = useTagsStore();
   const router = useRouter();
   const username = useConfig().initDataUnsafe.user.username;
@@ -76,7 +76,8 @@ export const TagsList: React.FC<TagsListProps> = ({
               index={index}
               liked={preferences.includes(item.id)}
               tag={item}
-              onPress={() => {
+              onPress={(event) => {
+                event.preventDefault();
                 router.push({
                   pathname: "/tags/[service]/[tag]",
                   params: { service: service, tag: item.name }
