@@ -1,12 +1,13 @@
-import React, {useCallback} from "react";
-import {useFocusEffect, useLocalSearchParams, useRouter} from "expo-router";
+import React from "react";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import {useTagsStore} from "@/widgets/tags-list/model/store/useTagsStore";
 import {TagCard} from "@/entities/tag";
-import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
+import {Box, Text, ErrorCard, LoadingCard} from "@/shared/ui";
 import Animated, {LinearTransition, SharedValue} from "react-native-reanimated";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
+import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 interface TagsListProps {
   scrollY: SharedValue<number>
@@ -16,16 +17,10 @@ export const TagsList: React.FC<TagsListProps> = ({
   scrollY
 }) => {
   const { service } = useLocalSearchParams<{ service: "events" | "places" | "organizers" | "trips" }>();
-  const { tags, preferences, isLoading, hasError, fetchTags, onTagLike } = useTagsStore();
+  const { tags, preferences, isLoading, hasError, onTagLike } = useTagsStore();
   const router = useRouter();
   const username = useConfig().initDataUnsafe.user.username;
   const theme = useTheme<Theme>();
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchTags({ username: username, macro_category: service });
-    }, [])
-  )
 
   if (isLoading) {
     return (
@@ -54,6 +49,21 @@ export const TagsList: React.FC<TagsListProps> = ({
         <ErrorCard style={{ backgroundColor: "transparent" }}/>
       </Box>
     );
+  }
+
+  if (!isLoading && tags.length === 0) {
+    return (
+      <Box
+        flex={1} alignItems={"center"} justifyContent={"center"}
+        style={{ gap: 32, paddingHorizontal: 10,  paddingBottom: 62 }}
+      >
+        <Text variant="body" color="text_color">
+          В этом сервисе отсутвуют категории
+        </Text>
+
+        <Illustration name={"sadArrow"}/>
+      </Box>
+    )
   }
 
   return (

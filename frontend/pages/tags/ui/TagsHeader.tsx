@@ -19,9 +19,7 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
 
   return (
     <Box
-      style={{
-        paddingBottom: 16, paddingTop: 108, zIndex: -1
-      }}
+      style={{ paddingBottom: 16, paddingTop: 108 }}
     >
       <Pressable
         onPress={() => {
@@ -38,7 +36,7 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
         </Box>
       </Pressable>
 
-      <Text variant="tagsHeader" color={"text_color"} textAlign="center">
+      <Text variant={"tagsHeader"} color={"text_color"} textAlign={"center"}>
         {props.title}
       </Text>
     </Box>

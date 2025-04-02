@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import { Box} from "@/shared/ui";
 import { TagsHeader } from "@/pages/tags/ui/TagsHeader";
 import {TagsList, useTagsStore} from "@/widgets/tags-list";
@@ -8,13 +8,14 @@ import Animated, {
   interpolate,
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
-import {useLocalSearchParams} from "expo-router";
+import {useFocusEffect, useLocalSearchParams} from "expo-router";
 import {Services, ServicesColors} from "@/entities/service";
 import {BlurView} from "expo-blur";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import {getTint} from "@/shared/constants";
 import {Dimensions} from "react-native";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
 const window = Dimensions.get("window");
 
@@ -22,7 +23,13 @@ export const TagsPage = () => {
   const theme = useTheme<Theme>();
   const { service } = useLocalSearchParams<{ service: "events" | "places" | "organizers" | "trips" }>()
 
-  const { isLoading } = useTagsStore();
+  const username = useConfig().initDataUnsafe.user.username;
+  const { isLoading, fetchTags } = useTagsStore();
+  useFocusEffect(
+    useCallback(() => {
+      fetchTags({ username: username, macro_category: service });
+    }, [])
+  )
 
   const scrollY = useSharedValue(0);
 

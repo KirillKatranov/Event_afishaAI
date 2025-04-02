@@ -110,67 +110,16 @@ export const TagCard: React.FC<TagCardProps> = ({
             minHeight={186}
             borderRadius={"xl"}
             overflow={"hidden"}
-            flexDirection={"column"}
-            gap={"xs"}
             style={{
               padding: 20,
               backgroundColor: colors[service],
               position: "relative"
             }}
           >
-            {/* Tag description */}
-            <Text
-              variant={"tagCardDescription"}
-              color={service == "places" ? "white" : "black"}
-              textTransform={"lowercase"} numberOfLines={1}
-              style={{
-                alignSelf: "flex-start", justifyContent: "center",
-                maxWidth: "100%",
-                paddingHorizontal: 6, borderRadius: 10,
-                backgroundColor: service == "places" ? "#A533FF" : "#E1F44B"
-              }}
-              selectable={false}
-            >
-              { tag.description }
-            </Text>
-
-            {/* Tag name */}
-            <Box
-              flexDirection={"row"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              gap={"xs"}
-            >
+            <Box zIndex={1} flexDirection={"column"} gap={"xs"}>
+              {/* Tag description */}
               <Text
-                variant={"tagCardName"}
-                color={"black"}
-                textTransform={"uppercase"} numberOfLines={1}
-                selectable={false}
-                style={{
-                  alignSelf: "flex-start", justifyContent: "center",
-                  maxWidth: "100%",
-                  paddingHorizontal: 8, borderRadius: 10,
-                  backgroundColor: "white"
-                }}
-              >
-                { tag.name }
-              </Text>
-
-              <Pressable onPress={handleLike}>
-                <Animated.View style={likeAnimationStyle}>
-                  <Icon
-                    name={ liked ? "likeFilled" : "like" }
-                    color={ service == "places" ? "#A533FF" : "#E1F44B" }
-                    size={26}
-                  />
-                </Animated.View>
-              </Pressable>
-            </Box>
-
-            {/* Events count chip */}
-            {tag.count === 0 && (
-              <Text
-                variant={"tagCardEventsCount"}
+                variant={"tagCardDescription"}
                 color={service == "places" ? "white" : "black"}
                 textTransform={"lowercase"} numberOfLines={1}
                 style={{
@@ -179,35 +128,82 @@ export const TagCard: React.FC<TagCardProps> = ({
                   paddingHorizontal: 6, borderRadius: 10,
                   backgroundColor: service == "places" ? "#A533FF" : "#E1F44B"
                 }}
-                selectable={false} opacity={0.9}
-              >
-                { "Всё просмотрено" }
-              </Text>
-            )}
-
-            {tag.count !== 0 && (
-              <Text
-                variant={"tagCardEventsCount"}
-                style={{ color: service == "places" ? "#A533FF" : "#FFFFFF"}}
                 selectable={false}
               >
-                { tag.count }
+                { tag.description }
               </Text>
-            )}
+
+              {/* Tag name */}
+              <Box
+                flexDirection={"row"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                gap={"xs"}
+              >
+                <Text
+                  variant={"tagCardName"}
+                  color={"black"}
+                  textTransform={"uppercase"} numberOfLines={1}
+                  selectable={false}
+                  style={{
+                    alignSelf: "flex-start", justifyContent: "center",
+                    maxWidth: "100%",
+                    paddingHorizontal: 8, borderRadius: 10,
+                    backgroundColor: "white"
+                  }}
+                >
+                  { tag.name }
+                </Text>
+
+                <Pressable onPress={handleLike}>
+                  <Animated.View style={likeAnimationStyle}>
+                    <Icon
+                      name={ liked ? "likeFilled" : "like" }
+                      color={ service == "places" ? "#A533FF" : "#E1F44B" }
+                      size={26}
+                    />
+                  </Animated.View>
+                </Pressable>
+              </Box>
+
+              {/* Events count chip */}
+              {tag.count === 0 && (
+                <Text
+                  variant={"tagCardEventsCount"}
+                  color={service == "places" ? "white" : "black"}
+                  textTransform={"lowercase"} numberOfLines={1}
+                  style={{
+                    alignSelf: "flex-start", justifyContent: "center",
+                    maxWidth: "100%",
+                    paddingHorizontal: 6, borderRadius: 10,
+                    backgroundColor: service == "places" ? "#A533FF" : "#E1F44B"
+                  }}
+                  selectable={false} opacity={0.9}
+                >
+                  { "Всё просмотрено" }
+                </Text>
+              )}
+
+              {tag.count !== 0 && (
+                <Text
+                  variant={"tagCardEventsCount"}
+                  style={{ color: service == "places" ? "#A533FF" : "#FFFFFF"}}
+                  selectable={false}
+                >
+                  { tag.count }
+                </Text>
+              )}
+            </Box>
 
             <LinearGradient
-              colors={[
-                'rgba(255,253,253,0.4)', 'rgba(255,253,253,0.45)', 'rgba(255,253,253,0.51)', 'rgba(255,253,253,0.6)',
-                'rgba(255,253,253,0.7)', 'rgba(255,253,253,0.8)', 'rgba(255,253,253,0.85)', 'rgba(255,253,253,0.9)'
-              ]}
-              locations={[0, 0.31, 0.49, 0.62, 0.73, 0.84, 0.92, 1]}
+              colors={['rgba(255,253,253,0.4)', 'rgba(255,254,250,0.5)', 'rgba(255,253,253,0.9)']}
+              locations={[0, 0.5, 1]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={{
                 position: "absolute",
                 width: "100%", height: "100%",
                 top: 0, left: 0, right: 0, bottom: 0,
-                zIndex: -1
               }}
             />
           </Box>
