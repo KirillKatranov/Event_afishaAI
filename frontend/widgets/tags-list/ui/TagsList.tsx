@@ -68,10 +68,10 @@ export const TagsList: React.FC<TagsListProps> = ({
 
   return (
     <Box
-      flex={1}
       style={{
         paddingHorizontal: 10,
         paddingBottom: 62,
+        flexGrow: 1
       }}
     >
       {
@@ -81,7 +81,6 @@ export const TagsList: React.FC<TagsListProps> = ({
             layout={LinearTransition.duration(200)}
           >
             <TagCard
-              key={item.id}
               service={service}
               index={index}
               liked={preferences.includes(item.id)}
