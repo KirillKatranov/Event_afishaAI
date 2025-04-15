@@ -6,6 +6,7 @@ export {ActionButton} from "./Controls/ActionButton";
 
 export {WebLottieView} from "./Containers/WebLottieView";
 export {TagChip} from "./Containers/TagChip";
+export {GradientText} from "./Containers/GradientText";
 
 export {LoadingCard} from "./MessageCards/LoadingCard";
 export {ErrorCard} from "./MessageCards/ErrorCard";

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Animated, {runOnJS, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useOnboardingStore} from "@/widgets/onboarding-elements/model/store/useOnboardingStore";
-import Illustration from "@/shared/ui/Illustrations/Illustration";
 import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
+import {LinearGradient} from "expo-linear-gradient";
 
 export const OnboardingIllustration = () => {
-  const { page, pageTitle } = useOnboardingStore();
+  const { page } = useOnboardingStore();
   const [pageSubTick, setPageSubTick] = useState(page);
   const opacity = useSharedValue(0);
 
@@ -18,128 +18,48 @@ export const OnboardingIllustration = () => {
   }, [page]);
 
   const animatedOpacity = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    flex: 1
+    opacity: opacity.value
   }));
 
-  if (pageSubTick == 1) {
-    return (
-      <Animated.View
-        style={[
-          animatedOpacity,
-          { flex: 1, marginTop: 100, gap: 16 }
-        ]}
-      >
-        <Box alignSelf={"center"}>
-          <Text variant={"onboardingIam"} style={{ color: "#000000" }}>
-            ВЫБИРАЙ ИЗ{" "}
-            <Text style={{ color: "#8E00FF" }}>10 КАТЕГОРИЙ</Text>
-          </Text>
-          <Box
-            style={{
-              marginTop: 30,
-              marginLeft: 35,
-              gap: 10
-            }}
-          >
-            <Box
-              style={{
-                display: "flex",
-                justifyContent: "flex-start"
-              }}
-            >
-              <Text fontWeight={600} variant={"tagsHeaderQuestion"}>— ОТ КОНЦЕРТОВ</Text>
-            </Box>
-            <Box
-              style={{
-                marginLeft: 160
-              }}
-            >
-              <Text fontWeight={600} variant={"tagsHeaderQuestion"}>ДО ВЫСТАВОК</Text>
-            </Box>
-          </Box>
-        </Box>
-
-        <Box
-          height={"100%"}
-          style={{
-            flex: 1,
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "relative"
-          }}
-        >
-          <Illustration name={"firstPageArrow"}/>
-        </Box>
-
-      </Animated.View>
-    )
-  }
-
-  if (pageSubTick == 2) {
-    return (
-      <Animated.View
-        style={[
-          animatedOpacity,
-          { flex: 1, marginTop: 100, gap: 16 }
-        ]}
-      >
-        <Box alignSelf={"center"}>
-          <Text
-            variant={"onboardingTitle"}
-            textAlign={"center"}
-            lineHeight={34}
-            style={{
-              color: "#000000",
-
-            }}
-          >
-            {pageTitle}
-          </Text>
-        </Box>
-
-        <Box
-          flex={1}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          <Illustration name={"onboardingLike"}/>
-          <Illustration name={"onboardingLikes"}/>
-          <Illustration name={"secondPageArrow"}/>
-        </Box>
-      </Animated.View>
-    )
-  }
-
-  {/* page == 3 */}
   return (
-    <Animated.View
-      style={[
-        animatedOpacity,
-        { flex: 1, marginTop: 100, gap: 16 }
-      ]}
-    >
-      <Box alignSelf={"center"}>
+    <Box style={ { marginTop: 100, gap: 16, height: 72, width: "100%" }}>
+      <Animated.View
+        style={[
+          animatedOpacity,
+          { alignSelf: "center", justifyContent: "center", width: "100%", height: "100%", zIndex: 2 },
+        ]}
+      >
         <Text
-          variant={"onboardingTitle"}
           textAlign={"center"}
-          lineHeight={34}
           style={{
-            color: "#000000"
+            color: "#ffffff",
+            fontFamily: 'UnboundedSemiBold',
+            fontSize: 36
           }}
         >
-          {pageTitle}
+          {pageSubTick == 1 ?
+            "СОБЫТИЯ" :
+            (pageSubTick == 2 ?
+                "МЕСТА" :
+                (pageSubTick == 3 ?
+                    "ПУТЕШЕСТВИЯ" :
+                    "ОРГАНИЗАТОРЫ"
+                )
+            )
+          }
         </Text>
-      </Box>
+      </Animated.View>
 
-      <Box
-        flex={1}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <Illustration name={"thirdPageArrow"}/>
-      </Box>
-    </Animated.View>
+      <LinearGradient
+        colors={["#E1F44B", "#E600FF", "#C500FF", "#8E00FF"]}
+        locations={[0, 0.5, 0.78, 1]}
+        start={{ x: 0.3, y: 0.5 }}
+        end={{ x: 0.5, y: 1 }}
+        style={{
+          position: "absolute", zIndex: 1,
+          width: "100%", height: "100%"
+        }}
+      />
+    </Box>
   )
 }

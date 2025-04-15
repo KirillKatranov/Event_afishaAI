@@ -32,17 +32,17 @@ export const OnboardingPage: React.FC = () => {
     })
     .onEnd((e) => {
       const { velocityX } = e;
-      if ((velocityX < -150) && page < 3 && page >= 1) {
+      if ((velocityX < -150) && page < 4 && page >= 1) {
         offsetX.value = withTiming(-width, { duration: 200 }, () => {
           incPage();
           offsetX.value = 0;
         });
-      } else if (velocityX > 150 && page > 1 && page <= 3) {
+      } else if (velocityX > 150 && page > 1 && page <= 4) {
         offsetX.value = withTiming(width, { duration: 200 }, () => {
           decPage();
           offsetX.value = 0;
         });
-      } else if ((velocityX < -150) && page === 3) {
+      } else if ((velocityX < -150) && page === 4) {
         router.replace({pathname: "/onboarding/city", params: { user: user }})
       } else {
         offsetX.value = withTiming(0, { duration: 200 });
@@ -54,53 +54,48 @@ export const OnboardingPage: React.FC = () => {
   }));
 
   const backgroundStyle1 = useAnimatedStyle(() => ({
-    opacity: interpolate(backgroundAnimation.value, [0, 1, 2], [1, 0, 0]),
+    opacity: interpolate(backgroundAnimation.value, [0, 1, 2, 3], [1, 0, 0, 0]),
   }));
 
   const backgroundStyle2 = useAnimatedStyle(() => ({
-    opacity: interpolate(backgroundAnimation.value, [0, 1, 2], [0, 1, 0]),
+    opacity: interpolate(backgroundAnimation.value, [0, 1, 2, 3], [0, 1, 0, 0]),
   }));
 
   const backgroundStyle3 = useAnimatedStyle(() => ({
-    opacity: interpolate(backgroundAnimation.value, [0, 1, 2], [0, 0, 1]),
+    opacity: interpolate(backgroundAnimation.value, [0, 1, 2, 3], [0, 0, 1, 0]),
+  }));
+
+  const backgroundStyle4 = useAnimatedStyle(() => ({
+    opacity: interpolate(backgroundAnimation.value, [0, 1, 2, 3], [0, 0, 0, 1]),
   }));
 
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={swipeGestureHandler}>
-        <Box style={{ flex: 1, position: "absolute", width: "100%", height: "100%" }}>
-          {/* First Background */}
+        <Box style={{ flex: 1, position: "absolute", width: "100%", height: "100%", gap: 16 }}>
           <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle1]}>
             <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage1.png")} resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
           </Animated.View>
 
-          {/* Second Background */}
           <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle2]}>
             <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage2.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
           </Animated.View>
 
-          {/* Third Background */}
           <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle3]}>
             <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage3.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
           </Animated.View>
 
+          <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, backgroundStyle4]}>
+            <ImageBackground source={require("@/shared/assets/images/onboardingBackgroundPage4.png")}  resizeMode={"stretch"} style={{ flex: 1, width: "100%", height: "100%" }} />
+          </Animated.View>
+
+          <OnboardingIllustration />
 
           <Animated.View style={[{ flex: 1 }, animatedStyle]}>
-            <Box
-              flex={1}
-              justifyContent={"flex-end"}
-              overflow={"hidden"}
-              style={{
-                gap: 36
-              }}
-            >
-              <OnboardingIllustration />
-
-              <OnboardingText/>
-
-              <OnboardingNav />
-            </Box>
+            <OnboardingText/>
           </Animated.View>
+
+          <OnboardingNav />
         </Box>
       </GestureDetector>
     </GestureHandlerRootView>
