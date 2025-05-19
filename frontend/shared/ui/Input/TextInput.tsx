@@ -1,27 +1,30 @@
 import React from "react";
 import {Box} from "@/shared/ui";
-import {NativeSyntheticEvent, StyleProp, TextInput as Input, TextInputChangeEventData, ViewStyle} from "react-native";
+import {StyleProp, TextInput as Input, ViewStyle} from "react-native";
 
 interface TextInputProps {
   placeholder: string;
-  value?: string;
-  onChange?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
+  value: string;
+  onChange: (value: string) => void;
   style?: StyleProp<ViewStyle>;
+  multiline?: boolean
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
   placeholder,
   value,
   onChange,
-  style
+  style,
+  multiline
 }) => {
   return (
-    <Box style={[style, { height: 40 }]}>
+    <Box style={[{ height: 40 }, style]}>
       <Input
         value={value}
-        onChange={onChange}
+        onChange={(e) => onChange(e.nativeEvent.text)}
         placeholder={placeholder}
         placeholderTextColor={"#B3B3B3"}
+        multiline={multiline}
         style={{
           width: "100%", height: "100%",
           borderRadius: 8,

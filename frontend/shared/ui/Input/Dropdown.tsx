@@ -104,7 +104,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
           <Box style={styles.modalOverlay} />
         </TouchableWithoutFeedback>
 
-        <Box style={{ width: '100%', padding: 16,}}>
+        <Box style={{ marginVertical: "auto", padding: 16, justifyContent: "center" }}>
           <FlatList
             data={items}
             keyExtractor={(item) => item.value}

@@ -1,9 +1,14 @@
-import {Box} from "@/shared/ui";
 import React from "react";
+import {CreateEventForm} from "@/widgets/create-event-form";
+import {ScrollView} from "react-native";
 
 export const OrganizersPage = () => {
   return (
-    <Box flex={1} backgroundColor={"white"} flexDirection={"column"} gap={"m"}>
-    </Box>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{flex: 1, flexDirection: "column", gap: 16, backgroundColor: "white"}}
+    >
+      <CreateEventForm/>
+    </ScrollView>
   )
 }
