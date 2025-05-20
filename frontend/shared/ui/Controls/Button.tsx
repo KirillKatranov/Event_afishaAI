@@ -26,7 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={disabled}
       style={({ pressed }) => [
         {
-          width: "100%", height: 40,
+          flex: 1, height: 40,
           borderRadius: 8,
           padding: 12,
           alignItems: "center", justifyContent: "center",

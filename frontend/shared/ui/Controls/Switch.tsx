@@ -9,8 +9,6 @@ interface SwitchProps {
   onChange: (value: boolean) => void;
   text: string;
   disabled?: boolean;
-  width?: number;
-  height?: number;
 }
 
 export const Switch: React.FC<SwitchProps> = ({
@@ -37,7 +35,7 @@ export const Switch: React.FC<SwitchProps> = ({
     <Pressable
       disabled={disabled}
       onPress={() => !disabled && onChange(!value)}
-      style={{ flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "space-between"}}
+      style={{ flexDirection: "row", gap: 8, alignItems: "center", justifyContent: "space-between" }}
     >
       <Text selectable={false} style={{ fontFamily: "MontserratRegular", fontSize: 16 }}>
         {text}
