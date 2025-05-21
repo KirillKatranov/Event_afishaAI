@@ -55,25 +55,27 @@ export const EventSettings = () => {
 
         {state.blockUsers && (
           <View style={{ marginTop: 16, gap: 8 }}>
-            <Button
-              onPress={state.addBlockedUsername} text={"+"} theme={"organizers"}
-            />
-
             {state.blockedUsernames.map((username, index) => (
               <View key={index} style={{ flexDirection: "row", gap: 8 }}>
                 <TextInput
                   value={username}
                   onChange={(text: string) => state.updateBlockedUsername(index, text)}
-                  placeholder={"@"}
+                  placeholder={"@username"} style={{ flex: 1 }}
                 />
 
-                <Button
-                  theme={"organizers"}
-                  text={"✖"}
-                  onPress={() => state.removeBlockedUsername(index)}
-                />
+                <View>
+                  <Button
+                    theme={"organizers"}
+                    text={"✖"}  variant={"secondary"}
+                    onPress={() => state.removeBlockedUsername(index)}
+                  />
+                </View>
               </View>
             ))}
+
+            <Button
+              onPress={state.addBlockedUsername} text={"+"} theme={"organizers"} variant={"secondary"}
+            />
           </View>
         )}
       </View>

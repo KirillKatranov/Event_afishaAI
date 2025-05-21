@@ -11,8 +11,8 @@ interface EventFormState {
   format: EventFormat;
   city: string;
   address: string;
-  dateStart: string;
-  dateEnd: string;
+  dateStart: Date | null;
+  dateEnd: Date | null;
   isRecurring: boolean;
   recurrencePattern: string;
   category: string;
@@ -31,8 +31,8 @@ interface EventFormActions {
   setFormat: (format: EventFormat) => void;
   setCity: (city: string) => void;
   setAddress: (address: string) => void;
-  setDateStart: (dateStart: string) => void;
-  setDateEnd: (dateEnd: string) => void;
+  setDateStart: (dateStart: Date) => void;
+  setDateEnd: (dateEnd: Date) => void;
   toggleRecurring: () => void;
   setRecurrencePattern: (pattern: string) => void;
   setCategory: (category: string) => void;
@@ -53,7 +53,7 @@ const initialState: EventFormState = {
   format: 'online',
   city: '',
   address: '',
-  dateStart: '', dateEnd: '',
+  dateStart: null, dateEnd: null,
   isRecurring: false,
   recurrencePattern: '',
   category: '',
@@ -76,7 +76,10 @@ export const useEventFormStore = create<EventFormState & EventFormActions>()(
 
     setCity: (city) => set({ city }),
     setAddress: (address) => set({ address }),
-    setDateStart: (dateStart) => set({ dateStart }),
+    setDateStart: (dateStart) => {
+      console.log(dateStart);
+      set({dateStart})
+    },
     setDateEnd: (dateEnd) => set({ dateEnd }),
 
     toggleRecurring: () => set((state) => ({ isRecurring: !state.isRecurring })),

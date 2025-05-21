@@ -14,6 +14,7 @@ export {GradientText} from "./Containers/GradientText";
 
 export {TextInput} from "./Input/TextInput";
 export {Dropdown} from "./Input/Dropdown";
+export {DateInput} from "./Input/DateInput";
 
 export {LoadingCard} from "./MessageCards/LoadingCard";
 export {ErrorCard} from "./MessageCards/ErrorCard";

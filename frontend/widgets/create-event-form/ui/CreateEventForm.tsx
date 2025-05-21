@@ -1,6 +1,6 @@
 import React from "react";
 import {View, Text, StyleSheet} from "react-native";
-import {Button, Checkbox, Dropdown, Radio, TextInput} from "@/shared/ui";
+import {Button, Checkbox, DateInput, Dropdown, Radio, TextInput} from "@/shared/ui";
 import {useEventFormStore} from "@/widgets/create-event-form";
 
 export const CreateEventForm = () => {
@@ -129,15 +129,29 @@ export const CreateEventForm = () => {
           Дата
         </Text>
 
-        <TextInput
-          placeholder={"Дата начала"}
-          value={state.dateStart} onChange={state.setDateStart}
-        />
+        <View style={{ flexDirection: "row", gap: 4, width: "100%", alignItems: "center" }}>
+          <Text style={styles.sectionTitle}>
+            с
+          </Text>
 
-        <TextInput
-          placeholder={"Дата конца"}
-          value={state.dateEnd} onChange={state.setDateEnd}
-        />
+          <DateInput
+            placeholder={"Дата начала"}
+            date={state.dateStart}
+            onChange={state.setDateStart}
+            style={{ flex: 1 }}
+          />
+
+          <Text style={styles.sectionTitle}>
+            по
+          </Text>
+
+          <DateInput
+            placeholder={"Дата конца"}
+            date={state.dateEnd}
+            onChange={state.setDateEnd}
+            style={{ flex: 1 }}
+          />
+        </View>
 
         <Checkbox
           theme={"organizers"}
