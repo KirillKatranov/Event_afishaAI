@@ -7,7 +7,8 @@ interface TextInputProps {
   value: string;
   onChange: (value: string) => void;
   style?: StyleProp<ViewStyle>;
-  multiline?: boolean
+  multiline?: boolean;
+  password?: boolean;
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -15,7 +16,8 @@ export const TextInput: React.FC<TextInputProps> = ({
   value,
   onChange,
   style,
-  multiline
+  multiline,
+  password
 }) => {
   return (
     <Box style={[{ height: 40 }, style]}>
@@ -25,6 +27,7 @@ export const TextInput: React.FC<TextInputProps> = ({
         placeholder={placeholder}
         placeholderTextColor={"#B3B3B3"}
         multiline={multiline}
+        secureTextEntry={!!password}
         style={{
           width: "100%", height: "100%",
           borderRadius: 8,

@@ -1,6 +1,6 @@
 import React from "react";
-import {CreateEventForm} from "@/widgets/create-event-form";
 import {ScrollView} from "react-native";
+import {SignInOrganizerForm} from "@/widgets/organizers-auth";
 
 export const OrganizersPage = () => {
   return (
@@ -8,7 +8,7 @@ export const OrganizersPage = () => {
       showsVerticalScrollIndicator={false}
       style={{flex: 1, flexDirection: "column", gap: 16, backgroundColor: "white"}}
     >
-      <CreateEventForm />
+      <SignInOrganizerForm/>
     </ScrollView>
   )
 }
