@@ -15,7 +15,6 @@ interface SignUpOrganizerActions {
   setPhoneNumber: (phoneNumber: string) => void;
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
-  submitSignUp: () => void;
 }
 
 const initialState: SignUpOrganizerState = {
@@ -28,18 +27,12 @@ const initialState: SignUpOrganizerState = {
 }
 
 export const useSignUpOrganizerStore = create<SignUpOrganizerState & SignUpOrganizerActions>()(
-  immer((set, get) => ({
+  immer((set) => ({
     ...initialState,
 
     setOrganizationName: (organizationName: string) => set({ organizationName }),
     setPhoneNumber: (phoneNumber: string) => set({ phoneNumber }),
     setEmail: (email: string) => set({ email }),
     setPassword: (password: string) => set({ password }),
-
-    submitSignUp: () => {
-      const state = get()
-
-      console.log(state);
-    }
   }))
 );

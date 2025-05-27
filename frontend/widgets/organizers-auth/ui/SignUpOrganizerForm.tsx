@@ -2,9 +2,11 @@ import React from "react";
 import {StyleSheet, Text, View} from "react-native";
 import {Button, TextInput} from "@/shared/ui";
 import {useSignUpOrganizerStore} from "@/widgets/organizers-auth";
+import {useOrganizerStore} from "@/entities/organizers";
 
 export const SignUpOrganizerForm = () => {
   const state = useSignUpOrganizerStore();
+  const { submitSignUp, isLoading, setShowSignUp } = useOrganizerStore();
 
   return (
     <View
@@ -41,7 +43,10 @@ export const SignUpOrganizerForm = () => {
 
       <Text style={styles.sectionTitle}>Телефон и почта нужны для связи с вами.</Text>
 
-      <Button theme={"organizers"} text={"Продолжить регистрацию"} onPress={state.submitSignUp}/>
+      <View style={styles.sectionContainer}>
+        <Button theme={"organizers"} text={"Продолжить регистрацию"} onPress={submitSignUp} disabled={isLoading}/>
+        <Button theme={"organizers"} text={"У меня есть аккаунт"} variant={"secondary"} onPress={() => setShowSignUp(false) }/>
+      </View>
     </View>
   )
 }

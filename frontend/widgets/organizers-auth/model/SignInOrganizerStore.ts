@@ -11,7 +11,6 @@ interface SignInOrganizerState {
 interface SignInOrganizerActions {
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
-  submitSignIn: () => void;
 }
 
 const initialState: SignInOrganizerState = {
@@ -22,16 +21,10 @@ const initialState: SignInOrganizerState = {
 }
 
 export const useSignInOrganizerStore = create<SignInOrganizerState & SignInOrganizerActions>()(
-  immer((set, get) => ({
+  immer((set) => ({
     ...initialState,
 
     setEmail: (email: string) => set({ email }),
     setPassword: (password: string) => set({ password }),
-
-    submitSignIn: () => {
-      const state = get();
-
-      console.log(state);
-    }
   }))
 );

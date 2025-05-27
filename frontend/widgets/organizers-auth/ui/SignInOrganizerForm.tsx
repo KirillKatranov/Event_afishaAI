@@ -2,9 +2,11 @@ import React from "react";
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Button, TextInput} from "@/shared/ui";
 import {useSignInOrganizerStore} from "@/widgets/organizers-auth";
+import {useOrganizerStore} from "@/entities/organizers";
 
 export const SignInOrganizerForm = () => {
   const state = useSignInOrganizerStore();
+  const { submitSignIn, isLoading, setShowSignUp } = useOrganizerStore();
 
   return (
     <View
@@ -25,7 +27,10 @@ export const SignInOrganizerForm = () => {
 
         <TextInput placeholder={"Пароль"} value={state.password} onChange={state.setPassword} password/>
 
-        <Button theme={"organizers"} text={"Войти"} onPress={state.submitSignIn}/>
+        <View style={{ gap: 8 }}>
+          <Button theme={"organizers"} text={"Войти"} onPress={submitSignIn} disabled={isLoading}/>
+          <Button theme={"organizers"} text={"У меня нет аккаунта"} variant={"secondary"} onPress={() => setShowSignUp(true) }/>
+        </View>
 
         <TouchableOpacity
           onPress={() => {}}
