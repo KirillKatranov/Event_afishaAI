@@ -565,4 +565,56 @@ def get_organisation_contents(
     )
 
 
+@router.get("/users/{username}/contents", response_model=List[ContentSchema])
+def get_user_contents(
+    username: str,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=10, ge=1, le=100),
+    date_start: Optional[date] = None,
+    date_end: Optional[date] = None,
+    event_type: Optional[EventType] = None,
+    db: Session = Depends(get_db),
+):
+    # Проверяем существование пользователя
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Базовый запрос для контента
+    query = (
+        db.query(Content)
+        .options(selectinload(Content.tags))
+        .filter(
+            Content.publisher_type == "user",
+            Content.publisher_id == user.id,
+        )
+    )
+
+    # Применяем фильтры по датам
+    if date_start or date_end:
+        date_filters = create_date_filter(date_start, date_end)
+        query = query.filter(and_(*date_filters))
+
+    # Фильтр по типу мероприятия
+    if event_type:
+        query = query.filter(Content.event_type == event_type)
+
+    # Применяем пагинацию и сортировку
+    contents = (
+        query.order_by(Content.date_start.asc().nullslast(), Content.created.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+    # Добавляем macro_category для каждого контента
+    for content in contents:
+        if content.tags and content.tags[0].macro_category:
+            content.macro_category = content.tags[0].macro_category.name
+        else:
+            content.macro_category = None
+
+    return contents
+
+
 app.include_router(router)
