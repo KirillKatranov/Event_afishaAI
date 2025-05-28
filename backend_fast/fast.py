@@ -41,6 +41,7 @@ from schemas import (
     OrganisationResponse,
     OrganisationListResponse,
     OrganisationContentListResponse,
+    UserOrganisationsResponse,
 )
 
 app = FastAPI()
@@ -615,6 +616,37 @@ def get_user_contents(
             content.macro_category = None
 
     return contents
+
+
+@router.get("/users/{username}/organisations", response_model=UserOrganisationsResponse)
+def get_user_organisations(
+    username: str,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=10, ge=1, le=100),
+    db: Session = Depends(get_db),
+):
+    # Проверяем существование пользователя
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Получаем организации пользователя
+    query = (
+        db.query(Organisation)
+        .filter(Organisation.user_id == user.id)
+        .order_by(Organisation.created.desc())
+    )
+
+    # Получаем общее количество организаций
+    total_count = query.count()
+
+    # Применяем пагинацию
+    organisations = query.offset(skip).limit(limit).all()
+
+    return UserOrganisationsResponse(
+        organisations=organisations,
+        total_count=total_count,
+    )
 
 
 app.include_router(router)

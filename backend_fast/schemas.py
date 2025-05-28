@@ -193,6 +193,17 @@ class OrganisationContentResponse(BaseModel):
 
 # Схема для списка контента организации
 class OrganisationContentListResponse(BaseModel):
-    organisation: OrganisationWithUserResponse
-    contents: List[OrganisationContentResponse]
+    organisation: OrganisationResponse
+    contents: List[ContentSchema]
     total_count: int
+
+    class Config:
+        from_attributes = True
+
+
+class UserOrganisationsResponse(BaseModel):
+    organisations: List[OrganisationResponse]
+    total_count: int
+
+    class Config:
+        from_attributes = True
