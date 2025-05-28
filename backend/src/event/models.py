@@ -9,6 +9,16 @@ CITY_CHOICES = [
 ]
 
 
+class EventType(models.TextChoices):
+    ONLINE = "online", "Онлайн"
+    OFFLINE = "offline", "Оффлайн"
+
+
+class PublisherType(models.TextChoices):
+    USER = "user", "Пользователь"
+    ORGANISATION = "organisation", "Организация"
+
+
 class GenericModel(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -56,7 +66,7 @@ class Content(GenericModel):
     description = models.TextField()
     tags = models.ManyToManyField(Tags, related_name="contents")
     image = models.ImageField(upload_to="images", max_length=300, null=True, blank=True)
-    contact = models.JSONField(default={}, null=True, blank=True)
+    contact = models.JSONField(default=dict, null=True, blank=True)
     date_start = models.DateField(null=True, blank=True, db_index=True)
     date_end = models.DateField(null=True, blank=True, db_index=True)
     time = models.CharField(max_length=250, null=True, blank=True, default=None)
@@ -64,6 +74,14 @@ class Content(GenericModel):
     cost = models.IntegerField(null=True, blank=True, default=None)
     city = models.CharField(max_length=50, choices=CITY_CHOICES, default="nn")
     unique_id = models.CharField(max_length=250, unique=True, editable=False)
+
+    event_type = models.CharField(
+        max_length=10, choices=EventType.choices, default=EventType.OFFLINE
+    )
+    publisher_type = models.CharField(
+        max_length=20, choices=PublisherType.choices, default=PublisherType.USER
+    )
+    publisher_id = models.IntegerField(default=1_000_000)
 
     def get_tags(self):
         return "\n".join([t.name for t in self.tags.all()])
@@ -73,6 +91,24 @@ class Content(GenericModel):
 
     class Meta:
         ordering = ["date_start"]
+        indexes = [
+            models.Index(fields=["date_start"]),
+            models.Index(fields=["date_end"]),
+            models.Index(fields=["publisher_type", "publisher_id"]),
+        ]
+
+
+class Organisation(GenericModel):
+    name = models.CharField(max_length=250)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=250)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="organisations"
+    )
+
+    def __str__(self):
+        return self.name
 
 
 class Like(GenericModel):
