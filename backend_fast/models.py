@@ -105,6 +105,7 @@ class Organisation(GenericModel):
     email = Column(String(250), nullable=False, unique=True)
     password = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey("event_user.id"), nullable=False)
+    image = Column(String(300), nullable=True)
 
     user = relationship("User", back_populates="organisations")
     contents = relationship(

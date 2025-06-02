@@ -15,9 +15,11 @@ from sqlalchemy.sql import func, select, case
 from typing import Optional, List
 from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
-import shutil
-from pathlib import Path
 import json
+import os
+from minio import Minio
+import uuid
+from io import BytesIO
 
 from models import (
     User,
@@ -37,7 +39,6 @@ from schemas import (
     TagsResponseSchema,
     TagSchema,
     UserSchema,
-    OrganisationCreate,
     OrganisationResponse,
     OrganisationListResponse,
     OrganisationContentListResponse,
@@ -50,9 +51,36 @@ router = APIRouter(prefix="/api/v1", tags=["contents"])
 # Настройка хеширования паролей
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Создаем директорию для загрузки файлов, если её нет
-UPLOAD_DIR = Path("images")
-UPLOAD_DIR.mkdir(exist_ok=True)
+# MinIO client initialization
+minio_client = Minio(
+    os.getenv("MINIO_ENDPOINT", "minio:9000").replace("http://", ""),
+    access_key=os.getenv("MINIO_ROOT_USER", "minioadmin"),
+    secret_key=os.getenv("MINIO_ROOT_PASSWORD", "minioadmin"),
+    secure=False,
+)
+
+# Ensure bucket exists
+bucket_name = os.getenv("MINIO_BUCKET_NAME", "afisha-files")
+try:
+    if not minio_client.bucket_exists(bucket_name):
+        minio_client.make_bucket(bucket_name)
+        # Set bucket policy to public read
+        minio_client.set_bucket_policy(
+            bucket_name,
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {"AWS": "*"},
+                        "Action": ["s3:GetObject"],
+                        "Resource": [f"arn:aws:s3:::{bucket_name}/*"],
+                    }
+                ],
+            },
+        )
+except Exception as e:
+    print(f"Error initializing MinIO bucket: {e}")
 
 app.add_middleware(
     CORSMiddleware,
@@ -285,36 +313,103 @@ def register_user(user_data: UserSchema, db: Session = Depends(get_db)):
 
 
 @router.post("/organisations", response_model=OrganisationResponse, status_code=201)
-def create_organisation(
-    username: str, organisation: OrganisationCreate, db: Session = Depends(get_db)
+async def create_organisation(
+    username: str,
+    name: str = Form(...),
+    phone: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(...),
+    image: Optional[UploadFile] = File(None),
+    db: Session = Depends(get_db),
 ):
+    # Проверяем существование пользователя
     user = db.query(User).filter(User.username == username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Проверяем, не существует ли уже организация с таким email
-    if db.query(Organisation).filter(Organisation.email == organisation.email).first():
-        raise HTTPException(
-            status_code=400, detail="Organisation with this email already exists"
-        )
+    # Проверяем уникальность email
+    if db.query(exists().where(Organisation.email == email)).scalar():
+        raise HTTPException(status_code=400, detail="Email already registered")
 
     # Хешируем пароль
-    hashed_password = pwd_context.hash(organisation.password)
+    hashed_password = pwd_context.hash(password)
 
-    # Создаем новую организацию
-    db_organisation = Organisation(
-        name=organisation.name,
-        phone=organisation.phone,
-        email=organisation.email,
+    # Создаем организацию
+    organisation = Organisation(
+        name=name,
+        phone=phone,
+        email=email,
         password=hashed_password,
         user_id=user.id,
     )
 
-    db.add(db_organisation)
-    db.commit()
-    db.refresh(db_organisation)
+    # Если есть изображение, загружаем его в MinIO
+    if image:
+        try:
+            # Генерируем уникальное имя файла
+            file_ext = os.path.splitext(image.filename)[1]
+            object_name = f"organisation_images/{str(uuid.uuid4())}{file_ext}"
 
-    return db_organisation
+            # Читаем содержимое файла
+            file_content = await image.read()
+
+            # Загружаем файл в MinIO
+            minio_client.put_object(
+                bucket_name=bucket_name,
+                object_name=object_name,
+                data=BytesIO(file_content),
+                length=len(file_content),
+                content_type=image.content_type,
+            )
+
+            # Сохраняем только путь к файлу, без полного URL
+            organisation.image = object_name
+
+        except Exception as e:
+            raise HTTPException(
+                status_code=500, detail=f"Error uploading image: {str(e)}"
+            )
+
+    db.add(organisation)
+    db.commit()
+    db.refresh(organisation)
+
+    # Преобразуем URL изображения для ответа
+    if organisation.image:
+        organisation.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{organisation.image}"
+
+    return organisation
+
+
+async def upload_file_to_minio(file: UploadFile, object_name: str) -> str:
+    """
+    Upload a file to MinIO and return the object name
+    """
+    try:
+        # Read the file into memory
+        file_data = await file.read()
+        # Get the file's content type
+        content_type = file.content_type or "application/octet-stream"
+
+        # Upload the file to MinIO using BytesIO to create a file-like object
+        file_data_io = BytesIO(file_data)
+
+        # Upload the file to MinIO
+        minio_client.put_object(
+            bucket_name,
+            object_name,
+            file_data_io,
+            length=len(file_data),
+            content_type=content_type,
+        )
+
+        return object_name
+    except Exception as e:
+        print(f"Error uploading file to MinIO: {e}")
+        raise HTTPException(status_code=500, detail="Error uploading file")
+    finally:
+        # Reset file pointer for potential future use
+        await file.seek(0)
 
 
 @router.post("/contents", response_model=ContentSchema, status_code=201)
@@ -322,7 +417,7 @@ async def create_content(
     username: str,
     name: str = Form(...),
     description: str = Form(...),
-    contact: str = Form("{}"),  # JSON строка
+    contact: str = Form("[{}]"),  # JSON строка
     date_start: Optional[str] = Form(None),
     date_end: Optional[str] = Form(None),
     time: Optional[str] = Form(None),
@@ -418,15 +513,12 @@ async def create_content(
         if not image.content_type.startswith("image/"):
             raise HTTPException(status_code=400, detail="File must be an image")
 
-        # Создаем имя файла и сохраняем его
+        # Создаем имя файла и загружаем в MinIO
         file_extension = image.filename.split(".")[-1]
         image_filename = f"{unique_id}.{file_extension}"
-        image_path = UPLOAD_DIR / image_filename
 
-        with image_path.open("wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
-
-        image_path = str(image_path)
+        # Загружаем файл в MinIO
+        image_path = await upload_file_to_minio(image, image_filename)
 
     # Создаем новый контент
     db_content = Content(
@@ -444,36 +536,24 @@ async def create_content(
         image=image_path,
         publisher_type=publisher_type,
         publisher_id=publisher_id,
+        tags=tags,
     )
-    db_content.tags = tags
 
     db.add(db_content)
     db.commit()
     db.refresh(db_content)
 
-    # Определяем macro_category на основе первого тега
+    # Получаем макро-категорию для ответа
     macro_category = None
-    if tags and tags[0].macro_category:
-        macro_category = tags[0].macro_category.name
+    if db_content.tags and db_content.tags[0].macro_category:
+        macro_category = db_content.tags[0].macro_category.name
 
-    # Создаем объект ответа
-    return ContentSchema(
-        id=db_content.id,
-        name=db_content.name,
-        description=db_content.description,
-        image=db_content.image,
-        contact=contact_dict,
-        date_start=db_content.date_start,
-        date_end=db_content.date_end,
-        time=db_content.time,
-        location=db_content.location,
-        cost=db_content.cost,
-        city=db_content.city,
-        event_type=db_content.event_type,
-        publisher_type=db_content.publisher_type,
-        publisher_id=db_content.publisher_id,
-        tags=[TagSchema.model_validate(tag) for tag in tags],
-        macro_category=macro_category,
+    return ContentSchema.model_validate(
+        {
+            **db_content.__dict__,
+            "tags": tags,
+            "macro_category": macro_category,
+        }
     )
 
 
@@ -501,6 +581,11 @@ def get_organisations(
     organisations = (
         query.order_by(Organisation.created.desc()).offset(skip).limit(limit).all()
     )
+
+    # Преобразуем URL изображений в полные URL, если они еще не являются полными URL
+    for org in organisations:
+        if org.image and not org.image.startswith("http"):
+            org.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{org.image}"
 
     return OrganisationListResponse(
         organisations=organisations, total_count=total_count
@@ -530,6 +615,10 @@ def get_organisation_contents(
 
     if not organisation:
         raise HTTPException(status_code=404, detail="Organisation not found")
+
+    # Преобразуем URL изображения организации в полный URL, если он еще не является полным URL
+    if organisation.image and not organisation.image.startswith("http"):
+        organisation.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{organisation.image}"
 
     # Базовый запрос для контента
     query = (
@@ -642,6 +731,11 @@ def get_user_organisations(
 
     # Применяем пагинацию
     organisations = query.offset(skip).limit(limit).all()
+
+    # Преобразуем URL изображений в полные URL, если они еще не являются полными URL
+    for org in organisations:
+        if org.image and not org.image.startswith("http"):
+            org.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{org.image}"
 
     return UserOrganisationsResponse(
         organisations=organisations,

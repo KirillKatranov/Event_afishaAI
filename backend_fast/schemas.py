@@ -129,6 +129,14 @@ class OrganisationResponse(BaseModel):
     phone: str
     email: str
     user_id: int
+    image: Optional[str] = None
+
+    @field_validator("image", mode="before")
+    @classmethod
+    def validate_image(cls, image: Optional[str]) -> Optional[str]:
+        if image is None:
+            return None
+        return image
 
     model_config = {"from_attributes": True}
 
@@ -150,7 +158,15 @@ class OrganisationWithUserResponse(BaseModel):
     email: str
     created: datetime
     updated: datetime
+    image: Optional[str] = None
     user: UserInOrganisationResponse
+
+    @field_validator("image", mode="before")
+    @classmethod
+    def validate_image(cls, image: Optional[str]) -> Optional[str]:
+        if image is None:
+            return None
+        return image
 
     model_config = {"from_attributes": True}
 
