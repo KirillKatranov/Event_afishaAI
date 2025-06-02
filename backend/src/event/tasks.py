@@ -3,13 +3,13 @@ import time
 from celery import shared_task
 from celery.utils.log import get_task_logger
 import os
+from django.utils import timezone
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "event_afisha.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 from event.models import Content, User, Like
-from datetime import date
-from django.utils.timezone import now
+from datetime import date, timedelta
 import requests
 from pyrogram.errors import FloodWait
 from django.db.models import Q, F
@@ -56,40 +56,80 @@ def resolve_username_to_user_id(username: str) -> int | None:
             return None
 
 
-@shared_task
-def sample_task():
+@shared_task(bind=True, max_retries=3)
+def delete_outdated_events(self):
     """Task to delete old events based on date conditions."""
-    today = now().date()
+    try:
+        logger.info("Starting deletion of outdated events")
 
-    # Удаляем события, у которых:
-    # 1. date_start и date_end заданы, но текущая дата уже вышла за диапазон
-    # 2. date_end = NULL (однодневное событие) и текущая дата > date_start
-    # 3. date_end = date_start (однодневное событие) и текущая дата > date_start
-    deleted_count, _ = Content.objects.filter(
-        # События с указанными датами начала и окончания, которые уже завершились
-        (
+        # Используем текущую дату в UTC
+        today = timezone.now().date()
+        yesterday = today - timedelta(days=1)
+
+        logger.info(f"Checking events before {yesterday} (UTC)")
+
+        # 1. События с указанными датами начала и окончания
+        multi_day_events = Content.objects.filter(
             Q(date_start__isnull=False)
             & Q(date_end__isnull=False)
-            & Q(date_end__lt=today)
+            & ~Q(date_start=F("date_end"))  # Исключаем однодневные события
+            & Q(date_end__lt=yesterday)
         )
-        |
-        # Однодневные события без date_end, но уже прошедшие
-        (
+
+        # 2. Однодневные события без даты окончания
+        single_day_no_end = Content.objects.filter(
             Q(date_start__isnull=False)
             & Q(date_end__isnull=True)
-            & Q(date_start__lt=today)
+            & Q(date_start__lt=yesterday)
         )
-        |
-        # Однодневные события, где date_start = date_end, и они уже прошли
-        (
+
+        # 3. Однодневные события с одинаковыми датами начала и окончания
+        single_day_same_dates = Content.objects.filter(
             Q(date_start__isnull=False)
             & Q(date_end__isnull=False)
             & Q(date_start=F("date_end"))
-            & Q(date_start__lt=today)
+            & Q(date_start__lt=yesterday)
         )
-    ).delete()
 
-    print(f"Deleted {deleted_count} events with outdated dates")
+        # Логируем каждый тип событий отдельно
+        multi_day_list = list(
+            multi_day_events.values("id", "name", "date_start", "date_end")
+        )
+        single_no_end_list = list(single_day_no_end.values("id", "name", "date_start"))
+        single_same_dates_list = list(
+            single_day_same_dates.values("id", "name", "date_start", "date_end")
+        )
+
+        logger.info(
+            f"Found {len(multi_day_list)} multi-day events to delete: {multi_day_list}"
+        )
+        logger.info(
+            f"Found {len(single_no_end_list)} single-day events (no end date) to delete: {single_no_end_list}"
+        )
+        logger.info(
+            f"Found {len(single_same_dates_list)} single-day events (same dates) to delete: {single_same_dates_list}"
+        )
+
+        # Объединяем все запросы
+        all_events = multi_day_events | single_day_no_end | single_day_same_dates
+
+        # Удаляем события
+        deleted_count, details = all_events.delete()
+
+        logger.info(f"Successfully deleted {deleted_count} events with outdated dates")
+        return {
+            "status": "success",
+            "deleted_count": deleted_count,
+            "details": {
+                "multi_day_events": len(multi_day_list),
+                "single_day_no_end": len(single_no_end_list),
+                "single_day_same_dates": len(single_same_dates_list),
+            },
+        }
+
+    except Exception as exc:
+        logger.error(f"Error in delete_outdated_events: {exc}", exc_info=True)
+        self.retry(exc=exc, countdown=3600)
 
 
 @shared_task

@@ -1,4 +1,5 @@
 from django.db import models
+from .storage import MinioMediaStorage
 
 CITY_CHOICES = [
     ("spb", "Санкт-Петербург"),
@@ -105,6 +106,13 @@ class Organisation(GenericModel):
     password = models.CharField(max_length=250)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="organisations"
+    )
+    image = models.ImageField(
+        upload_to="organisation_images",
+        max_length=300,
+        null=True,
+        blank=True,
+        storage=MinioMediaStorage(),
     )
 
     def __str__(self):
