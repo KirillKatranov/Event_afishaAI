@@ -743,4 +743,75 @@ def get_user_organisations(
     )
 
 
+@router.delete("/contents/{content_id}", status_code=204)
+async def delete_content(content_id: int, username: str, db: Session = Depends(get_db)):
+    """
+    Удаляет мероприятие.
+
+    Args:
+        content_id: ID мероприятия для удаления
+        username: имя пользователя, который пытается удалить мероприятие
+
+    Returns:
+        204 No Content при успешном удалении
+
+    Raises:
+        404: Мероприятие или пользователь не найдены
+        403: Нет прав на удаление мероприятия
+    """
+    # Проверяем существование пользователя
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Получаем мероприятие с информацией о владельце
+    content = db.query(Content).filter(Content.id == content_id).first()
+    if not content:
+        raise HTTPException(status_code=404, detail="Content not found")
+
+    # Проверяем права на удаление
+    if content.publisher_type == PublisherType.USER:
+        # Для контента, опубликованного пользователем
+        if content.publisher_id != user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="You don't have permission to delete this content",
+            )
+    else:
+        # Для контента, опубликованного организацией
+        organisation = (
+            db.query(Organisation)
+            .filter(
+                Organisation.id == content.publisher_id, Organisation.user_id == user.id
+            )
+            .first()
+        )
+        if not organisation:
+            raise HTTPException(
+                status_code=403,
+                detail="You don't have permission to delete this content",
+            )
+
+    try:
+        # Если есть изображение, удаляем его из MinIO
+        if content.image:
+            try:
+                # Получаем путь к файлу из полного URL
+                image_path = content.image.split(f"{bucket_name}/")[-1]
+                minio_client.remove_object(bucket_name, image_path)
+            except Exception as e:
+                # Логируем ошибку, но продолжаем удаление контента
+                print(f"Error deleting image from MinIO: {e}")
+
+        # Удаляем мероприятие из базы данных
+        db.delete(content)
+        db.commit()
+
+        return None  # 204 No Content
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error deleting content: {str(e)}")
+
+
 app.include_router(router)
