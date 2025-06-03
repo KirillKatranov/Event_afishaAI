@@ -202,32 +202,22 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "file": {
-            "level": "INFO",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs", "celery.log"),
-            "formatter": "verbose",
-        },
     },
     "loggers": {
         "django": {
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": True,
         },
         "celery": {
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": True,
         },
         "event.tasks": {
-            "handlers": ["console", "file"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": True,
         },
     },
 }
-
-# Создаем директорию для логов, если её нет
-if not os.path.exists(os.path.join(BASE_DIR, "logs")):
-    os.makedirs(os.path.join(BASE_DIR, "logs"))
