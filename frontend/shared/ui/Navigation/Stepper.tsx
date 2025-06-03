@@ -14,9 +14,9 @@ interface StepperProps {
 }
 
 export const Stepper: React.FC<StepperProps> = ({
-                                                  pagesCount,
-                                                  currentPage,
-                                                }) => {
+  pagesCount,
+  currentPage,
+}) => {
   return (
     <Box
       justifyContent={"center"}
@@ -39,7 +39,7 @@ const Step: React.FC<StepProps> = ({ isActive }) => {
 
   const animatedStyle = useAnimatedStyle(() => ({
     width: animatedWidth.value,
-    backgroundColor: isActive ? theme.colors.lime : theme.colors.transparent,
+    backgroundColor: isActive ? "#7100CB" : theme.colors.transparent,
     opacity: isActive ? 1 : 0.5,
   }));
 
@@ -50,7 +50,7 @@ const Step: React.FC<StepProps> = ({ isActive }) => {
         {
           borderRadius: 10,
           borderWidth: 0.5,
-          borderColor: theme.colors.lime,
+          borderColor: "#7100CB",
         }
       ]}
     />

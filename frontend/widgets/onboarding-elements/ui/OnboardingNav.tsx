@@ -15,7 +15,7 @@ export const OnboardingNav = () => {
       }}
     >
       <Stepper
-        pagesCount={3}
+        pagesCount={4}
         currentPage={page}
       />
     </Box>
