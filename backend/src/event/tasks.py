@@ -7,12 +7,10 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "event_afisha.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
-from event.models import Content, User, Like
+from event.models import User, Like
 from datetime import date
-from django.utils.timezone import now
 import requests
 from pyrogram.errors import FloodWait
-from django.db.models import Q, F
 
 logger = get_task_logger(__name__)
 
@@ -54,42 +52,6 @@ def resolve_username_to_user_id(username: str) -> int | None:
             return None
         except:  # noqa: E722
             return None
-
-
-@shared_task
-def sample_task():
-    """Task to delete old events based on date conditions."""
-    today = now().date()
-
-    # Удаляем события, у которых:
-    # 1. date_start и date_end заданы, но текущая дата уже вышла за диапазон
-    # 2. date_end = NULL (однодневное событие) и текущая дата > date_start
-    # 3. date_end = date_start (однодневное событие) и текущая дата > date_start
-    deleted_count, _ = Content.objects.filter(
-        # События с указанными датами начала и окончания, которые уже завершились
-        (
-            Q(date_start__isnull=False)
-            & Q(date_end__isnull=False)
-            & Q(date_end__lt=today)
-        )
-        |
-        # Однодневные события без date_end, но уже прошедшие
-        (
-            Q(date_start__isnull=False)
-            & Q(date_end__isnull=True)
-            & Q(date_start__lt=today)
-        )
-        |
-        # Однодневные события, где date_start = date_end, и они уже прошли
-        (
-            Q(date_start__isnull=False)
-            & Q(date_end__isnull=False)
-            & Q(date_start=F("date_end"))
-            & Q(date_start__lt=today)
-        )
-    ).delete()
-
-    print(f"Deleted {deleted_count} events with outdated dates")
 
 
 @shared_task

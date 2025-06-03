@@ -14,6 +14,19 @@ from sqlalchemy import (
     Index,
 )
 from sqlalchemy.orm import relationship, sessionmaker, declarative_base
+import enum
+
+
+# Определение перечислений
+class EventType(str, enum.Enum):
+    ONLINE = "online"
+    OFFLINE = "offline"
+
+
+class PublisherType(str, enum.Enum):
+    USER = "user"
+    ORGANISATION = "organisation"
+
 
 # Создаем движок SQLAlchemy (engine)
 engine = create_engine("postgresql://afisha:password@db/afisha", echo=True)
@@ -46,12 +59,75 @@ class User(GenericModel):
         return f"{self.username}"
 
 
+# Модель контента (event_content)
+class Content(GenericModel):
+    __tablename__ = "event_content"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250))
+    description = Column(Text)
+    image = Column(String(300), nullable=True)
+    contact = Column(JSON, default={})
+    date_start = Column(Date, index=True, nullable=True)
+    date_end = Column(Date, index=True, nullable=True)
+    time = Column(String(250), nullable=True)
+    location = Column(String(250), nullable=True)
+    cost = Column(Integer, nullable=True)
+    city = Column(String(50), default="nn")
+    unique_id = Column(String(250), unique=True)
+
+    event_type = Column(String(10), nullable=False, default="offline")
+    publisher_type = Column(String(20), nullable=False, default="user")
+    publisher_id = Column(Integer, nullable=False, default=1_000_000)
+
+    tags = relationship("Tags", secondary="event_content_tags")
+
+    __table_args__ = (
+        Index("ix_event_content_date_start", "date_start"),
+        Index("ix_event_content_date_end", "date_end"),
+        Index("ix_event_content_publisher", "publisher_type", "publisher_id"),
+    )
+
+    def get_tags(self):
+        return "\n".join([t.name for t in self.tags])
+
+    def __str__(self):
+        return self.name
+
+
+# Модель организации (event_organisation)
+class Organisation(GenericModel):
+    __tablename__ = "event_organisation"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+    phone = Column(String(20), nullable=False)
+    email = Column(String(250), nullable=False, unique=True)
+    password = Column(String(250), nullable=False)
+    user_id = Column(Integer, ForeignKey("event_user.id"), nullable=False)
+    image = Column(String(300), nullable=True)
+
+    user = relationship("User", back_populates="organisations")
+    contents = relationship(
+        "Content",
+        primaryjoin="and_(Content.publisher_type == 'organisation', "
+        "Content.publisher_id == Organisation.id)",
+        foreign_keys=[Content.publisher_id],
+        viewonly=True,
+    )
+
+    def __str__(self):
+        return self.name
+
+
+# Добавляем отношения после определения всех классов
 User.likes = relationship("Like", back_populates="user")
 User.feedback = relationship("Feedback", back_populates="user")
 User.removed_favorites = relationship("RemovedFavorite", back_populates="user")
 User.category_preferences = relationship(
     "UserCategoryPreference", back_populates="user"
 )
+User.organisations = relationship("Organisation", back_populates="user")
 
 
 # Модель категории (event_macrocategory)
@@ -88,37 +164,6 @@ class Tags(GenericModel):
 
 Tags.contents = relationship("Content", secondary="event_content_tags")
 Tags.user_preferences = relationship("UserCategoryPreference", back_populates="tag")
-
-
-# Модель контента (event_content)
-class Content(GenericModel):
-    __tablename__ = "event_content"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250))
-    description = Column(Text)
-    image = Column(String(300), nullable=True)
-    contact = Column(JSON, default={})
-    date_start = Column(Date, index=True, nullable=True)
-    date_end = Column(Date, index=True, nullable=True)
-    time = Column(String(250), nullable=True)
-    location = Column(String(250), nullable=True)
-    cost = Column(Integer, nullable=True)
-    city = Column(String(50), default="nn")
-    unique_id = Column(String(250), unique=True)
-
-    tags = relationship("Tags", secondary="event_content_tags")
-
-    def get_tags(self):
-        return "\n".join([t.name for t in self.tags])
-
-    def __str__(self):
-        return self.name
-
-    __table_args__ = (
-        Index("ix_event_content_date_start", "date_start"),
-        Index("ix_event_content_date_end", "date_end"),
-    )
 
 
 # Связь контента и тегов (many-to-many) (event_content_tags)
