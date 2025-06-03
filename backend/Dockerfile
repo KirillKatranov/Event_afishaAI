@@ -20,7 +20,10 @@ RUN pip install -r requirements.txt && rm -rf /root/.cache
 
 RUN mkdir -p multiproc-tmp && rm -rf multiproc-tmp && mkdir multiproc-tmp
 
-# chown multiproc-tmp to the 33 user
+# Create logs directory and set permissions
+RUN mkdir -p logs && chown -R 33:33 logs
+
+# chown directories to the www-data user (33)
 RUN mkdir -p static && chown 33:33 static && chown 33:33 multiproc-tmp
 
 COPY /src /app/
