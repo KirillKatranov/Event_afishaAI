@@ -1,28 +1,14 @@
-import React, { useEffect, useState } from "react";
-import {ScrollView, ActivityIndicator, Image, View} from "react-native";
-import { SignInOrganizerForm, SignUpOrganizerForm } from "@/widgets/organizers-auth";
-import { CreateEventForm } from "@/widgets/create-event-form";
-import { useOrganizerStore } from "@/entities/organizers";
-import { Box } from "@/shared/ui";
+import React from "react";
+import {ScrollView, Image, Pressable, View} from "react-native";
+import {OrganizersList} from "@/widgets/organizers-list";
+import {Box} from "@/shared/ui";
+import Icon from "@/shared/ui/Icons/Icon";
+import {useRouter} from "expo-router";
+import {useTheme} from "@shopify/restyle";
 
 export const OrganizersPage = () => {
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-
-  const {
-    isAuthenticated, checkAuthenticated, showSignUp
-  } = useOrganizerStore();
-
-  useEffect(() => {
-    checkAuthenticated().then(() => setIsCheckingAuth(false));
-  }, []);
-
-  if (isCheckingAuth) {
-    return (
-      <Box flex={1} justifyContent="center" alignItems="center">
-        <ActivityIndicator size="large" />
-      </Box>
-    );
-  }
+  const router = useRouter();
+  const theme = useTheme();
 
   return (
     <ScrollView
@@ -31,7 +17,6 @@ export const OrganizersPage = () => {
       contentContainerStyle={{
         flexGrow: 1, minHeight: '100%',
         padding: 16, gap: 16,
-        justifyContent: 'center',
       }}
     >
       <Image
@@ -48,15 +33,20 @@ export const OrganizersPage = () => {
         }}
       />
 
-      <View style={{ flex: 1, width: '100%', justifyContent: 'center', paddingTop: 50 }}>
-        {isAuthenticated ? (
-          <CreateEventForm/>
-        ) : showSignUp ? (
-          <SignUpOrganizerForm/>
-        ) : (
-          <SignInOrganizerForm/>
-        )}
-      </View>
+      <Pressable
+        onPress={() => {
+          router.replace("/tags");
+        }}
+        style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}
+      >
+        <View
+          style={{ width: 40, height: 40, borderRadius: 100, alignItems: "center", justifyContent: "center" }}
+        >
+          <Icon name={"chevronLeft"} color={theme.colors.text_color} size={24}/>
+        </View>
+      </Pressable>
+
+      <OrganizersList/>
     </ScrollView>
   );
 };
