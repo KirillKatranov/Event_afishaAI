@@ -1,11 +1,11 @@
 import React from "react";
-import {ScrollView, Image, Pressable, View} from "react-native";
-import {OrganizersList} from "@/widgets/organizers-list";
+import {ScrollView, Image, Pressable, View, Text} from "react-native";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
+import {SignUpOrganizerForm} from "@/widgets/organizers-auth";
 
-export const OrganizersPage = () => {
+export const OrganizerRegisterPage = () => {
   const router = useRouter();
   const theme = useTheme();
 
@@ -15,7 +15,7 @@ export const OrganizersPage = () => {
       style={{ flex: 1, backgroundColor: "white" }}
       contentContainerStyle={{
         flexGrow: 1, minHeight: '100%',
-        padding: 16, gap: 16,
+        padding: 16, gap: 16, paddingTop: 78
       }}
     >
       <Image
@@ -34,7 +34,7 @@ export const OrganizersPage = () => {
 
       <Pressable
         onPress={() => {
-          router.replace("/tags");
+          router.back();
         }}
         style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}
       >
@@ -45,7 +45,11 @@ export const OrganizersPage = () => {
         </View>
       </Pressable>
 
-      <OrganizersList/>
+      <Text style={{ fontFamily: "MontserratMedium", fontSize: 14 }}>
+        Регистрация организатора
+      </Text>
+
+      <SignUpOrganizerForm/>
     </ScrollView>
   );
 };

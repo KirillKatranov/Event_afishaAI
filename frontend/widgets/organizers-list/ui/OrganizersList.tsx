@@ -3,9 +3,11 @@ import {StyleSheet, Text, View} from "react-native";
 import {useOrganizersListStore} from "@/features/organizers-list/model/OrganizersListStore";
 import {OrganizerCard} from "@/entities/organizers";
 import {Button} from "@/shared/ui";
+import {useRouter} from "expo-router";
 
 export const OrganizersList = () => {
-  const {organizers, getOrganizers, isLoading} = useOrganizersListStore()
+  const router = useRouter();
+  const {organizers, getOrganizers, isLoading} = useOrganizersListStore();
 
   useEffect(() => {
     if (organizers == null) getOrganizers();
@@ -30,12 +32,12 @@ export const OrganizersList = () => {
 
         <Button
           theme={"organizers"} text={"Создать организацию"}
-          variant={"secondary"} onPress={() => {}}
+          variant={"secondary"} onPress={() => router.push("/tags/organizers/register")}
         />
 
         <Button
           theme={"organizers"} text={"Создать мероприятие"}
-          variant={"secondary"} onPress={() => {}}
+          variant={"secondary"} onPress={() => router.push("/tags/organizers/create")}
         />
       </View>
 

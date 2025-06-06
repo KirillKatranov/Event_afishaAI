@@ -59,7 +59,8 @@
     "react-native-tab-view": "^4.0.5",
     "react-native-ui-datepicker": "^3.1.2",
     "react-native-web": "~0.19.13",
-    "zustand": "^5.0.4"
+    "zustand": "^5.0.4",
+    "expo-image-picker": "~16.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

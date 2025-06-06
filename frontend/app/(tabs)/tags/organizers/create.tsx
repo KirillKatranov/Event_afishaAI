@@ -1,6 +1,6 @@
 import React from "react";
-import {CreateEventForm} from "@/widgets/create-event-form";
+import {CreateEventPage} from "@/pages/organizers";
 
-export default function OrganizersCreateScreen() {
-  return <CreateEventForm/>
+export default function EventCreateScreen() {
+  return <CreateEventPage/>
 }
