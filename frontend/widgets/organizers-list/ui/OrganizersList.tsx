@@ -47,7 +47,13 @@ export const OrganizersList = () => {
         </Text>
 
         {organizers.map((organizer) => (
-          <OrganizerCard organizer={organizer} onPress={() => {}}/>
+          <OrganizerCard
+            organizer={organizer}
+            onPress={() => router.push({
+              pathname: "/tags/organizers/events",
+              params: { type: "organization", id: organizer.id }
+            })}
+          />
         ))}
       </View>
     </View>
