@@ -4,6 +4,7 @@ from celery.utils.log import get_task_logger
 import os
 from datetime import date, datetime
 from django.utils import timezone
+from django.db.models import Q
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "event_afisha.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
@@ -60,10 +61,17 @@ def send_telegram_message(chat_id: int, message: str) -> bool:
         logger.error(f"Error sending telegram message: {str(e)}")
         return False
 
+def format_event_dates(event) -> str:
+    """Helper function to format event dates based on start and end dates"""
+    if not event.date_end or event.date_start == event.date_end:
+        return f"📅 {event.date_start.strftime('%d.%m.%Y')}"
+    return f"📅 {event.date_start.strftime('%d.%m.%Y')} - {event.date_end.strftime('%d.%m.%Y')}"
+
 @shared_task
 def send_event_notifications():
     """
     Send notifications to users about their events scheduled for today.
+    This includes both single-day events starting today and multi-day events that are active today.
     This task is scheduled to run once daily at 9:00 AM.
     """
     logger.info("Starting event notifications task")
@@ -72,9 +80,18 @@ def send_event_notifications():
         # Get today's date
         today = timezone.now().date()
         
-        # Get all likes (favorites) where the content's date_start is today
+        # Get all likes (favorites) where:
+        # 1. Single-day events starting today (date_start = today)
+        # 2. Multi-day events that are active today (date_start <= today <= date_end)
         today_likes = Like.objects.select_related('user', 'content').filter(
-            content__date_start=today,
+            Q(
+                # Single-day events or events without end date
+                Q(content__date_end__isnull=True) & Q(content__date_start=today)
+            ) |
+            Q(
+                # Multi-day events
+                Q(content__date_start__lte=today) & Q(content__date_end__gte=today)
+            ),
             value=True  # Only get positive likes (favorites)
         )
         
@@ -95,9 +112,11 @@ def send_event_notifications():
                     continue
                 
                 # Prepare message text
-                message = f"🎉 Привет! У вас сегодня запланированы мероприятия:\n\n"
+                message = f"🎉 Привет! У вас сегодня актуальны следующие мероприятия:\n\n"
                 for event in events:
-                    message += f"📅 {event.name}\n"
+                    message += f"<b>{event.name}</b>\n"
+                    # Add date information
+                    message += f"{format_event_dates(event)}\n"
                     if event.time:
                         message += f"⏰ Время: {event.time}\n"
                     if event.location:
