@@ -17,9 +17,10 @@ from pyrogram.raw.functions.contacts import ResolveUsername
 logger = get_task_logger(__name__)
 
 # Telegram Bot Configuration
-BOT_TOKEN = "7877571254:AAElhiFd_H8Z8rk6i6hTVR-Q71hrAFpvHyY"
+BOT_TOKEN = "7877571254:AAElhiFd_H8Z8rk6i6hTVR-Q71hrAFpvHyY" #Токен тестового бота
 API_ID = "24966956"
 API_HASH = "de5018b0f9dcd93012624bf4cfed1b58"
+
 
 pyrogram_client = Client(
     "bot",
