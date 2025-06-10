@@ -17,10 +17,12 @@ from pyrogram.raw.functions.contacts import ResolveUsername
 logger = get_task_logger(__name__)
 
 # Telegram Bot Configuration
-BOT_TOKEN = "7877571254:AAElhiFd_H8Z8rk6i6hTVR-Q71hrAFpvHyY" #Токен тестового бота
+BOT_TOKEN = "7517129777:AAHtVmXMsaa130ebt5HyPFgkWoYRWJgfZt4" #Токен афишы
 API_ID = "24966956"
 API_HASH = "de5018b0f9dcd93012624bf4cfed1b58"
 
+# Base URL for deep links
+TELEGRAM_DEEP_LINK_BASE = "https://t.me/EventAfishaBot/strelka?startapp="
 
 pyrogram_client = Client(
     "bot",
@@ -49,7 +51,8 @@ def send_telegram_message(chat_id: int, message: str) -> bool:
         payload = {
             "chat_id": chat_id,
             "text": message,
-            "parse_mode": "HTML"
+            "parse_mode": "HTML",
+            "disable_web_page_preview": False  # Enable link previews
         }
         response = requests.post(url, json=payload)
         return response.status_code == 200
@@ -99,7 +102,9 @@ def send_event_notifications():
                         message += f"⏰ Время: {event.time}\n"
                     if event.location:
                         message += f"📍 Место: {event.location}\n"
-                    message += "\n"
+                    # Add deep link to the event
+                    event_link = f"{TELEGRAM_DEEP_LINK_BASE}{event.id}"
+                    message += f"🔗 <a href='{event_link}'>Открыть в приложении</a>\n\n"
                 
                 # Send message
                 if send_telegram_message(telegram_id, message):
