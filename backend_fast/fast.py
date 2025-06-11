@@ -850,7 +850,7 @@ async def delete_content(content_id: int, username: str, db: Session = Depends(g
         raise HTTPException(status_code=500, detail=f"Error deleting content: {str(e)}")
 
 
-@router.get("/api/content/{content_id}/likes/social", response_model=List[UserSchema])
+@router.get("/content/{content_id}/likes/social", response_model=List[UserSchema])
 def get_users_who_liked_content(content_id: int, db: Session = Depends(get_db)):
     content = db.query(Content).filter(Content.id == content_id).first()
     if not content:
