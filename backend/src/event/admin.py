@@ -12,6 +12,7 @@ from event.models import (
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "name",
         "description",
         "image",
