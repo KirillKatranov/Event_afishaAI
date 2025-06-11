@@ -7,6 +7,7 @@ from fastapi import (
     File,
     UploadFile,
     Form,
+    status,
 )
 from sqlalchemy.orm import Session, selectinload, joinedload
 from sqlalchemy import and_, exists
@@ -20,6 +21,7 @@ import os
 from minio import Minio
 import uuid
 from io import BytesIO
+from fastapi.responses import JSONResponse
 
 from models import (
     User,
@@ -42,7 +44,6 @@ from schemas import (
     OrganisationResponse,
     OrganisationListResponse,
     OrganisationContentListResponse,
-    UserOrganisationsResponse,
 )
 
 app = FastAPI()
@@ -707,7 +708,7 @@ def get_user_contents(
     return contents
 
 
-@router.get("/users/{username}/organisations", response_model=UserOrganisationsResponse)
+@router.get("/users/{username}/organisations", response_model=OrganisationListResponse)
 def get_user_organisations(
     username: str,
     skip: int = Query(default=0, ge=0),
@@ -722,6 +723,7 @@ def get_user_organisations(
     # Получаем организации пользователя
     query = (
         db.query(Organisation)
+        .options(joinedload(Organisation.user))  # Подгружаем пользователя
         .filter(Organisation.user_id == user.id)
         .order_by(Organisation.created.desc())
     )
@@ -737,10 +739,44 @@ def get_user_organisations(
         if org.image and not org.image.startswith("http"):
             org.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{org.image}"
 
-    return UserOrganisationsResponse(
+    return OrganisationListResponse(
         organisations=organisations,
         total_count=total_count,
     )
+
+
+@router.delete(
+    "/organisations/{organisation_id}", status_code=status.HTTP_204_NO_CONTENT
+)
+def delete_organisation(
+    organisation_id: int,
+    username: str = Query(..., description="Username of the user requesting deletion"),
+    db: Session = Depends(get_db),
+):
+    # Получаем организацию
+    organisation = (
+        db.query(Organisation).filter(Organisation.id == organisation_id).first()
+    )
+
+    if not organisation:
+        raise HTTPException(status_code=404, detail="Organisation not found")
+
+    # Получаем пользователя
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Проверка, что пользователь владелец организации
+    if organisation.user_id != user.id:
+        raise HTTPException(
+            status_code=403, detail="You are not allowed to delete this organisation"
+        )
+
+    # Удаляем организацию
+    db.delete(organisation)
+    db.commit()
+
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content=None)
 
 
 @router.delete("/contents/{content_id}", status_code=204)

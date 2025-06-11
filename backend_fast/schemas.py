@@ -215,11 +215,3 @@ class OrganisationContentListResponse(BaseModel):
 
     class Config:
         from_attributes = True
-
-
-class UserOrganisationsResponse(BaseModel):
-    organisations: List[OrganisationResponse]
-    total_count: int
-
-    class Config:
-        from_attributes = True
