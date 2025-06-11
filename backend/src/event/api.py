@@ -13,7 +13,6 @@ from event.models import (
     CITY_CHOICES,
 )
 from event.schemas import (
-    ContentSchema,
     LikeSchema,
     LikeRequestSchema,
     FeedbackRequestSchema,
@@ -36,23 +35,6 @@ class HealthController:
     )
     def health_check(self):
         return HTTPStatus.OK
-
-
-@api_controller(
-    prefix_or_class="/api/v1",
-)
-class ContentController:
-    @route.get(
-        path="/contents/{content_id}",
-        response={
-            200: ContentSchema,
-        },
-    )
-    def get_content_by_id(self, content_id: int) -> ContentSchema:
-        content = Content.objects.filter(id=content_id).first()
-        if not content:
-            raise HttpError(404, f"Событие с ID {content_id} не найдено")
-        return content
 
 
 @api_controller(
@@ -241,7 +223,6 @@ class CityController:
 api = NinjaExtraAPI(title="afisha", version="0.0.1")
 api.register_controllers(
     HealthController,
-    ContentController,
     LikeController,
     FeedbackController,
     PreferencesController,
