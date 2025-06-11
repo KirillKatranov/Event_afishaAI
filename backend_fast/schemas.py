@@ -107,8 +107,12 @@ class UserPreferencesResponseSchema(BaseModel):
 
 # Схема для User
 class UserSchema(BaseModel):
+    id: int
     city: str
     username: str
+
+    class Config:
+        orm_mode = True
 
 
 # Схема для ответа с городами

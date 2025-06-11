@@ -850,4 +850,29 @@ async def delete_content(content_id: int, username: str, db: Session = Depends(g
         raise HTTPException(status_code=500, detail=f"Error deleting content: {str(e)}")
 
 
+@router.get("/api/content/{content_id}/likes/social", response_model=List[UserSchema])
+def get_users_who_liked_content(content_id: int, db: Session = Depends(get_db)):
+    content = db.query(Content).filter(Content.id == content_id).first()
+    if not content:
+        raise HTTPException(status_code=404, detail="Content not found")
+
+    likes = (
+        db.query(User)
+        .join(Like, Like.user_id == User.id)
+        .filter(Like.content_id == content_id, Like.value is True)
+        .all()
+    )
+    return likes
+
+
+@router.get("/contents/{content_id}", response_model=ContentSchema)
+def get_content_by_id(content_id: int, db: Session = Depends(get_db)) -> ContentSchema:
+    content = db.query(Content).filter(Content.id == content_id).first()
+    if not content:
+        raise HTTPException(
+            status_code=404, detail=f"Событие с ID {content_id} не найдено"
+        )
+    return content
+
+
 app.include_router(router)
