@@ -132,8 +132,8 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
               renderCard={renderCard}
               keyExtractor={(event) => event.id.toString()}
               backgroundColor="white"
-              horizontalSwipe={swipeEnabled}
-              verticalSwipe={false}
+              horizontalSwipe={false}
+              verticalSwipe={swipeEnabled}
               stackSize={3}
               stackScale={0}
               stackSeparation={0}
