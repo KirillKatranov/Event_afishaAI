@@ -35,6 +35,7 @@ from models import (
     Organisation,
     EventType,
     PublisherType,
+    Feedback,
 )
 from schemas import (
     ContentSchema,
@@ -44,6 +45,11 @@ from schemas import (
     OrganisationResponse,
     OrganisationListResponse,
     OrganisationContentListResponse,
+    LikeSchema,
+    LikeRequestSchema,
+    FeedbackRequestSchema,
+    UserPreferencesResponseSchema,
+    CitiesResponseSchema,
 )
 
 app = FastAPI()
@@ -873,6 +879,253 @@ def get_content_by_id(content_id: int, db: Session = Depends(get_db)) -> Content
             status_code=404, detail=f"Событие с ID {content_id} не найдено"
         )
     return content
+
+
+@router.post("/like", response_model=LikeSchema)
+def set_like(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == request_data.username).first()
+    if not user:
+        user = User(username=request_data.username)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    content = db.query(Content).filter(Content.id == request_data.content_id).first()
+    if not content:
+        raise HTTPException(status_code=404, detail="Content not found")
+
+    like = (
+        db.query(Like)
+        .filter(Like.user_id == user.id, Like.content_id == content.id)
+        .first()
+    )
+    if like:
+        like.value = True
+    else:
+        like = Like(user_id=user.id, content_id=content.id, value=True)
+        db.add(like)
+
+    db.commit()
+    return {
+        "user": user.username,
+        "content": content.id,
+        "value": True,
+    }
+
+
+@router.post("/dislike", response_model=LikeSchema)
+def set_dislike(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == request_data.username).first()
+    if not user:
+        user = User(username=request_data.username)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    content = db.query(Content).filter(Content.id == request_data.content_id).first()
+    if not content:
+        raise HTTPException(status_code=404, detail="Content not found")
+
+    like = (
+        db.query(Like)
+        .filter(Like.user_id == user.id, Like.content_id == content.id)
+        .first()
+    )
+    if like:
+        like.value = False
+    else:
+        like = Like(user_id=user.id, content_id=content.id, value=False)
+        db.add(like)
+
+    db.commit()
+    return {
+        "user": user.username,
+        "content": content.id,
+        "value": False,
+    }
+
+
+@router.post("/delete_mark", status_code=200)
+def delete_mark(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == request_data.username).first()
+    if not user:
+        user = User(username=request_data.username)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    content = db.query(Content).filter(Content.id == request_data.content_id).first()
+    if not content:
+        raise HTTPException(status_code=404, detail="Content not found")
+
+    like = (
+        db.query(Like)
+        .filter(Like.user_id == user.id, Like.content_id == content.id)
+        .first()
+    )
+    if not like:
+        raise HTTPException(status_code=404, detail="Like not found")
+
+    db.delete(like)
+    db.commit()
+
+    # Добавляем в исключения для ленты
+    if (
+        not db.query(RemovedFavorite)
+        .filter_by(user_id=user.id, content_id=content.id)
+        .first()
+    ):
+        db.add(RemovedFavorite(user_id=user.id, content_id=content.id))
+        db.commit()
+
+    return {"message": "Like removed and content marked as removed favorite"}
+
+
+@router.post("/feedback", response_model=dict[str, str])
+def create_feedback(data: FeedbackRequestSchema, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == data.username).first()
+    if not user:
+        user = User(username=data.username)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    feedback = Feedback(user_id=user.id, message=data.message)
+    db.add(feedback)
+    db.commit()
+    return {"status": "ok"}
+
+
+@router.post("/preferences/categories", response_model=dict)
+def set_category_preference(
+    username: str = Query(...),
+    tag_id: int = Query(...),
+    db: Session = Depends(get_db),
+):
+    """
+    Устанавливает предпочтение пользователя для указанной категории (тега).
+    """
+    user = db.query(User).filter(User.username == username).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    tag = db.query(Tags).filter(Tags.id == tag_id).first()
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+
+    preference = (
+        db.query(UserCategoryPreference)
+        .filter(
+            UserCategoryPreference.user_id == user.id,
+            UserCategoryPreference.tag_id == tag_id,
+        )
+        .first()
+    )
+    if not preference:
+        preference = UserCategoryPreference(user_id=user.id, tag_id=tag_id)
+        db.add(preference)
+        db.commit()
+
+    return {"message": f"Preference for tag_id {tag_id} added successfully"}
+
+
+@router.delete("/preferences/categories", response_model=dict)
+def delete_category_preference(
+    username: str = Query(...),
+    tag_id: int = Query(...),
+    db: Session = Depends(get_db),
+):
+    """
+    Удаляет предпочтение пользователя по категории (тегу).
+    """
+    user = db.query(User).filter(User.username == username).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    preference = (
+        db.query(UserCategoryPreference)
+        .filter(
+            UserCategoryPreference.user_id == user.id,
+            UserCategoryPreference.tag_id == tag_id,
+        )
+        .first()
+    )
+    if not preference:
+        raise HTTPException(
+            status_code=404, detail="Preference not found for the specified tag"
+        )
+
+    db.delete(preference)
+    db.commit()
+    return {"message": f"Preference for tag_id {tag_id} deleted successfully"}
+
+
+@router.get("/preferences/categories", response_model=UserPreferencesResponseSchema)
+def get_user_preferences(
+    username: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    """
+    Возвращает список всех предпочтений пользователя по категориям (тегам).
+    """
+    user = db.query(User).filter(User.username == username).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    preferences = (
+        db.query(UserCategoryPreference)
+        .filter(UserCategoryPreference.user_id == user.id)
+        .join(Tags, UserCategoryPreference.tag_id == Tags.id)
+        .all()
+    )
+    categories = [pref.tag.name for pref in preferences]
+    return UserPreferencesResponseSchema(categories=categories)
+
+
+CITY_CHOICES = [
+    ("spb", "Санкт-Петербург"),
+    ("msk", "Москва"),
+    ("ekb", "Екатеринбург"),
+    ("nsk", "Новосибирск"),
+    ("nn", "Нижний Новгород"),
+]
+
+
+@router.patch("/users", response_model=dict)
+def change_city(
+    request_data: UserSchema,
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.username == request_data.username).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if request_data.city not in [item[0] for item in CITY_CHOICES]:
+        raise HTTPException(status_code=400, detail="Invalid city")
+
+    user.city = request_data.city
+    db.commit()
+    return {"status": "ok"}
+
+
+@router.get("/users", response_model=UserSchema)
+def get_user(
+    username: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return UserSchema(id=user.id, city=user.city, username=user.username)
+
+
+@router.get("/cities", response_model=CitiesResponseSchema)
+def get_cities():
+    return CitiesResponseSchema(cities=[city[0] for city in CITY_CHOICES])
 
 
 app.include_router(router)

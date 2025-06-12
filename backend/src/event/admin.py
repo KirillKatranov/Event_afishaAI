@@ -30,7 +30,7 @@ class ContentAdmin(admin.ModelAdmin):
 
 @admin.register(Tags)
 class TagsAdmin(admin.ModelAdmin):
-    list_display = ("name", "description")
+    list_display = ("id", "name", "description")
 
 
 @admin.register(Like)
