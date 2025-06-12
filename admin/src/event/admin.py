@@ -6,6 +6,7 @@ from event.models import (
     User,
     MacroCategory,
     UserCategoryPreference,
+    Feedback,
 )
 
 
@@ -36,6 +37,14 @@ class TagsAdmin(admin.ModelAdmin):
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "message",
+    )
 
 
 @admin.register(User)
