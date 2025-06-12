@@ -22,5 +22,3 @@ export type UserRegisterResponse = {
     user_id: number
   }
 }
-
-

@@ -251,3 +251,11 @@ class UserCategoryPreference(Base):
 
     def __str__(self):
         return f"{self.user.username} - {self.tag.name}"
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

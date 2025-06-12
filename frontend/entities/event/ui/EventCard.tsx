@@ -374,4 +374,3 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
     </GestureHandlerRootView>
   );
 });
-
