@@ -107,7 +107,7 @@ class UserPreferencesResponseSchema(BaseModel):
 
 # Схема для User
 class UserSchema(BaseModel):
-    id: int
+    id: int | None = None
     city: str
     username: str
 
