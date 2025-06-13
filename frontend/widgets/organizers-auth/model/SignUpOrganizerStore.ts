@@ -21,6 +21,7 @@ interface SignUpOrganizerActions {
   setImage: (image: File | undefined) => void;
   checkIsFormValid: () => void;
   submitSignUp: (username: string, onSuccess?: () => void) => void;
+  resetForm: () => void;
 }
 
 const initialState: SignUpOrganizerState = {
@@ -70,6 +71,8 @@ export const useSignUpOrganizerStore = create<SignUpOrganizerState & SignUpOrgan
         })
         .catch((e) => set({ errorMessage: e.message }))
         .finally(() => set({ isLoading: false }))
-    }
+    },
+
+    resetForm: () => set(initialState),
   }))
 );

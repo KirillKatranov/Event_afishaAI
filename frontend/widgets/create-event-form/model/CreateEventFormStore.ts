@@ -1,106 +1,173 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import CreateEventService from "@/widgets/create-event-form/api/CreateEventService";
 
 type EventFormat = 'online' | 'offline';
 type TicketType = 'free' | 'paid';
 
+type Contact = {
+  contactName: string;
+  contactValue: string;
+}
+
 interface EventFormState {
   title: string;
   description: string;
-  coverImage: string | null;
+  contact: Contact[];
+  coverImage: File | undefined;
   format: EventFormat;
   city: string;
   address: string;
   dateStart: Date | null;
   dateEnd: Date | null;
-  isRecurring: boolean;
-  recurrencePattern: string;
-  category: string;
+  time: string;
+  category: string[];
   ticketType: TicketType;
   priceStart: string;
   priceEnd: string;
-  ticketsAmount: string;
-  discount: string;
-  ageRestriction: string;
+  publisherType: "organisation" | "user";
+  organisation_id: string | undefined;
+
+  isFormValid: boolean;
+
+  categoryOptions: { label: string, value: string }[]
 }
 
 interface EventFormActions {
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
-  setCoverImage: (image: string | null) => void;
+  addContact: () => void;
+  removeContact: (index: number) => void;
+  updateContact: (index: number, field: keyof Contact, value: string) => void;
+  setCoverImage: (image: File | undefined) => void;
   setFormat: (format: EventFormat) => void;
   setCity: (city: string) => void;
   setAddress: (address: string) => void;
   setDateStart: (dateStart: Date) => void;
   setDateEnd: (dateEnd: Date) => void;
-  toggleRecurring: () => void;
-  setRecurrencePattern: (pattern: string) => void;
-  setCategory: (category: string) => void;
+  setTime: (time: string) => void;
+  setCategory: (category: string[]) => void;
   setTicketType: (type: TicketType) => void;
   setPriceStart: (priceStart: string) => void;
   setPriceEnd: (priceEnd: string) => void;
-  setTicketsAmount: (ticketsAmount: string) => void;
-  setDiscount: (discount: string) => void;
-  setAgeRestriction: (restriction: string) => void;
+  setPublisherType: (publisherType: "organisation" | "user") => void;
+  setOrganizerId: (organizerId: string) => void;
   resetForm: () => void;
-  submitForm: () => Promise<void>;
+  checkFormValid: () => void;
+  submitForm: (username: string) => void;
+
+  getAvailableTags: (username: string) => void;
 }
 
 const initialState: EventFormState = {
   title: '',
   description: '',
-  coverImage: null,
+  contact: [],
+  coverImage: undefined,
   format: 'online',
   city: '',
   address: '',
   dateStart: null, dateEnd: null,
-  isRecurring: false,
-  recurrencePattern: '',
-  category: '',
+  time: '',
+  category: [],
+  categoryOptions: [],
   ticketType: 'free',
   priceStart: '', priceEnd: '',
-  ticketsAmount: '',
-  discount: '',
-  ageRestriction: '',
-};
+  publisherType: "user",
+  organisation_id: undefined,
+  isFormValid: false,
+}
 
 export const useEventFormStore = create<EventFormState & EventFormActions>()(
   immer((set, get) => ({
     ...initialState,
 
-    setTitle: (title) => set({ title }),
-    setDescription: (description) => set({ description }),
+    checkFormValid: () => {
+      const state = get();
+      const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+      set({ isFormValid: state.title !== "" && state.description != "" && state.category.length > 0 &&
+          (state.time === "" || (state.time !== "" && timeRegex.test(state.time)))})
+    },
+
+    setTitle: (title) => { set({title}); get().checkFormValid(); },
+    setDescription: (description) => { set({description}); get().checkFormValid(); },
+    addContact: () =>
+      set(state => {
+        state.contact.push({ contactName: '', contactValue: '' });
+      }),
+
+    removeContact: (index) =>
+      set(state => {
+        state.contact.splice(index, 1);
+      }),
+
+    updateContact: (index, field, value) =>
+      set(state => {
+        state.contact[index][field] = value;
+      }),
+
     setCoverImage: (coverImage) => set({ coverImage }),
 
     setFormat: (format) => set({ format }),
 
     setCity: (city) => set({ city }),
     setAddress: (address) => set({ address }),
-    setDateStart: (dateStart) => {
-      console.log(dateStart);
-      set({dateStart})
-    },
+    setDateStart: (dateStart) => {set({dateStart})},
     setDateEnd: (dateEnd) => set({ dateEnd }),
-
-    toggleRecurring: () => set((state) => ({ isRecurring: !state.isRecurring })),
-    setRecurrencePattern: (recurrencePattern) => set({ recurrencePattern }),
+    setTime: (time) => set({ time }),
 
     setCategory: (category) => set({ category }),
 
     setTicketType: (ticketType) => set({ ticketType }),
     setPriceStart: (priceStart) => set({ priceStart }),
     setPriceEnd: (priceEnd) => set({ priceEnd }),
-    setTicketsAmount: (ticketsAmount) => set({ ticketsAmount }),
-    setDiscount: (discount) => set({ discount }),
-    setAgeRestriction: (ageRestriction) => set({ ageRestriction }),
+
+    setPublisherType: (publisherType) => {
+      if (publisherType == "organisation") set({ publisherType })
+      else set({ publisherType, organisation_id: undefined })
+    },
+    setOrganizerId: (organisation_id) => set({ organisation_id }),
 
     resetForm: () => set(initialState),
 
-    submitForm: async () => {
+    submitForm: (username: string) => {
       const formData = get();
-      console.log('Submitting form:', formData);
-      // Здесь будет логика отправки на сервер
-      // await api.createEvent(formData);
+
+      CreateEventService.createEvent({
+        username,
+        data: {
+          name: formData.title,
+          description: formData.description,
+          contact: formData.contact,
+          date_start: formData.dateStart ? formData.dateStart.toISOString().split("T")[0] : undefined,
+          date_end: formData.dateEnd ? formData.dateEnd.toISOString().split("T")[0] : undefined,
+          time: formData.time,
+          location: formData.address,
+          cost: formData.ticketType == "free" ? "0" : `${formData.priceStart}-${formData.priceEnd}`,
+          city: formData.city,
+          event_type: formData.format,
+          tags: formData.category.join(","),
+          publisher_type: formData.publisherType,
+          organisation_id: Number(formData.organisation_id),
+          image: formData.coverImage
+        }})
+        .then((response) => {
+          if (response && response.error) {
+            console.log(response.error)
+          }
+        })
+        .catch(e => console.log(e))
     },
+
+    getAvailableTags: (username) => {
+      CreateEventService.getAvailableTags({ username: username })
+        .then((response) => {
+          if (response && response.data) {
+            const tags = response.data.tags.map((tag) => ({ label: tag.name, value: tag.id.toString() }))
+            set({ categoryOptions: tags })
+          }
+        })
+    }
   }))
 );

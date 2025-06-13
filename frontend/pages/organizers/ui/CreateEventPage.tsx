@@ -3,11 +3,13 @@ import {ScrollView, Image, Pressable, View} from "react-native";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
-import {CreateEventForm} from "@/widgets/create-event-form";
+import {CreateEventForm, useEventFormStore} from "@/widgets/create-event-form";
 
 export const CreateEventPage = () => {
   const router = useRouter();
   const theme = useTheme();
+
+  const { resetForm } = useEventFormStore();
 
   return (
     <ScrollView
@@ -35,6 +37,7 @@ export const CreateEventPage = () => {
       <Pressable
         onPress={() => {
           router.back();
+          resetForm();
         }}
         style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}
       >

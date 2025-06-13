@@ -6,43 +6,39 @@ import {
   Easing,
   FlatList,
   Modal,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
 import Icon from "@/shared/ui/Icons/Icon";
 import {Box, Text} from "@/shared/ui";
-
-interface DropdownItem {
-  label: string;
-  value: string;
-}
+import { Checkbox } from "@/shared/ui";
 
 interface DropdownProps {
-  items: DropdownItem[];
-  selectedValue?: string | null;
+  items: { label: string; value: string }[];
+  selectedValues?: string[];
   placeholder?: string;
-  onSelect: (value: string) => void;
+  onSelect: (values: string[]) => void;
   disabled?: boolean;
   style?: object;
+  multiple?: boolean;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
   items,
-  selectedValue,
+  selectedValues = [],
   placeholder = 'Выберите...',
   onSelect,
   disabled = false,
-  style
+  style,
+  multiple = false
 }) => {
   const [visible, setVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
+  const [selectedItems, setSelectedItems] = useState<string[]>(selectedValues);
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
-    if (selectedValue) {
-      const item = items.find(i => i.value === selectedValue) || null;
-      setSelectedItem(item);
-    }
-  }, [selectedValue, items]);
+    setSelectedItems(selectedValues);
+  }, [selectedValues]);
 
   const toggleDropdown = () => {
     if (disabled) return;
@@ -57,16 +53,47 @@ export const Dropdown: React.FC<DropdownProps> = ({
     setVisible(!visible);
   };
 
-  const onItemPress = (item: DropdownItem) => {
-    setSelectedItem(item);
-    onSelect(item.value);
-    toggleDropdown();
+  const onItemPress = (itemValue: string) => {
+    let newSelectedItems: string[];
+
+    if (multiple) {
+      // Для множественного выбора
+      if (selectedItems.includes(itemValue)) {
+        newSelectedItems = selectedItems.filter(val => val !== itemValue);
+      } else {
+        newSelectedItems = [...selectedItems, itemValue];
+      }
+    } else {
+      // Для одиночного выбора
+      newSelectedItems = selectedItems.includes(itemValue) ? [] : [itemValue];
+      setVisible(false); // Закрываем dropdown после выбора в одиночном режиме
+    }
+
+    setSelectedItems(newSelectedItems);
+    onSelect(newSelectedItems);
   };
 
   const rotate = rotateAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '180deg'],
   });
+
+  const getDisplayText = () => {
+    if (selectedItems.length === 0) return placeholder;
+
+    if (multiple) {
+      if (selectedItems.length === items.length) return 'Все выбраны';
+      if (selectedItems.length > 3) return `Выбрано ${selectedItems.length}`;
+
+      return items
+        .filter(item => selectedItems.includes(item.value))
+        .map(item => item.label)
+        .join(', ');
+    }
+
+    // Для одиночного выбора
+    return items.find(item => item.value === selectedItems[0])?.label || placeholder;
+  };
 
   return (
     <Box style={[styles.container, style]}>
@@ -79,19 +106,22 @@ export const Dropdown: React.FC<DropdownProps> = ({
         activeOpacity={0.7}
         disabled={disabled}
       >
-        <Text style={[
-          { fontFamily: "MontserratRegular", fontSize: 16, color: '#000000' },
-          (!selectedItem || disabled) && { color: '#999999FF' },
-        ]}>
-          {selectedItem ? selectedItem.label : placeholder}
+        <Text
+          style={[
+            styles.buttonText,
+            (!selectedItems.length || disabled) && { color: '#999999FF' },
+          ]}
+          numberOfLines={1}
+        >
+          {getDisplayText()}
         </Text>
 
         <Animated.View style={{ transform: [{ rotate }] }}>
-          {visible ? (
-            <Icon name={"chevronUp"} size={16} color={disabled ? '#999' : '#000000'} />
-          ) : (
-            <Icon name={"chevronUp"} size={16} color={disabled ? '#999' : '#000000'} />
-          )}
+          <Icon
+            name={"chevronUp"}
+            size={16}
+            color={disabled ? '#999' : '#000000'}
+          />
         </Animated.View>
       </TouchableOpacity>
 
@@ -104,29 +134,46 @@ export const Dropdown: React.FC<DropdownProps> = ({
           <Box style={styles.modalOverlay} />
         </TouchableWithoutFeedback>
 
-        <Box style={{ marginVertical: "auto", padding: 16, justifyContent: "center" }}>
-          <FlatList
-            data={items}
-            keyExtractor={(item) => item.value}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  { paddingHorizontal: 16, paddingVertical: 12, },
-                  selectedItem?.value === item.value && { backgroundColor: '#F5F5F5', }
-                ]}
-                onPress={() => onItemPress(item)}
-              >
-                <Text style={{ fontFamily: "MontserratRegular", fontSize: 16, color: '#333333FF', }}>{item.label}</Text>
-              </TouchableOpacity>
-            )}
-            ItemSeparatorComponent={() => <Box style={{ height: 1, backgroundColor: '#EEEEEEFF', }} />}
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: 8, borderWidth: 1, borderColor: '#EEEEEE',
-              shadowColor: '#000000',
-              shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 5,
-            }}
-          />
+        <Box style={styles.modalContent}>
+          <Box style={styles.listContainer}>
+            <FlatList
+              data={items}
+              keyExtractor={(item) => item.value}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[
+                    styles.itemContainer,
+                    selectedItems.includes(item.value) && styles.selectedItem
+                  ]}
+                  onPress={() => onItemPress(item.value)}
+                >
+                  {multiple && (
+                    <Checkbox
+                      checked={selectedItems.includes(item.value)}
+                      onChange={() => onItemPress(item.value)}
+                      text={""}
+                      theme={'organizers'}
+                    />
+                  )}
+                  <Text style={styles.itemText}>{item.label}</Text>
+                </TouchableOpacity>
+              )}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+              style={styles.list}
+            />
+          </Box>
+
+          {multiple && (
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => {
+                onSelect(selectedItems);
+                setVisible(false);
+              }}
+            >
+              <Text style={styles.confirmButtonText}>Применить</Text>
+            </TouchableOpacity>
+          )}
         </Box>
       </Modal>
     </Box>
@@ -149,9 +196,63 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#FFFEF7',
   },
+  buttonText: {
+    fontFamily: "MontserratRegular",
+    fontSize: 16,
+    color: '#000000',
+    flex: 1,
+    marginRight: 8,
+  },
   modalOverlay: {
     position: "absolute",
-    width: "100%", height: "100%",
+    width: "100%",
+    height: "100%",
     backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    flex: 1,
+    justifyContent: 'center',
+    marginHorizontal: 20,
+  },
+  listContainer: {
+    maxHeight: '70%',
+  },
+  list: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#EEEEEE',
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    height: 50,
+  },
+  selectedItem: {
+    backgroundColor: '#F5F5F5',
+  },
+  itemText: {
+    fontFamily: "MontserratRegular",
+    fontSize: 16,
+    color: '#333333FF',
+    flex: 1,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#EEEEEEFF',
+  },
+  confirmButton: {
+    backgroundColor: '#007AFF',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontFamily: 'MontserratMedium',
+    fontSize: 16,
   },
 });

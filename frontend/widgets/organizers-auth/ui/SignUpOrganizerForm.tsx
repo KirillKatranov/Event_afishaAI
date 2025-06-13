@@ -22,8 +22,6 @@ export const SignUpOrganizerForm = () => {
         const blob = await response.blob();
         const file = new File([blob], "image.jpg", { type: blob.type });
 
-        console.log(file);
-
         state.setImage(file);
       } catch (error) {
         console.error("Error creating file:", error);
@@ -70,12 +68,14 @@ export const SignUpOrganizerForm = () => {
         <Text style={styles.sectionTitle}>Изображение организации</Text>
 
         {state.image ? (
-          <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: URL.createObjectURL(state.image) }}
-              style={styles.imagePreview}
-            />
-          </View>
+          <TouchableOpacity onPress={pickImage} activeOpacity={0.8}>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: URL.createObjectURL(state.image) }}
+                style={styles.imagePreview}
+              />
+            </View>
+          </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={pickImage} style={styles.imageUpload}>
             <Text style={styles.uploadText}>Нажмите чтобы загрузить изображение</Text>

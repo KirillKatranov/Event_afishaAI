@@ -3,11 +3,13 @@ import {ScrollView, Image, Pressable, View, Text} from "react-native";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
-import {SignUpOrganizerForm} from "@/widgets/organizers-auth";
+import {SignUpOrganizerForm, useSignUpOrganizerStore} from "@/widgets/organizers-auth";
 
 export const OrganizerRegisterPage = () => {
   const router = useRouter();
   const theme = useTheme();
+
+  const { resetForm } = useSignUpOrganizerStore();
 
   return (
     <ScrollView
@@ -35,6 +37,7 @@ export const OrganizerRegisterPage = () => {
       <Pressable
         onPress={() => {
           router.back();
+          resetForm();
         }}
         style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}
       >

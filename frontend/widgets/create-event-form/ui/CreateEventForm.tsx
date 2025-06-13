@@ -1,34 +1,40 @@
-import React from "react";
-import {View, Text, StyleSheet} from "react-native";
-import {Button, Checkbox, DateInput, Dropdown, Radio, TextInput} from "@/shared/ui";
+import React, {useEffect} from "react";
+import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
+import {Button, DateInput, Dropdown, Radio, TextInput} from "@/shared/ui";
 import {useEventFormStore} from "@/widgets/create-event-form";
+import * as ImagePicker from "expo-image-picker";
+import {useConfig} from "@/shared/providers/TelegramConfig";
+import {useUserOrganizersListStore} from "@/features/organizers-list";
+import Icon from "@/shared/ui/Icons/Icon";
 
 export const CreateEventForm = () => {
   const state = useEventFormStore();
+  const user = useConfig().initDataUnsafe.user;
+  const userOrganizers = useUserOrganizersListStore((state) => state.userOrganizers);
 
-  const recurrenceOptions = [
-    { label: 'Ежедневно', value: 'daily' },
-    { label: 'Еженедельно', value: 'weekly' },
-    { label: 'Ежемесячно', value: 'monthly' },
-  ];
+  useEffect(() => {
+    state.getAvailableTags(user.username ? user.username : user.id.toString());
+  }, []);
 
-  const categoryOptions = [
-    { label: 'Концерт', value: 'concert' },
-    { label: 'Выставка', value: 'exhibition' },
-    { label: 'Мастер-класс', value: 'workshop' },
-  ];
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      quality: 1,
+    });
 
-  const discountOptions = [
-    { label: 'Нет', value: '-' },
-  ];
+    if (!result.canceled && result.assets[0].uri) {
+      try {
+        const response = await fetch(result.assets[0].uri);
+        const blob = await response.blob();
+        const file = new File([blob], "image.jpg", { type: blob.type });
 
-  const ageRestrictionOptions = [
-    { label: '0+', value: '0' },
-    { label: '6+', value: '6' },
-    { label: '12+', value: '12' },
-    { label: '16+', value: '16' },
-    { label: '18+', value: '18' },
-  ];
+        state.setCoverImage(file);
+      } catch (error) {
+        console.error("Error creating file:", error);
+      }
+    }
+  };
 
   return (
     <View
@@ -77,10 +83,65 @@ export const CreateEventForm = () => {
           Загружая изображение, вы подтверждаете, что обладаете всеми согласиями и правами на его использование и несете за это полную ответственность.
         </Text>
 
-        <Button
-          text={"Загрузить обложку"} variant={"secondary"} theme={"organizers"}
-          onPress={() => {}}
-        />
+        {state.coverImage ? (
+          <TouchableOpacity onPress={pickImage} activeOpacity={0.8}>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: URL.createObjectURL(state.coverImage) }}
+                style={styles.imagePreview}
+              />
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={pickImage} style={styles.imageUpload}>
+            <Text style={styles.uploadText}>Нажмите чтобы загрузить изображение</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Контакты организатора</Text>
+
+        {state.contact.map((contact, index) => (
+          <>
+            <View key={index} style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{flex: 1, flexDirection: 'column', gap: 8,}}>
+                <TextInput
+                  placeholder="Название контакта"
+                  value={contact.contactName}
+                  onChange={(text) => state.updateContact(index, 'contactName', text)}
+                  style={{ flex: 0.4 }}
+                />
+
+                <TextInput
+                  placeholder="Значение контакта"
+                  value={contact.contactValue}
+                  onChange={(text) => state.updateContact(index, 'contactValue', text)}
+                  style={{ flex: 0.6 }}
+                />
+              </View>
+
+              <TouchableOpacity
+                onPress={() => state.removeContact(index)}
+                style={{marginLeft: 8, padding: 8,}}
+              >
+                <Icon name={"dislike"} size={20} color="#FF3B30" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ width: "100%", height: 2, backgroundColor: "#ECEBE8" }}/>
+          </>
+        ))}
+
+        <TouchableOpacity
+          onPress={state.addContact}
+          style={{
+            flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 12,
+            borderWidth: 1, borderColor: '#007AFF', borderRadius: 8, borderStyle: 'dashed',
+          }}
+        >
+          <Text style={{ color: '#007AFF', marginLeft: 8, fontWeight: '500' }}>Добавить контакт</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.sectionContainer}>
@@ -152,21 +213,14 @@ export const CreateEventForm = () => {
             style={{ flex: 1 }}
           />
         </View>
+      </View>
 
-        <Checkbox
-          theme={"organizers"}
-          checked={state.isRecurring}
-          text={"Мероприятие повторяется"}
-          onChange={state.toggleRecurring}
-        />
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>
+          Время
+        </Text>
 
-        {state.isRecurring && (
-          <Dropdown
-            items={recurrenceOptions}
-            onSelect={(value) => state.setRecurrencePattern(value)}
-            placeholder={"Периодичность"}
-          />
-        )}
+        <TextInput  value={state.time} placeholder={"Время"} onChange={state.setTime}/>
       </View>
 
       <View style={styles.sectionContainer}>
@@ -175,9 +229,11 @@ export const CreateEventForm = () => {
         </Text>
 
         <Dropdown
-          items={categoryOptions}
+          items={state.categoryOptions}
           onSelect={(value) => state.setCategory(value)}
+          selectedValues={state.category}
           placeholder="Выберите категорию"
+          multiple={true}
         />
       </View>
 
@@ -221,48 +277,41 @@ export const CreateEventForm = () => {
 
               <Text style={styles.sectionCaption}>Руб.</Text>
             </View>
-
-            <View style={{ flexDirection: "row", gap: 4, alignItems: "center" }}>
-              <Text style={styles.sectionTitle}>Количество билетов</Text>
-
-              <TextInput
-                placeholder={""}
-                value={state.ticketsAmount}
-                onChange={state.setTicketsAmount}
-                style={{ flex: 1 }}
-              />
-
-              <Text style={styles.sectionCaption}>шт.</Text>
-            </View>
           </>
         )}
       </View>
 
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>
-          Скидки
+          Публикация от
         </Text>
 
-        <Dropdown
-          items={discountOptions}
-          onSelect={(value) => state.setDiscount(value)}
-          placeholder={"Выберите скидки"}
+        <Radio
+          theme={"organizers"}
+          checked={state.publisherType === 'user'}
+          text={`Пользователя ${user.username}`}
+          onChange={() => state.setPublisherType('user')}
         />
+
+        <Radio
+          theme={"organizers"}
+          checked={state.publisherType === 'organisation'}
+          text={"Организатора"}
+          onChange={() => state.setPublisherType('organisation')}
+          disabled={!userOrganizers || userOrganizers.length == 0}
+        />
+
+        {state.publisherType === 'organisation' && userOrganizers && (
+          <Dropdown
+            items={userOrganizers.map((organizer) => ({ label: organizer.name, value: organizer.id.toString() }))}
+            onSelect={(value) => state.setOrganizerId(value[0])}
+            selectedValues={state.organisation_id ? [state.organisation_id] : []}
+            placeholder="Выберите организатора"
+          />
+        )}
       </View>
 
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>
-          Возрастное ограничение
-        </Text>
-
-        <Dropdown
-          items={ageRestrictionOptions}
-          onSelect={(value) => state.setAgeRestriction(value)}
-          placeholder="Выберите ограничение"
-        />
-      </View>
-
-      <Button theme={"organizers"} text={"Создать мероприятие"} onPress={() => {}}/>
+      <Button theme={"organizers"} text={"Создать мероприятие"} onPress={() => state.submitForm(user.username ? user.username : user.id.toString())}/>
     </View>
   )
 }
@@ -272,4 +321,17 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: "MontserratRegular", fontSize: 16, color: "#1E1E1E"},
   sectionSubTitle: { fontFamily: "MontserratRegular", fontSize: 14, color: "#737171"},
   sectionCaption: { fontFamily: "MontserratRegular", fontSize: 12, color: "#1E1E1E"},
+  imageContainer: { alignItems: 'center', gap: 8, },
+  imageUpload: {
+    width: '100%',
+    height: 150,
+    borderWidth: 1,
+    borderColor: '#D9D9D9',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  imagePreview: {width: '100%', height: 150, borderRadius: 8,},
+  uploadText: {fontFamily: "MontserratRegular", color: '#737171', textAlign: 'center', paddingHorizontal: 20, },
 })
