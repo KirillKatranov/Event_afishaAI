@@ -1,23 +1,29 @@
 import React, {useEffect} from 'react'
 import {StyleSheet, Text, View} from "react-native";
-import {useOrganizersListStore} from "@/features/organizers-list/model/OrganizersListStore";
+import {useOrganizersListStore, useUserOrganizersListStore} from "@/features/organizers-list";
 import {OrganizerCard} from "@/entities/organizers";
 import {Button} from "@/shared/ui";
 import {useRouter} from "expo-router";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export const OrganizersList = () => {
   const router = useRouter();
-  const {organizers, getOrganizers, isLoading} = useOrganizersListStore();
+
+  const {organizers, getOrganizers } = useOrganizersListStore();
+  const allLoading = useOrganizersListStore((state) => state.isLoading);
+
+  const {userOrganizers, getUserOrganizers, deleteOrganizer } = useUserOrganizersListStore();
+  const userLoading = useUserOrganizersListStore((state) => state.isLoading);
+
+  const username = useConfig().initDataUnsafe.user.username;
 
   useEffect(() => {
     if (organizers == null) getOrganizers();
   }, [organizers, getOrganizers]);
 
-  if (organizers == null || isLoading) {
-    return (
-      <View>Загрузка</View>
-    )
-  }
+  useEffect(() => {
+    if (userOrganizers == null) getUserOrganizers(username);
+  }, [userOrganizers, getUserOrganizers]);
 
   return (
     <View style={{ width: "100%", flexDirection: "column", gap: 16, paddingTop: 62 }}>
@@ -26,8 +32,23 @@ export const OrganizersList = () => {
           Ваши ораганизации
         </Text>
 
-        {organizers.map((organizer) => (
-          <OrganizerCard organizer={organizer} onPress={() => {}}/>
+        {(userOrganizers === null || userLoading) && (
+          <OrganizerCard/>
+        )}
+
+        {userOrganizers !== null && userOrganizers.map((organizer) => (
+          <OrganizerCard
+            organizer={organizer}
+            onPress={() => router.push({
+              pathname: "/tags/organizers/events",
+              params: { type: "organization", id: organizer.id }
+            })}
+            owned={true}
+            onDelete={() => deleteOrganizer(organizer.id, username, () => {
+              getUserOrganizers(username);
+              getOrganizers();
+            })}
+          />
         ))}
 
         <Button
@@ -46,7 +67,11 @@ export const OrganizersList = () => {
           Все организации
         </Text>
 
-        {organizers.map((organizer) => (
+        {(organizers === null || allLoading) && (
+          <OrganizerCard/>
+        )}
+
+        {organizers !== null && organizers.map((organizer) => (
           <OrganizerCard
             organizer={organizer}
             onPress={() => router.push({

@@ -12,6 +12,7 @@ interface UserOrganizersListState {
 
 interface UserOrganizersListActions {
   getUserOrganizers: (username: string) => void;
+  deleteOrganizer: (id: number, username: string, callback?: () => void) => void;
 }
 
 const initialState: UserOrganizersListState = {
@@ -22,7 +23,7 @@ const initialState: UserOrganizersListState = {
 }
 
 export const useUserOrganizersListStore = create<UserOrganizersListState & UserOrganizersListActions>()(
-  immer((set, get) => ({
+  immer((set) => ({
     ...initialState,
 
     getUserOrganizers: (username) => {
@@ -31,13 +32,25 @@ export const useUserOrganizersListStore = create<UserOrganizersListState & UserO
       OrganizersListService.getUserOrganizers({ username: username })
         .then((response) => {
           if (response.data) {
-            // TODO: user organizers
+            set({ userOrganizers: response.data.organisations, totalCount: response.data.total_count })
           } else if (response.error) {
             set({ errorMessage: response.error })
           }
         })
         .catch((e) => set({ errorMessage: e.message }))
         .finally(() => set({ isLoading: false }));
+    },
+
+    deleteOrganizer: (id: number, username: string, callback) => {
+      OrganizersListService.deleteUserOrganizers({ id, username })
+        .then((response) => {
+          if (response && response.error) {
+            set({ errorMessage: response.error })
+          } else {
+            if (callback) callback();
+          }
+        })
+        .catch((error) => set({ errorMessage: error.message }))
     }
   }))
 );

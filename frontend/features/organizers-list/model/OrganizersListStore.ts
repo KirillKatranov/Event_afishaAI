@@ -22,7 +22,7 @@ const initialState: OrganizersListState = {
 }
 
 export const useOrganizersListStore = create<OrganizersListState & OrganizersListActions>()(
-  immer((set, get) => ({
+  immer((set) => ({
     ...initialState,
 
     getOrganizers: () => {
