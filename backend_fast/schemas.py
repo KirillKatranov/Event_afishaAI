@@ -1,7 +1,17 @@
 from pydantic import BaseModel, field_validator, EmailStr
 from typing import List, Optional, Dict
 from datetime import date, datetime
-from models import EventType, PublisherType
+from enum import Enum
+
+
+class EventType(str, Enum):
+    ONLINE = "online"
+    OFFLINE = "offline"
+
+
+class PublisherType(str, Enum):
+    USER = "user"
+    ORGANISATION = "organisation"
 
 
 # Схема для Tag
@@ -219,3 +229,27 @@ class OrganisationContentListResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# Схемы для отзывов (Reviews)
+class ReviewCreateSchema(BaseModel):
+    username: str
+    content_id: int
+    text: str
+
+
+class ReviewResponseSchema(BaseModel):
+    id: int
+    user_id: int
+    content_id: int
+    text: str
+    created: datetime
+    updated: datetime
+    username: str  # Добавляем имя пользователя для удобства
+
+    model_config = {"from_attributes": True}
+
+
+class ReviewListResponseSchema(BaseModel):
+    reviews: List[ReviewResponseSchema]
+    total_count: int

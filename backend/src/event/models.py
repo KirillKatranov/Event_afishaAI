@@ -153,6 +153,48 @@ class Like(GenericModel):
         return f"{self.user.username} - {self.content.name} - {self.value} - {self.created}"
 
 
+class Review(GenericModel):
+    """Модель отзывов пользователей к мероприятиям"""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        verbose_name="Пользователь",
+        db_index=True,
+    )
+    content = models.ForeignKey(
+        Content,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        verbose_name="Мероприятие",
+        db_index=True,
+    )
+    text = models.TextField(verbose_name="Текст отзыва")
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
+        ordering = ["-created"]
+        indexes = [
+            models.Index(fields=["content"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["user", "content"]),
+            models.Index(fields=["-created"]),
+        ]
+
+    def __str__(self):
+        return f"Отзыв от {self.user.username} к {self.content.name}"
+
+    def get_short_text(self):
+        """Возвращает сокращенный текст отзыва для админки"""
+        if len(self.text) > 100:
+            return self.text[:100] + "..."
+        return self.text
+
+    get_short_text.short_description = "Текст отзыва"
+
+
 class Feedback(GenericModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="feedback")
     message = models.TextField()
