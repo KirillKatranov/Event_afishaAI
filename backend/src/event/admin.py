@@ -8,6 +8,22 @@ from event.models import (
 )
 
 
+class MacroCategoryFilter(admin.SimpleListFilter):
+    title = "макрокатегория"
+    parameter_name = "macro_category"
+
+    def lookups(self, request, model_admin):
+        # Получаем все макрокатегории
+        categories = MacroCategory.objects.all()
+        return [(cat.id, cat.name) for cat in categories]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            # Фильтруем контент по макрокатегории через теги
+            return queryset.filter(tags__macro_category__id=self.value()).distinct()
+        return queryset
+
+
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
     list_display = (
@@ -27,6 +43,7 @@ class ContentAdmin(admin.ModelAdmin):
         "publisher_type",
         "date_start",
         "created",
+        MacroCategoryFilter,  # Добавляем наш кастомный фильтр
     )
     search_fields = (
         "name",
