@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import (
+from event.models import (
     Content,
     Tags,
     Like,
