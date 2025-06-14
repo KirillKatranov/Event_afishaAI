@@ -231,7 +231,7 @@ class OrganisationContentListResponse(BaseModel):
         from_attributes = True
 
 
-# Схемы для отзывов (Reviews)
+# Схемы для отзывов
 class ReviewCreateSchema(BaseModel):
     username: str
     content_id: int
@@ -253,3 +253,36 @@ class ReviewResponseSchema(BaseModel):
 class ReviewListResponseSchema(BaseModel):
     reviews: List[ReviewResponseSchema]
     total_count: int
+
+
+# Схемы для оценок
+class RatingCreateSchema(BaseModel):
+    username: str
+    content_id: int
+    rating: int
+
+    @field_validator("rating")
+    @classmethod
+    def validate_rating(cls, v):
+        if not 0 <= v <= 5:
+            raise ValueError("Оценка должна быть от 0 до 5")
+        return v
+
+
+class RatingResponseSchema(BaseModel):
+    id: int
+    user_id: int
+    content_id: int
+    rating: int
+    created: datetime
+    updated: datetime
+    username: str  # Добавляем имя пользователя для удобства
+
+    model_config = {"from_attributes": True}
+
+
+class ContentRatingStatsSchema(BaseModel):
+    content_id: int
+    average_rating: float
+    total_ratings: int
+    ratings_distribution: Dict[int, int]  # {rating: count}

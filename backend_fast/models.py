@@ -215,10 +215,36 @@ class Review(GenericModel):
         Index("ix_event_review_content", "content_id"),
         Index("ix_event_review_user", "user_id"),
         Index("ix_event_review_user_content", "user_id", "content_id"),
+        Index("ix_event_review_created", "created"),
     )
 
     def __str__(self):
         return f"Review by {self.user.username} for {self.content.name}"
+
+
+# Модель оценок пользователей для мероприятий (event_rating)
+class Rating(GenericModel):
+    """Модель оценок пользователей для мероприятий"""
+
+    __tablename__ = "event_rating"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("event_user.id"), nullable=False)
+    content_id = Column(Integer, ForeignKey("event_content.id"), nullable=False)
+    rating = Column(Integer, nullable=False)  # Оценка от 0 до 5
+
+    user = relationship("User", back_populates="ratings")
+    content = relationship("Content", back_populates="ratings")
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "content_id", name="uix_event_rating_user_content"),
+        Index("ix_event_rating_content", "content_id"),
+        Index("ix_event_rating_user", "user_id"),
+        Index("ix_event_rating_user_content", "user_id", "content_id"),
+    )
+
+    def __str__(self):
+        return f"Rating {self.rating} by {self.user.username} for {self.content.name}"
 
 
 # Модель обратной связи (event_feedback)
@@ -282,8 +308,10 @@ class UserCategoryPreference(Base):
 
 # Добавляем отношения для отзывов
 User.reviews = relationship("Review", back_populates="user")
+User.ratings = relationship("Rating", back_populates="user")
 Content.likes = relationship("Like", back_populates="content")
 Content.reviews = relationship("Review", back_populates="content")
+Content.ratings = relationship("Rating", back_populates="content")
 Content.removed_favorites = relationship("RemovedFavorite", back_populates="content")
 
 
