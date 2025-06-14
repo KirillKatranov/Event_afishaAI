@@ -24,8 +24,8 @@ CITY_CHOICES = [
 ]
 
 
-@router_users.post("/register", status_code=201)
-def register_user(user_data: UserSchema, db: Session = Depends(get_db)):
+def _register_user_logic(user_data: UserSchema, db: Session):
+    """Общая логика регистрации пользователя"""
     existing_user = db.query(User).filter(User.username == user_data.username).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Пользователь уже существует")
@@ -36,6 +36,16 @@ def register_user(user_data: UserSchema, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     return {"message": "Пользователь успешно зарегистрирован", "user_id": new_user.id}
+
+
+@router_users.post("/register", status_code=201)
+def register_user(user_data: UserSchema, db: Session = Depends(get_db)):
+    return _register_user_logic(user_data, db)
+
+
+@router_users.post("/register", status_code=201)
+def register_user_with_slash(user_data: UserSchema, db: Session = Depends(get_db)):
+    return _register_user_logic(user_data, db)
 
 
 @router_users.patch("/users", response_model=dict)
