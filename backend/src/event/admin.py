@@ -1,5 +1,5 @@
 from django.contrib import admin
-from frameworks_and_drivers.django.parsing.data_manager.models import (
+from models import (
     Content,
     Tags,
     Like,
