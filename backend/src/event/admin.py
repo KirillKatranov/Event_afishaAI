@@ -19,8 +19,13 @@ class MacroCategoryFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value():
-            # Фильтруем контент по макрокатегории через теги
-            return queryset.filter(tags__macro_category__id=self.value()).distinct()
+            # Получаем ID контента через подзапрос, чтобы избежать .distinct()
+            content_ids = (
+                Content.objects.filter(tags__macro_category__id=self.value())
+                .values_list("id", flat=True)
+                .distinct()
+            )
+            return queryset.filter(id__in=content_ids)
         return queryset
 
 
