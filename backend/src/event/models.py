@@ -195,6 +195,54 @@ class Review(GenericModel):
     get_short_text.short_description = "Текст отзыва"
 
 
+class Rating(GenericModel):
+    """Модель оценок пользователей к мероприятиям"""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="ratings",
+        verbose_name="Пользователь",
+        db_index=True,
+    )
+    content = models.ForeignKey(
+        Content,
+        on_delete=models.CASCADE,
+        related_name="ratings",
+        verbose_name="Мероприятие",
+        db_index=True,
+    )
+    rating = models.PositiveSmallIntegerField(
+        verbose_name="Оценка", help_text="Оценка от 0 до 5"
+    )
+
+    class Meta:
+        verbose_name = "Оценка"
+        verbose_name_plural = "Оценки"
+        ordering = ["-created"]
+        unique_together = (
+            "user",
+            "content",
+        )  # Один пользователь может поставить только одну оценку мероприятию
+        indexes = [
+            models.Index(fields=["content"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["user", "content"]),
+            models.Index(fields=["-created"]),
+            models.Index(fields=["rating"]),
+        ]
+
+    def __str__(self):
+        return f"Оценка {self.rating} от {self.user.username} к {self.content.name}"
+
+    def clean(self):
+        """Валидация оценки"""
+        from django.core.exceptions import ValidationError
+
+        if self.rating < 0 or self.rating > 5:
+            raise ValidationError("Оценка должна быть от 0 до 5")
+
+
 class Feedback(GenericModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="feedback")
     message = models.TextField()

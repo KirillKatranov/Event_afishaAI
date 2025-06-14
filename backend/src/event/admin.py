@@ -6,6 +6,7 @@ from event.models import (
     User,
     MacroCategory,
     Review,
+    Rating,
 )
 
 
@@ -113,6 +114,50 @@ class ReviewAdmin(admin.ModelAdmin):
     # Настройка отображения полей в форме редактирования
     fieldsets = (
         (None, {"fields": ("user", "content", "text")}),
+        (
+            "Информация о времени",
+            {
+                "fields": ("created", "updated"),
+                "classes": ("collapse",),
+            },
+        ),
+    )
+
+    # Автозаполнение для связанных полей
+    autocomplete_fields = ["user", "content"]
+
+    def get_queryset(self, request):
+        """Оптимизируем запросы, подгружая связанные объекты"""
+        return super().get_queryset(request).select_related("user", "content")
+
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "content",
+        "rating",
+        "created",
+        "updated",
+    )
+    list_filter = (
+        "rating",
+        "created",
+        "updated",
+        "content__city",
+        "content__event_type",
+    )
+    search_fields = (
+        "user__username",
+        "content__name",
+    )
+    readonly_fields = ("created", "updated")
+    date_hierarchy = "created"
+    list_per_page = 25
+
+    # Настройка отображения полей в форме редактирования
+    fieldsets = (
+        (None, {"fields": ("user", "content", "rating")}),
         (
             "Информация о времени",
             {
