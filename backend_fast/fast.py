@@ -15,6 +15,10 @@ from api.reviews import router_reviews
 from api.ratings import router_ratings
 from api.search import router_search
 
+from loguru import logger
+
+logger.add("logs/fast.log", rotation="500 MB", level="INFO", compression="zip")
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,

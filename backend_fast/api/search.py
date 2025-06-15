@@ -12,6 +12,9 @@ from schemas import (
     PopularTagsResponseSchema,
     PopularTagSchema,
 )
+from loguru import logger
+
+# logger.add("logs/search.log", rotation="500 MB", level="INFO", compression="zip")
 
 router_search = APIRouter(prefix="/api/v1", tags=["search"])
 
@@ -21,12 +24,15 @@ def build_text_search_filter(search_query: str):
     Создает фильтр для поиска по отдельным словам
     """
     # Разбиваем запрос на отдельные слова и очищаем их
+    logger.info("Splitting search query into words and cleaning them")
     words = [word.strip().lower() for word in search_query.split() if word.strip()]
 
     if not words:
+        logger.info("No words found in search query")
         return None
 
     # Создаем условия для каждого слова
+    logger.info("Creating conditions for each word")
     word_conditions = []
     for word in words:
         word_pattern = f"%{word}%"
@@ -45,6 +51,7 @@ def build_relevance_order(search_query: str):
     """
     Создает сортировку по релевантности на основе поискового запроса
     """
+    logger.info("Splitting search query into words and cleaning them")
     words = [word.strip().lower() for word in search_query.split() if word.strip()]
 
     if not words:
@@ -54,6 +61,7 @@ def build_relevance_order(search_query: str):
     # - Совпадение в названии = 10 баллов за слово
     # - Совпадение в описании = 3 балла за слово
     # - Совпадение в локации = 5 баллов за слово
+    logger.info("Calculating relevance score")
     relevance_score = 0
 
     for word in words:
@@ -69,6 +77,7 @@ def build_relevance_order(search_query: str):
         )
 
     # Сортируем по релевантности (убывание), потом по дате (возрастание)
+    logger.info("Sorting by relevance score and date")
     return [relevance_score.desc(), Content.date_start.asc().nullslast()]
 
 
@@ -98,9 +107,11 @@ def search_content(
     """
 
     # Базовый запрос
+    logger.info("Building base query")
     query = db.query(Content)
 
     # Поиск по тексту (улучшенный поиск по словам)
+    logger.info("Building text search filter")
     if q and q.strip():
         text_filter = build_text_search_filter(q.strip())
         if text_filter is not None:
@@ -108,14 +119,17 @@ def search_content(
 
     # Фильтр по городу
     if city:
+        logger.info(f"Filtering by city: {city}")
         query = query.filter(Content.city == city)
 
     # Фильтр по типу мероприятия
     if event_type:
+        logger.info(f"Filtering by event type: {event_type}")
         query = query.filter(Content.event_type == event_type.value)
 
     # Фильтр по датам
     if date_from:
+        logger.info(f"Filtering by date from: {date_from}")
         query = query.filter(
             or_(
                 Content.date_start >= date_from,
@@ -124,6 +138,7 @@ def search_content(
         )
 
     if date_to:
+        logger.info(f"Filtering by date to: {date_to}")
         query = query.filter(
             or_(
                 Content.date_start <= date_to,
@@ -134,27 +149,33 @@ def search_content(
 
     # Фильтр по тегам
     if tags:
+        logger.info(f"Filtering by tags: {tags}")
         query = query.join(Content.tags).filter(Tags.id.in_(tags))
 
     # Сортировка по релевантности и дате
     if q and q.strip():
         # При поиске сортируем по релевантности
+        logger.info("Sorting by relevance score and date")
         order_clauses = build_relevance_order(q.strip())
         query = query.order_by(*order_clauses)
     else:
         # Без поиска сортируем по дате
+        logger.info("Sorting by date")
         query = query.order_by(Content.date_start.asc().nullslast())
 
     # Подсчет общего количества
+    logger.info("Counting total count")
     total_count = query.count()
 
     # Применяем пагинацию
+    logger.info("Applying pagination")
     contents = query.offset(skip).limit(limit).all()
 
     # Преобразуем в схемы
     content_schemas = []
     for content in contents:
         # Получаем макрокатегорию для контента
+        logger.info("Getting macro category for content")
         macro_category = None
         if content.tags:
             first_tag = content.tags[0]
@@ -165,6 +186,7 @@ def search_content(
         content_schema.macro_category = macro_category
         content_schemas.append(content_schema)
 
+    logger.info("Returning search response")
     return SearchResponseSchema(
         contents=content_schemas,
         total_count=total_count,
@@ -194,14 +216,17 @@ def get_search_suggestions(
     Получить подсказки для поиска на основе названий мероприятий
     """
     # Берем последнее слово для подсказок (как в Google)
+    logger.info("Getting last word for suggestions")
     words = q.strip().split()
     if not words:
+        logger.info("No words found in search query")
         return SearchSuggestionsSchema(suggestions=[], query=q)
 
     last_word = words[-1].lower()
     search_term = f"%{last_word}%"
 
     # Ищем совпадения в названиях
+    logger.info("Searching for suggestions")
     suggestions = (
         db.query(Content.name)
         .filter(func.lower(Content.name).like(search_term))
@@ -223,6 +248,7 @@ def get_popular_search_tags(
     """
     Получить популярные теги для поиска (по количеству связанного контента)
     """
+    logger.info("Getting popular search tags")
     popular_tags = (
         db.query(Tags, func.count(Content.id).label("content_count"))
         .join(Tags.contents)
