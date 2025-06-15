@@ -15,6 +15,7 @@ import {ActionButton, LoadingCard, TagChip} from "@/shared/ui";
 import {ScrollView} from "react-native-gesture-handler";
 import {ServicesColors} from "@/entities/service";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
+import {router} from "expo-router";
 
 const DraggableScrollView = Platform.select({
   web: () => require('@/shared/providers/DraggableScroll').DraggableScrollView,
@@ -26,9 +27,16 @@ interface EventCardProps {
   onLike: () => void;
   onDislike: () => void;
   expanded?: boolean;
+  owned?: boolean;
 }
 
-export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDislike, expanded }) => {
+export const EventCard: React.FC<EventCardProps> = memo(({
+  event,
+  onLike,
+  onDislike,
+  expanded,
+  owned
+}) => {
   const theme = useTheme<Theme>();
   const config = useConfig();
   const heightValue = useSharedValue(0);
@@ -319,6 +327,20 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event, onLike, onDisl
           )}
         </Animated.View>
       </Box>
+
+      {owned && (
+        <Pressable
+          style={{ width: "100%", backgroundColor: "#ECEBE8", padding: 12, alignItems: "center", justifyContent: "center" }}
+          onPress={() => router.push({
+            pathname: "/tags/organizers/manage",
+            params: { id: event.id }
+          })}
+        >
+          <Text style={{ fontFamily: "MontserratRegular", fontSize: 14 }} selectable={false}>
+            Управление мероприятием
+          </Text>
+        </Pressable>
+      )}
     </ImageBackground>
   );
 });

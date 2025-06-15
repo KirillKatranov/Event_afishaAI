@@ -1,10 +1,23 @@
-import React from "react";
-import {StyleSheet, View} from "react-native";
-import {Button, Switch, TextInput} from "@/shared/ui";
+import React, {useState} from "react";
+import {Modal, TouchableOpacity, View} from "react-native";
+import {Button, Text,} from "@/shared/ui";
 import {useEventSettingsStore} from "@/widgets/create-event-form";
+import {useLocalSearchParams, useRouter} from "expo-router";
+import {useConfig} from "@/shared/providers/TelegramConfig";
 
 export const EventSettings = () => {
+  const { id } = useLocalSearchParams<{ id: string }>()
+  const router = useRouter();
+
   const state = useEventSettingsStore();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const user = useConfig().initDataUnsafe.user
+
+  const handleDeleteConfirm = () => {
+    setShowDeleteModal(false);
+    state.deleteEvent( id, user.username ? user.username : user.id.toString(), () => router.back() );
+  };
 
   return (
     <View
@@ -14,79 +27,43 @@ export const EventSettings = () => {
         flexDirection: "column", gap: 16
       }}
     >
-      <View style={styles.optionContainer}>
-        <Switch
-          theme={"organizers"}
-          value={state.registrationClosed} onChange={state.setRegistrationClosed}
-          text={"Закрыть регистрацию"}
-        />
-      </View>
+      <View>
+        <Button theme={"organizers"} text={"Удалить мероприятие"} onPress={() => setShowDeleteModal(true)}/>
 
-      <View style={styles.optionContainer}>
-        <Switch
-          theme={"organizers"}
-          value={state.eventEnded} onChange={state.setEventEnded}
-          text={"Окончание проведения мероприятия"}
-        />
-      </View>
+        <Modal
+          visible={showDeleteModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowDeleteModal(false)}
+        >
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+            <View style={{backgroundColor: 'white', padding: 20, borderRadius: 16, width: '80%'}}>
+              <Text style={{fontFamily: 'MontserratMedium', fontSize: 16, marginBottom: 20, textAlign: 'center'}}>
+                Вы уверены, что хотите удалить это мероприятие?
+              </Text>
 
-      <View style={styles.optionContainer}>
-        <Switch
-          theme={"organizers"}
-          value={state.duplicateEvent} onChange={state.setDuplicateEvent}
-          text={"Дублировать мероприятие"}
-        />
-      </View>
+              <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                <TouchableOpacity
+                  onPress={() => setShowDeleteModal(false)}
+                  style={{
+                    paddingVertical: 10, paddingHorizontal: 20,
+                    borderRadius: 8, borderWidth: 1, borderColor: '#B4C9FE'
+                  }}
+                >
+                  <Text style={{ fontFamily: 'MontserratMedium' }}>Отмена</Text>
+                </TouchableOpacity>
 
-      <View style={styles.optionContainer}>
-        <Switch
-          theme={"organizers"}
-          value={state.deleteEvent} onChange={state.setDeleteEvent}
-          text={"Удалить мероприятие"}
-        />
-      </View>
-
-      <View style={styles.optionContainer}>
-        <Switch
-          theme={"organizers"}
-          value={state.blockUsers} onChange={state.setBlockUsers}
-          text={"Блокировать участников"}
-        />
-
-        {state.blockUsers && (
-          <View style={{ marginTop: 16, gap: 8 }}>
-            {state.blockedUsernames.map((username, index) => (
-              <View key={index} style={{ flexDirection: "row", gap: 8 }}>
-                <TextInput
-                  value={username}
-                  onChange={(text: string) => state.updateBlockedUsername(index, text)}
-                  placeholder={"@username"} style={{ flex: 1 }}
-                />
-
-                <View>
-                  <Button
-                    theme={"organizers"}
-                    text={"✖"}  variant={"secondary"}
-                    onPress={() => state.removeBlockedUsername(index)}
-                  />
-                </View>
+                <TouchableOpacity
+                  onPress={handleDeleteConfirm}
+                  style={{ paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8, backgroundColor: '#FF3B30'}}
+                >
+                  <Text style={{ color: 'white', fontFamily: 'MontserratMedium' }}>Удалить</Text>
+                </TouchableOpacity>
               </View>
-            ))}
-
-            <Button
-              onPress={state.addBlockedUsername} text={"+"} theme={"organizers"} variant={"secondary"}
-            />
+            </View>
           </View>
-        )}
+        </Modal>
       </View>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  optionContainer: {
-    backgroundColor: "white",
-    borderWidth: 1, borderColor: "#D9D9D9", borderRadius: 16,
-    paddingHorizontal: 20, paddingVertical: 10
-  }
-})

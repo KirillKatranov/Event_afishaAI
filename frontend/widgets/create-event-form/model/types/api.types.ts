@@ -16,7 +16,7 @@ export type CreateEventRequest = {
   date_end?: string,
   time?: string,
   location?: string,
-  cost?: string,
+  cost?: number,
   city?: string,
   event_type?: 'online' | 'offline',
   tags: string,

@@ -23,7 +23,7 @@ const initialState: OrganizerEventsState = {
 }
 
 export const useOrganizerEventsStore = create<OrganizerEventsState & OrganizerEventsActions>()(
-  immer((set,get) => ({
+  immer((set) => ({
     ...initialState,
 
     getEvents: (type, id) => {
@@ -33,7 +33,7 @@ export const useOrganizerEventsStore = create<OrganizerEventsState & OrganizerEv
         OrganizerEventsService.getOrganizationEvents({ id })
           .then((response) => {
             if (response.data) {
-              set({ events: response.data.contents })
+              set({ events: response.data.contents, swipedAll: false })
               if (response.data.contents.length == 0) set({ swipedAll: true })
             } else if (response.error) {
               set({ errorMessage: response.error })
@@ -44,8 +44,9 @@ export const useOrganizerEventsStore = create<OrganizerEventsState & OrganizerEv
       } else {
         OrganizerEventsService.getUserEvents({ id })
           .then((response) => {
+            console.log(response);
             if (response.data) {
-              set({ events: response.data, organizerName: id })
+              set({ events: response.data, organizerName: id, swipedAll: false })
               if (response.data.length == 0) set({ swipedAll: true })
             } else if (response.error) {
               set({ errorMessage: response.error })

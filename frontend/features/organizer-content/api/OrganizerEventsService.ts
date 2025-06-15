@@ -36,6 +36,21 @@ class OrganizerEventsService {
       return { error: "Неизвестная ошибка" }
     }
   };
+
+  async deleteEvent(params: { id: string, username: string }) {
+    try {
+      console.log("Send DELETE event");
+
+      await axiosInstance.delete(
+        `/contents/${params.id}?username=${params.username}`,
+      );
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return { error: error.message };
+      }
+      return { error: "Неизвестная ошибка" }
+    }
+  }
 }
 
 export default new OrganizerEventsService();

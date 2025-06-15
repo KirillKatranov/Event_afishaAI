@@ -6,6 +6,7 @@ import * as ImagePicker from "expo-image-picker";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useUserOrganizersListStore} from "@/features/organizers-list";
 import Icon from "@/shared/ui/Icons/Icon";
+import {router} from "expo-router";
 
 export const CreateEventForm = () => {
   const state = useEventFormStore();
@@ -311,7 +312,15 @@ export const CreateEventForm = () => {
         )}
       </View>
 
-      <Button theme={"organizers"} text={"Создать мероприятие"} onPress={() => state.submitForm(user.username ? user.username : user.id.toString())}/>
+      <Button
+        theme={"organizers"}
+        text={"Создать мероприятие"}
+        onPress={() => state.submitForm(user.username ? user.username : user.id.toString(), () => router.back() )}
+      />
+
+      {state.errorMessage && (
+        <Text style={styles.sectionTitle}>{state.errorMessage}</Text>
+      )}
     </View>
   )
 }

@@ -29,10 +29,10 @@ export const DateInput: React.FC<DateInputProps> = ({
           borderRadius: 8,
           backgroundColor: "#FFFEF7",
           borderWidth: 1, borderColor: "#D9D9D9",
-          paddingHorizontal: 16, paddingVertical: 12,
+          paddingHorizontal: 16, justifyContent: "center"
         }}
       >
-        <Text style={{ fontFamily: "MontserratRegular", fontSize: 16, color: date ? "#000000" :'#999999FF' }}>
+        <Text numberOfLines={1} style={{ fontFamily: "MontserratRegular", fontSize: 16, color: date ? "#000000" :'#999999FF' }}>
           {date ? date.toLocaleDateString() : placeholder}
         </Text>
       </Pressable>

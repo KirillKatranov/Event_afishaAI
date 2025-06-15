@@ -4,10 +4,15 @@ import {Button, TextInput} from "@/shared/ui";
 import {useSignUpOrganizerStore} from "@/widgets/organizers-auth";
 import * as ImagePicker from 'expo-image-picker';
 import {useConfig} from "@/shared/providers/TelegramConfig";
+import {useRouter} from "expo-router";
+import {useOrganizersListStore, useUserOrganizersListStore} from "@/features/organizers-list";
 
 export const SignUpOrganizerForm = () => {
   const state = useSignUpOrganizerStore();
-  const username = useConfig().initDataUnsafe.user.username;
+  const {getOrganizers} = useOrganizersListStore();
+  const {getUserOrganizers} = useUserOrganizersListStore()
+  const user = useConfig().initDataUnsafe.user;
+  const router = useRouter();
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -88,7 +93,11 @@ export const SignUpOrganizerForm = () => {
           theme={"organizers"}
           text={"Зарегистрироваться"}
           disabled={state.isLoading || !state.isFormValid}
-          onPress={() => state.submitSignUp(username, () => console.log("Successful registration"))}/>
+          onPress={() => state.submitSignUp(user.username ? user.username : user.id.toString(), () => {
+            router.back();
+            getOrganizers();
+            getUserOrganizers(user.username ? user.username : user.id.toString())
+          })}/>
       </View>
 
       {state.errorMessage && (

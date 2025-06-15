@@ -26,7 +26,7 @@ export const Radio: React.FC<CheckboxProps> = ({
       onPress={() => !disabled && onChange(!checked)}
       activeOpacity={0.7}
       disabled={disabled}
-      style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
+      style={{ flexDirection: "row", gap: 8, alignItems: "center", opacity: disabled ? 0.5 : 1 }}
     >
       <Icon
         name={checked ? "radioChecked" : "radioBlank"}

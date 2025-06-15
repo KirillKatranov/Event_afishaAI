@@ -28,6 +28,7 @@ interface EventFormState {
   publisherType: "organisation" | "user";
   organisation_id: string | undefined;
 
+  errorMessage?: string;
   isFormValid: boolean;
 
   categoryOptions: { label: string, value: string }[]
@@ -54,7 +55,7 @@ interface EventFormActions {
   setOrganizerId: (organizerId: string) => void;
   resetForm: () => void;
   checkFormValid: () => void;
-  submitForm: (username: string) => void;
+  submitForm: (username: string, onSuccess?: () => void) => void;
 
   getAvailableTags: (username: string) => void;
 }
@@ -131,7 +132,8 @@ export const useEventFormStore = create<EventFormState & EventFormActions>()(
 
     resetForm: () => set(initialState),
 
-    submitForm: (username: string) => {
+    submitForm: (username: string, onSuccess) => {
+      set({ errorMessage: undefined })
       const formData = get();
 
       CreateEventService.createEvent({
@@ -144,20 +146,22 @@ export const useEventFormStore = create<EventFormState & EventFormActions>()(
           date_end: formData.dateEnd ? formData.dateEnd.toISOString().split("T")[0] : undefined,
           time: formData.time,
           location: formData.address,
-          cost: formData.ticketType == "free" ? "0" : `${formData.priceStart}-${formData.priceEnd}`,
+          cost: formData.ticketType == "free" ? 0 : (!isNaN(Number(formData.priceStart)) ? Number(formData.priceStart) : 0),
           city: formData.city,
           event_type: formData.format,
           tags: formData.category.join(","),
           publisher_type: formData.publisherType,
-          organisation_id: Number(formData.organisation_id),
+          organisation_id: formData.organisation_id ? Number(formData.organisation_id) : undefined,
           image: formData.coverImage
         }})
         .then((response) => {
           if (response && response.error) {
-            console.log(response.error)
+            set({ errorMessage: response.error })
+          } else {
+            if (onSuccess) onSuccess();
           }
         })
-        .catch(e => console.log(e))
+        .catch(e => set({ errorMessage: e.message }))
     },
 
     getAvailableTags: (username) => {

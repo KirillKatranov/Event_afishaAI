@@ -15,18 +15,35 @@ export const OrganizersList = () => {
   const {userOrganizers, getUserOrganizers, deleteOrganizer } = useUserOrganizersListStore();
   const userLoading = useUserOrganizersListStore((state) => state.isLoading);
 
-  const username = useConfig().initDataUnsafe.user.username;
+  const user = useConfig().initDataUnsafe.user;
 
   useEffect(() => {
     if (organizers == null) getOrganizers();
   }, [organizers, getOrganizers]);
 
   useEffect(() => {
-    if (userOrganizers == null) getUserOrganizers(username);
+    if (userOrganizers == null) getUserOrganizers(user.username ? user.username : user.id.toString());
   }, [userOrganizers, getUserOrganizers]);
 
   return (
     <View style={{ width: "100%", flexDirection: "column", gap: 16, paddingTop: 62 }}>
+      <Button
+        theme={"organizers"} text={`Мероприятия от ${user.username ? user.username : user.id.toString()}`}
+        onPress={() => router.push({
+          pathname: "/tags/organizers/events",
+          params: {
+            type: "user",
+            id: user.username ? user.username : user.id.toString(),
+            owned: 1,
+          }
+        })}
+      />
+
+      <Button
+        theme={"organizers"} text={"Создать мероприятие"}
+        variant={"secondary"} onPress={() => router.push("/tags/organizers/create")}
+      />
+
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>
           Ваши ораганизации
@@ -41,24 +58,25 @@ export const OrganizersList = () => {
             organizer={organizer}
             onPress={() => router.push({
               pathname: "/tags/organizers/events",
-              params: { type: "organization", id: organizer.id }
+              params: { type: "organization", id: organizer.id, owned: 1 },
             })}
             owned={true}
-            onDelete={() => deleteOrganizer(organizer.id, username, () => {
-              getUserOrganizers(username);
+            onDelete={() => deleteOrganizer(organizer.id, user.username ? user.username : user.id.toString(), () => {
+              getUserOrganizers(user.username ? user.username : user.id.toString());
               getOrganizers();
             })}
           />
         ))}
 
+        {userOrganizers !== null && userOrganizers.length == 0 && (
+          <Text style={{ fontFamily: "MontserratRegular", fontSize: 16, textAlign: "center" }}>
+            У вас нет организаций
+          </Text>
+        )}
+
         <Button
           theme={"organizers"} text={"Создать организацию"}
           variant={"secondary"} onPress={() => router.push("/tags/organizers/register")}
-        />
-
-        <Button
-          theme={"organizers"} text={"Создать мероприятие"}
-          variant={"secondary"} onPress={() => router.push("/tags/organizers/create")}
         />
       </View>
 
@@ -80,6 +98,13 @@ export const OrganizersList = () => {
             })}
           />
         ))}
+
+        {organizers !== null && organizers.length == 0 && (
+          <Text style={{ fontFamily: "MontserratRegular", fontSize: 16, textAlign: "center" }}>
+            Организации отвутвуют
+          </Text>
+        )}
+
       </View>
     </View>
   )

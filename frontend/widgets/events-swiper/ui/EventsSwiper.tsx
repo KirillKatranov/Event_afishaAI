@@ -20,13 +20,15 @@ import Illustration from "@/shared/ui/Illustrations/Illustration";
 interface EventsSwiperProps {
   events: Event[];
   swipedAll: boolean; setSwipedAll: (swipedAll: boolean) => void;
+  back?: boolean;
 }
 
 export const EventsSwiper: React.FC<EventsSwiperProps> = ({
   events,
-  swipedAll, setSwipedAll
+  swipedAll, setSwipedAll,
+  back
 }) => {
-  const { service, tag } = useLocalSearchParams<{ service: string, tag: string }>();
+  const { service, tag, owned } = useLocalSearchParams<{ service: string, tag: string, owned: string }>();
 
   const theme = useTheme<Theme>();
   const router = useRouter();
@@ -103,6 +105,7 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
       onDislike={() => {
         swiperRef.current?.swipeLeft();
       }}
+      owned={!!owned}
     />
   );
 
@@ -339,9 +342,12 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
 
         {/* Back button */}
         {
-          tag && !swipedAll && (
+          ((tag && !swipedAll) || back) && (
             <Pressable
-              onPress={ () => router.navigate({ pathname: "/tags/[service]", params: { service: service }}) }
+              onPress={ () => {
+                if (back) router.back()
+                else router.navigate({ pathname: "/tags/[service]", params: { service: service }})
+              }}
             >
               <Box
                 backgroundColor={"cardBGColor"}
