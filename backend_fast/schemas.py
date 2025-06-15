@@ -286,3 +286,31 @@ class ContentRatingStatsSchema(BaseModel):
     average_rating: float
     total_ratings: int
     ratings_distribution: Dict[int, int]  # {rating: count}
+
+
+# Схема для ответа поиска
+class SearchResponseSchema(BaseModel):
+    contents: List[ContentSchema]
+    total_count: int
+    skip: int
+    limit: int
+    has_more: bool
+    search_params: Dict
+
+
+# Схема для подсказок поиска
+class SearchSuggestionsSchema(BaseModel):
+    suggestions: List[str]
+    query: str
+
+
+# Схема для популярных тегов
+class PopularTagSchema(BaseModel):
+    id: int
+    name: str
+    description: str
+    content_count: int
+
+
+class PopularTagsResponseSchema(BaseModel):
+    popular_tags: List[PopularTagSchema]
