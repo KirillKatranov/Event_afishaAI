@@ -95,6 +95,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({
         flexDirection: "column",
         overflow: "hidden",
         backgroundColor: theme.colors.secondary_bg_color,
+        width: "100%"
       }}
     >
       <Image
