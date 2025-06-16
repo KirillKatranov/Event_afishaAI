@@ -4,6 +4,7 @@ export {ThirdPageArrow} from "./ThirdPageArrow";
 export {BottomLine} from "./BottomLine";
 export {TopLine} from "./TopLine";
 export {Like} from "./Like"
+export {ManageEvent} from "./ManageEvent";
 export {Calendar} from "./Calendar"
 export {OnboardingLikes} from "./OnboardingLikes"
 export {OnboardingLike} from "./OnboardingLike"

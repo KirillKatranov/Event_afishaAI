@@ -16,6 +16,9 @@ export type Event = {
   cost?: string;
   location?: string;
   macro_category?: "events" | "places" | "organizers" | "trips" ;
+  event_type?: "online" | "offline";
+  publisher_type?: "organisation" | "user";
+  publisher_id?: number
 }
 
 export type Contact = {
