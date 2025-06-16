@@ -53,7 +53,7 @@ export const ServicesPage = () => {
           }}
           onProgressChange={swipeProgress}
           renderItem={({item}) => <ServiceCard service={item} onPress={() => {
-            if (item.id != "organizers" && item.id != "trips") {
+            if (item.id != "trips") {
               router.push({
                 pathname: '/tags/[service]',
                 params: { service: item.id }

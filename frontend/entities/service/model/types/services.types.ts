@@ -1,7 +1,7 @@
 export const Services: Service[] = [
   { id: "events", name: "События", illustration: "events", description: "Актуальные мероприятия и интересные события в Вашем городе" },
   { id: "places", name: "Места", illustration: "places", description: "Лучшие локации для отдыха и развлечений" },
-  { id: "organizers", name: "Организаторы", illustration: "organizers", description: "В разработке" },
+  { id: "organizers", name: "Организаторы", illustration: "organizers", description: "Организация мероприятий для юридических лиц" },
   { id: "trips", name: "Путешествия", illustration: "trips", description: "В разработке" },
 ]
 
