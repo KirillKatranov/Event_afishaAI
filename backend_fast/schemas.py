@@ -314,3 +314,25 @@ class PopularTagSchema(BaseModel):
 
 class PopularTagsResponseSchema(BaseModel):
     popular_tags: List[PopularTagSchema]
+
+
+# Схемы для макрокатегорий
+class MacroCategorySchema(BaseModel):
+    id: int
+    name: str
+    description: Optional[str] = None
+    image: Optional[str] = None
+
+    @field_validator("image", mode="before")
+    @classmethod
+    def validate_image(cls, image: Optional[str]) -> Optional[str]:
+        if image is None:
+            return None
+        return "https://afishabot.ru/afisha-files/" + image
+
+    model_config = {"from_attributes": True}
+
+
+class MacroCategoriesResponseSchema(BaseModel):
+    macro_categories: List[MacroCategorySchema]
+    total_count: int
