@@ -14,6 +14,7 @@ from api.tags import router_tags
 from api.reviews import router_reviews
 from api.ratings import router_ratings
 from api.search import router_search
+from api.macro_categories import router_macro_categories
 
 app = FastAPI()
 app.add_middleware(
@@ -36,3 +37,4 @@ app.include_router(router_tags)
 app.include_router(router_reviews)
 app.include_router(router_ratings)
 app.include_router(router_search)
+app.include_router(router_macro_categories)
