@@ -61,7 +61,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       >
         <Text
           variant={"serviceName"} textAlign={"center"} color={"black"} selectable={false}
-          opacity={service.id == "organizers" || service.id == "trips" ? 0.5 : 1}
+          opacity={service.id == "trips" ? 0.5 : 1}
         >
           {service.name}
         </Text>
@@ -79,7 +79,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         {(service.id == "trips" || service.id == "organizers") && (
           <Box
             flex={1} justifyContent={"center"} onLayout={layoutMeasure}
-            opacity={service.id == "organizers" || service.id == "trips" ? 0.5 : 1}
+            opacity={service.id == "trips" ? 0.5 : 1}
           >
             <Illustration name={service.illustration} width={"100%"} height={"100%"} opacity={""}/>
           </Box>

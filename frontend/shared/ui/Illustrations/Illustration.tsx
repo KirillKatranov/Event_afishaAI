@@ -9,6 +9,7 @@ const illustrations = {
   bottomLine: Illustrations.BottomLine,
   topLine: Illustrations.TopLine,
   like: Illustrations.Like,
+  manageEvent: Illustrations.ManageEvent,
   calendar: Illustrations.Calendar,
   onboardingLikes: Illustrations.OnboardingLikes,
   onboardingLike: Illustrations.OnboardingLike,
