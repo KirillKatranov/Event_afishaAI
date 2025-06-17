@@ -22,8 +22,8 @@ class Command(BaseCommand):
         today_event = Content.objects.create(
             name='Концерт "Летний джаз"',
             description='Великолепный джазовый концерт под открытым небом. Живая музыка, прекрасная атмосфера и незабываемые впечатления!',
-            date_start=datetime(2025, 6, 10).date(),
-            date_end=datetime(2025, 6, 10).date(),  # тот же день
+            date_start=datetime(2025, 6, 17).date(),
+            date_end=datetime(2025, 6, 17).date(),  # тот же день
             time='19:30',
             location='Парк "Швейцария", Главная сцена',
             city='nn',
@@ -41,7 +41,7 @@ class Command(BaseCommand):
             name='Фестиваль современного искусства "АртПространство"',
             description='Масштабный фестиваль современного искусства. Выставки, инсталляции, перформансы, лекции и мастер-классы.',
             date_start=datetime(2025, 6, 9).date(),  # вчера
-            date_end=datetime(2025, 6, 12).date(),   # через 2 дня
+            date_end=datetime(2025, 6, 18).date(),   # через 2 дня
             time='10:00-22:00',
             location='Арсенал, Кремль, 6',
             city='nn',
@@ -58,8 +58,8 @@ class Command(BaseCommand):
         another_multiday_event = Content.objects.create(
             name='Гастрономический фестиваль "Вкусный город"',
             description='Два дня кулинарного искусства! Дегустации от лучших ресторанов города, мастер-классы от шеф-поваров, развлекательная программа.',
-            date_start=datetime(2025, 6, 10).date(),  # сегодня
-            date_end=datetime(2025, 6, 11).date(),    # завтра
+            date_start=datetime(2025, 6, 17).date(),  # сегодня
+            date_end=datetime(2025, 6, 18).date(),    # завтра
             time='12:00-23:00',
             location='Площадь Минина и Пожарского',
             city='nn',
@@ -76,8 +76,8 @@ class Command(BaseCommand):
         future_event = Content.objects.create(
             name='Книжная ярмарка "Читающий Нижний"',
             description='Большая книжная ярмарка с участием издательств со всей России. Встречи с авторами, презентации книг, детская программа.',
-            date_start=(datetime(2025, 6, 15).date()),  # через 5 дней
-            date_end=(datetime(2025, 6, 17).date()),    # через 7 дней
+            date_start=(datetime(2025, 6, 20).date()),  # через 5 дней
+            date_end=(datetime(2025, 6, 21).date()),    # через 7 дней
             time='10:00-20:00',
             location='Нижегородская ярмарка',
             city='nn',

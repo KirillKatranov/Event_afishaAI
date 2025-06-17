@@ -17,19 +17,30 @@ from pyrogram.raw.functions.contacts import ResolveUsername
 
 logger = get_task_logger(__name__)
 
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings): #Автоматически подгружает переменные окружения или переменные из .env 
+    BOT_TOKEN: str
+    API_ID: str
+    API_HASH: str
+    #model_config = SettingsConfigDict(env_file=".env") # .env должен лежать в корне проекта и подгружать значения именно из env
+    model_config = SettingsConfigDict() #При такой конфигруации подключаемся из переменных окружения
+settings = Settings()
+
+
+
 # Telegram Bot Configuration
-BOT_TOKEN = "7517129777:AAHtVmXMsaa130ebt5HyPFgkWoYRWJgfZt4" #Токен афишы
-API_ID = "24966956"
-API_HASH = "de5018b0f9dcd93012624bf4cfed1b58"
+
 
 # Base URL for deep links
 TELEGRAM_DEEP_LINK_BASE = "https://t.me/EventAfishaBot/strelka?startapp="
 
 pyrogram_client = Client(
     "bot",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN,
+    api_id=settings.API_ID,
+    api_hash=settings.API_HASH,
+    bot_token=settings.BOT_TOKEN,
     app_version="7.7.2",
     device_model="Lenovo Z6 Lite",
     system_version="11 R",
@@ -48,7 +59,7 @@ def resolve_username_to_user_id(username: str) -> int | None:
 def send_telegram_message(chat_id: int, message: str) -> bool:
     """Helper function to send a Telegram message using HTTP API"""
     try:
-        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        url = f"https://api.telegram.org/bot{settings.BOT_TOKEN}/sendMessage"
         payload = {
             "chat_id": chat_id,
             "text": message,
