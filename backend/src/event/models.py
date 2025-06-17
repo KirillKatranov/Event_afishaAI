@@ -85,7 +85,24 @@ class Content(GenericModel):
     publisher_id = models.IntegerField(default=1_000_000)
 
     def get_tags(self):
-        return "\n".join([t.name for t in self.tags.all()])
+        tags = self.tags.all()
+        if tags.exists():
+            return "\n".join([t.name for t in tags])
+        return "Без тегов"
+
+    get_tags.short_description = "Теги"
+
+    def get_macro(self) -> str:
+        tags = self.tags.all()
+        if tags.exists():
+            first_tag = tags[0]
+            if first_tag.macro_category:
+                return str(first_tag.macro_category.name)
+            else:
+                return "Без категории"
+        return "Без тегов"
+
+    get_macro.short_description = "Категория"
 
     def __str__(self):
         return f"{self.name}"
@@ -134,6 +151,96 @@ class Like(GenericModel):
 
     def __str__(self):
         return f"{self.user.username} - {self.content.name} - {self.value} - {self.created}"
+
+
+class Review(GenericModel):
+    """Модель отзывов пользователей к мероприятиям"""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        verbose_name="Пользователь",
+        db_index=True,
+    )
+    content = models.ForeignKey(
+        Content,
+        on_delete=models.CASCADE,
+        related_name="reviews",
+        verbose_name="Мероприятие",
+        db_index=True,
+    )
+    text = models.TextField(verbose_name="Текст отзыва")
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
+        ordering = ["-created"]
+        indexes = [
+            models.Index(fields=["content"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["user", "content"]),
+            models.Index(fields=["-created"]),
+        ]
+
+    def __str__(self):
+        return f"Отзыв от {self.user.username} к {self.content.name}"
+
+    def get_short_text(self):
+        """Возвращает сокращенный текст отзыва для админки"""
+        if len(self.text) > 100:
+            return self.text[:100] + "..."
+        return self.text
+
+    get_short_text.short_description = "Текст отзыва"
+
+
+class Rating(GenericModel):
+    """Модель оценок пользователей к мероприятиям"""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="ratings",
+        verbose_name="Пользователь",
+        db_index=True,
+    )
+    content = models.ForeignKey(
+        Content,
+        on_delete=models.CASCADE,
+        related_name="ratings",
+        verbose_name="Мероприятие",
+        db_index=True,
+    )
+    rating = models.PositiveSmallIntegerField(
+        verbose_name="Оценка", help_text="Оценка от 0 до 5"
+    )
+
+    class Meta:
+        verbose_name = "Оценка"
+        verbose_name_plural = "Оценки"
+        ordering = ["-created"]
+        unique_together = (
+            "user",
+            "content",
+        )  # Один пользователь может поставить только одну оценку мероприятию
+        indexes = [
+            models.Index(fields=["content"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["user", "content"]),
+            models.Index(fields=["-created"]),
+            models.Index(fields=["rating"]),
+        ]
+
+    def __str__(self):
+        return f"Оценка {self.rating} от {self.user.username} к {self.content.name}"
+
+    def clean(self):
+        """Валидация оценки"""
+        from django.core.exceptions import ValidationError
+
+        if self.rating < 0 or self.rating > 5:
+            raise ValidationError("Оценка должна быть от 0 до 5")
 
 
 class Feedback(GenericModel):

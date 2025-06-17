@@ -1,7 +1,17 @@
 from pydantic import BaseModel, field_validator, EmailStr
 from typing import List, Optional, Dict
 from datetime import date, datetime
-from models import EventType, PublisherType
+from enum import Enum
+
+
+class EventType(str, Enum):
+    ONLINE = "online"
+    OFFLINE = "offline"
+
+
+class PublisherType(str, Enum):
+    USER = "user"
+    ORGANISATION = "organisation"
 
 
 # Схема для Tag
@@ -107,8 +117,12 @@ class UserPreferencesResponseSchema(BaseModel):
 
 # Схема для User
 class UserSchema(BaseModel):
+    id: int | None = None
     city: str
     username: str
+
+    class Config:
+        orm_mode = True
 
 
 # Схема для ответа с городами
@@ -217,9 +231,108 @@ class OrganisationContentListResponse(BaseModel):
         from_attributes = True
 
 
-class UserOrganisationsResponse(BaseModel):
-    organisations: List[OrganisationResponse]
+# Схемы для отзывов
+class ReviewCreateSchema(BaseModel):
+    username: str
+    content_id: int
+    text: str
+
+
+class ReviewResponseSchema(BaseModel):
+    id: int
+    user_id: int
+    content_id: int
+    text: str
+    created: datetime
+    updated: datetime
+    username: str  # Добавляем имя пользователя для удобства
+
+    model_config = {"from_attributes": True}
+
+
+class ReviewListResponseSchema(BaseModel):
+    reviews: List[ReviewResponseSchema]
     total_count: int
 
-    class Config:
-        from_attributes = True
+
+# Схемы для оценок
+class RatingCreateSchema(BaseModel):
+    username: str
+    content_id: int
+    rating: int
+
+    @field_validator("rating")
+    @classmethod
+    def validate_rating(cls, v):
+        if not 0 <= v <= 5:
+            raise ValueError("Оценка должна быть от 0 до 5")
+        return v
+
+
+class RatingResponseSchema(BaseModel):
+    id: int
+    user_id: int
+    content_id: int
+    rating: int
+    created: datetime
+    updated: datetime
+    username: str  # Добавляем имя пользователя для удобства
+
+    model_config = {"from_attributes": True}
+
+
+class ContentRatingStatsSchema(BaseModel):
+    content_id: int
+    average_rating: float
+    total_ratings: int
+    ratings_distribution: Dict[int, int]  # {rating: count}
+
+
+# Схема для ответа поиска
+class SearchResponseSchema(BaseModel):
+    contents: List[ContentSchema]
+    total_count: int
+    skip: int
+    limit: int
+    has_more: bool
+    search_params: Dict
+
+
+# Схема для подсказок поиска
+class SearchSuggestionsSchema(BaseModel):
+    suggestions: List[str]
+    query: str
+
+
+# Схема для популярных тегов
+class PopularTagSchema(BaseModel):
+    id: int
+    name: str
+    description: str
+    content_count: int
+
+
+class PopularTagsResponseSchema(BaseModel):
+    popular_tags: List[PopularTagSchema]
+
+
+# Схемы для макрокатегорий
+class MacroCategorySchema(BaseModel):
+    id: int
+    name: str
+    description: Optional[str] = None
+    image: Optional[str] = None
+
+    @field_validator("image", mode="before")
+    @classmethod
+    def validate_image(cls, image: Optional[str]) -> Optional[str]:
+        if image is None:
+            return None
+        return "https://afishabot.ru/afisha-files/" + image
+
+    model_config = {"from_attributes": True}
+
+
+class MacroCategoriesResponseSchema(BaseModel):
+    macro_categories: List[MacroCategorySchema]
+    total_count: int

@@ -1,10 +1,11 @@
 import React, {useEffect} from "react";
-import {EventsSwiper} from "@/widgets/events-swiper";
+import {EventsSwiper, EventsVerticalSwiper} from "@/widgets/events-swiper";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
 import {useFeedStore} from "@/features/content";
 import {getPeriodBorders} from "@/shared/scripts/date";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useCalendarStore} from "@/features/dates";
+import {Dimensions} from "react-native";
 
 export const FeedPage = () => {
   const username = useConfig().initDataUnsafe.user.username;
@@ -15,6 +16,9 @@ export const FeedPage = () => {
     fetchFeed,
   } = useFeedStore();
   const { selectedDays} = useCalendarStore();
+
+  const { height } = Dimensions.get('window');
+  const reelsHeight = height - 57;
 
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
@@ -34,6 +38,7 @@ export const FeedPage = () => {
       flexDirection="column"
     >
       <EventsSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll}/>
+      {/*<EventsVerticalSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll} containerHeight={reelsHeight}/>*/}
     </Box>
   )
 }

@@ -3,7 +3,7 @@ import Svg, {Path} from "react-native-svg";
 import {IllustrationComponentProps} from "@/shared/ui/Illustrations/IllustrationComponentProps";
 
 export const OnboardingLikes: React.FC<IllustrationComponentProps> = ({width = 140, height = 61}) => (
-  
+
     <Svg
       width={width}
       height={height}

@@ -22,7 +22,7 @@ class UserService {
     console.log("Send POST register user request", params);
 
     const response: UserRegisterResponse = await axiosInstance.post(
-      '/register/',
+      '/register',
       params
     );
 

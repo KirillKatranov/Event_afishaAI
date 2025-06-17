@@ -199,7 +199,52 @@ class Like(GenericModel):
         return f"{self.user.username} - {self.content.name} - {self.value} - {self.created}"
 
 
-Content.likes = relationship("Like", back_populates="content")
+# Модель отзывов (event_review)
+class Review(GenericModel):
+    __tablename__ = "event_review"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("event_user.id"), nullable=False)
+    content_id = Column(Integer, ForeignKey("event_content.id"), nullable=False)
+    text = Column(Text, nullable=False)
+
+    user = relationship("User", back_populates="reviews")
+    content = relationship("Content", back_populates="reviews")
+
+    __table_args__ = (
+        Index("ix_event_review_content", "content_id"),
+        Index("ix_event_review_user", "user_id"),
+        Index("ix_event_review_user_content", "user_id", "content_id"),
+        Index("ix_event_review_created", "created"),
+    )
+
+    def __str__(self):
+        return f"Review by {self.user.username} for {self.content.name}"
+
+
+# Модель оценок пользователей для мероприятий (event_rating)
+class Rating(GenericModel):
+    """Модель оценок пользователей для мероприятий"""
+
+    __tablename__ = "event_rating"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("event_user.id"), nullable=False)
+    content_id = Column(Integer, ForeignKey("event_content.id"), nullable=False)
+    rating = Column(Integer, nullable=False)  # Оценка от 0 до 5
+
+    user = relationship("User", back_populates="ratings")
+    content = relationship("Content", back_populates="ratings")
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "content_id", name="uix_event_rating_user_content"),
+        Index("ix_event_rating_content", "content_id"),
+        Index("ix_event_rating_user", "user_id"),
+        Index("ix_event_rating_user_content", "user_id", "content_id"),
+    )
+
+    def __str__(self):
+        return f"Rating {self.rating} by {self.user.username} for {self.content.name}"
 
 
 # Модель обратной связи (event_feedback)
@@ -211,6 +256,9 @@ class Feedback(GenericModel):
     message = Column(Text)
 
     user = relationship("User", back_populates="feedback")
+
+    def __str__(self):
+        return f"{self.user.username} - {self.message[:50]}"
 
 
 # Модель удаленных из избранного (event_removedfavorite)
@@ -226,12 +274,14 @@ class RemovedFavorite(Base):
     content = relationship("Content", back_populates="removed_favorites")
 
     __table_args__ = (
-        UniqueConstraint("user_id", "content_id", name="uix_event_removedfavorite"),
+        UniqueConstraint(
+            "user_id", "content_id", name="uix_event_removedfavorite_user_content"
+        ),
         Index("ix_event_removedfavorite_user_content", "user_id", "content_id"),
     )
 
-
-Content.removed_favorites = relationship("RemovedFavorite", back_populates="content")
+    def __str__(self):
+        return f"{self.user.username} - {self.content.name} - {self.removed_at}"
 
 
 # Модель предпочтений пользователя по категориям (event_usercategorypreference)
@@ -246,8 +296,28 @@ class UserCategoryPreference(Base):
     tag = relationship("Tags", back_populates="user_preferences")
 
     __table_args__ = (
-        UniqueConstraint("user_id", "tag_id", name="uix_event_usercategorypreference"),
+        UniqueConstraint(
+            "user_id", "tag_id", name="uix_event_usercategorypreference_user_tag"
+        ),
+        Index("ix_event_usercategorypreference_user_tag", "user_id", "tag_id"),
     )
 
     def __str__(self):
         return f"{self.user.username} - {self.tag.name}"
+
+
+# Добавляем отношения для отзывов
+User.reviews = relationship("Review", back_populates="user")
+User.ratings = relationship("Rating", back_populates="user")
+Content.likes = relationship("Like", back_populates="content")
+Content.reviews = relationship("Review", back_populates="content")
+Content.ratings = relationship("Rating", back_populates="content")
+Content.removed_favorites = relationship("RemovedFavorite", back_populates="content")
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

@@ -1,6 +1,8 @@
 export { default as Back } from "./svgs/Back";
 export { default as Calendar } from "./svgs/Calendar";
 export { default as Catalog } from "./svgs/Catalog";
+export { default as CheckboxBlank } from "./svgs/CheckboxBlank";
+export { default as CheckboxChecked } from "./svgs/CheckboxChecked";
 export { default as ChevronLeft } from "./svgs/ChevronLeft";
 export { default as ChevronDown } from "./svgs/ChevronDown";
 export { default as ChevronUp } from "./svgs/ChevronUp";
@@ -11,6 +13,8 @@ export { default as Like } from "./svgs/Like";
 export { default as LikeFilled } from "./svgs/LikeFilled";
 export { default as Dislike } from "./svgs/Dislike";
 export { default as Location } from "./svgs/Location";
+export { default as RadioBlank } from "./svgs/RadioBlank";
+export { default as RadioChecked } from "./svgs/RadioChecked";
 export { default as Share } from "./svgs/Share";
 export { default as Swiper } from "./svgs/Swiper";
 export { default as Tags } from "./svgs/Tags";
