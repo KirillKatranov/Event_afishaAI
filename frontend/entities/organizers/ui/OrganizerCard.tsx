@@ -61,7 +61,6 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({
               style={{
                 height: "100%",
                 width: "40%",
-                backgroundColor: "white",
                 position: "absolute",
                 left: 0
               }}
@@ -74,7 +73,6 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({
               style={{
                 height: "100%",
                 width: "40%",
-                backgroundColor: "white",
                 display: imageLoading ? "none" : "flex"
               }}
             />
