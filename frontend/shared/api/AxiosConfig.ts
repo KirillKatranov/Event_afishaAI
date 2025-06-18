@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 1200,
+  timeout: 10000, // 10 секунд для загрузки файлов
 });
 
 const MAX_RETRIES = 5;
