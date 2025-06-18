@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 700,
+  timeout: 1200,
 });
 
 const MAX_RETRIES = 5;
