@@ -36,7 +36,7 @@ export const OrganizerRegisterPage = () => {
 
       <Pressable
         onPress={() => {
-          router.replace("/tags/organizers");
+          router.back();
           resetForm();
         }}
         style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}

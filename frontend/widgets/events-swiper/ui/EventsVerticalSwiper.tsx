@@ -1,27 +1,19 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import {
-  Animated,
-  FlatList,
-  Image,
-  Modal,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  Pressable,
-  View,
-} from "react-native";
-import {useLocalSearchParams, useRouter} from "expo-router";
-import {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
-import {useTheme} from "@shopify/restyle";
-import {useCalendarStore} from "@/features/dates";
-import {useReactionsStore} from "@/features/likes-dislikes";
-import {Event, EventCard} from "@/entities/event";
-import {Box, LoadingCard, Text} from "@/shared/ui";
-import {Theme} from "@/shared/providers/Theme";
-import {useConfig} from "@/shared/providers/TelegramConfig";
+import React, { useEffect, useRef, useState } from "react";
+import { FlatList, Image, Modal, Pressable, ViewToken } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { useTheme } from "@shopify/restyle";
+import { useCalendarStore } from "@/features/dates";
+import { useReactionsStore } from "@/features/likes-dislikes";
+import { Event, EventCard } from "@/entities/event";
+import { Box, LoadingCard } from "@/shared/ui";
+import { Text } from "@/shared/ui";
+import { Theme } from "@/shared/providers/Theme";
+import { useConfig } from "@/shared/providers/TelegramConfig";
 import Icon from "@/shared/ui/Icons/Icon";
-import {getEventCardsLayout, setEventCardsLayout} from "@/shared/utils/storage/layoutSettings";
-import {CatalogEventCard} from "@/entities/event/ui/CatalogEventCard";
-import {useCatalogLikesStore} from "@/widgets/events-swiper";
+import { getEventCardsLayout, setEventCardsLayout } from "@/shared/utils/storage/layoutSettings";
+import { CatalogEventCard } from "@/entities/event/ui/CatalogEventCard";
+import { useCatalogLikesStore } from "@/widgets/events-swiper";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
 
 interface EventsSwiperProps {
@@ -52,19 +44,16 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   const [selectedEvent, setEventSelected] = React.useState<Event | undefined>(undefined);
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  const PAGE_SIZE = 1;
-  const BUFFER = 1;
-  const [allEvents] = useState<Event[]>(events); // Сохраняем все данные
-  const [visibleData, setVisibleData] = useState<Event[]>([]);
-  const scrollEndTimeout = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     getEventCardsLayout().then((state) => {
-      setLayoutState(state || "swiper");
-      if (!state) setEventCardsLayout("swiper");
+      if (!state) {
+        setEventCardsLayout("swiper").then(() => console.log("layout state inits"));
+        setLayoutState("swiper");
+      } else {
+        setLayoutState(state);
+      }
     });
-    setVisibleData(allEvents.slice(0, 2));
-  }, [allEvents]);
+  }, []);
 
   const { selectedDays } = useCalendarStore();
   const {
@@ -83,136 +72,114 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   }));
 
   useEffect(() => {
-    swipedAllInfoOpacity.value = withTiming(swipedAll ? 1 : 0);
+    if (swipedAll) {
+      swipedAllInfoOpacity.value = withTiming(1);
+    } else {
+      swipedAllInfoOpacity.value = withTiming(0);
+    }
   }, [swipedAll]);
 
   useEffect(() => {
     resetLikesID();
   }, [events]);
 
-  const handleEventAction = useCallback(async (action: "like" | "dislike" | "delete_mark", event: Event) => {
+  const handleLike = async (event: Event) => {
     await saveAction({
-      action,
+      action: "like",
       contentId: event.id,
-      username,
+      username: username,
     });
+    addLikeID(event.id);
+    addLikedEvent(event);
+    removeDislikedEvent(event.id);
+  };
 
-    if (action === "like") {
-      addLikeID(event.id);
-      addLikedEvent(event);
-      removeDislikedEvent(event.id);
-    } else if (action === "dislike") {
-      removeLikeID(event.id);
-      addDislikedEvent(event);
-      removeLikedEvent(event.id);
-    } else {
-      removeLikeID(event.id);
-      removeLikedEvent(event.id);
-      removeDislikedEvent(event.id);
+  const handleDislike = async (event: Event) => {
+    await saveAction({
+      action: "dislike",
+      contentId: event.id,
+      username: username,
+    });
+    removeLikeID(event.id);
+    addDislikedEvent(event);
+    removeLikedEvent(event.id);
+  };
+
+  const handleLayoutChange = () => {
+    setEventCardsLayout(layoutState === "swiper" ? "catalog" : "swiper").then(() => {
+      setLayoutState(layoutState === "swiper" ? "catalog" : "swiper");
+    });
+  };
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    if (viewableItems.length > 0 && viewableItems[0].index !== null) {
+      setCurrentIndex(viewableItems[0].index);
     }
-  }, [username]);
+  }).current;
 
-  const handleLayoutChange = useCallback(() => {
-    const newLayout = layoutState === "swiper" ? "catalog" : "swiper";
-    setEventCardsLayout(newLayout).then(() => setLayoutState(newLayout));
-  }, [layoutState]);
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 90,
+  };
 
-  // Упрощенный обработчик скролла
-  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    console.log(offsetY, containerHeight)
-    const newIndex = Math.round(offsetY / containerHeight);
-    setCurrentIndex(newIndex);
+  const renderReelsCard = ({ item }: { item: Event }) => (
+    <Box height={containerHeight} width="100%">
+      <EventCard
+        event={item}
+        onLike={() => handleLike(item)}
+        onDislike={() => handleDislike(item)}
+        owned={!!owned}
+      />
+    </Box>
+  );
 
-    if (scrollEndTimeout.current) {
-      clearTimeout(scrollEndTimeout.current);
-    }
-    scrollEndTimeout.current = setTimeout(() => {
-      if (newIndex >= visibleData.length - BUFFER && visibleData.length < allEvents.length) {
-        const nextChunkSize = Math.min(PAGE_SIZE, allEvents.length - visibleData.length);
-        const newVisibleData = [
-          ...visibleData,
-          ...allEvents.slice(visibleData.length, visibleData.length + nextChunkSize)
-        ];
-        setVisibleData(newVisibleData);
-
-        requestAnimationFrame(() => {
-          flatListRef.current?.scrollToIndex({
-            index: newIndex,
-            animated: false,
-          });
-        });
-      }
-    }, 100);
-  }, [containerHeight, visibleData]);
-
-  const renderItem = useCallback(({ item, index }: { item: Event, index: number }) => {
-    const isVisible = index >= currentIndex - BUFFER && index <= currentIndex + BUFFER;
-
-    return (
-      <View style={{ height: containerHeight, width: '100%' }}>
-        {isVisible ? (
-          <EventCard
-            event={item}
-            onLike={() => handleEventAction("like", item)}
-            onDislike={() => handleEventAction("dislike", item)}
-            owned={!!owned}
-          />
-        ) : (
-          <View style={{ height: containerHeight }} />
-        )}
-      </View>
-    );
-  }, [currentIndex, containerHeight, owned]);
-
-  const renderCatalogItem = useCallback(({ item }: { item: Event }) => (
+  const renderCatalogItem = ({ item }: { item: Event }) => (
     <CatalogEventCard
       event={item}
-      liked={likedIDs.includes(item.id)}
-      onLike={() => handleEventAction(
-        likedIDs.includes(item.id) ? "delete_mark" : "like",
-        item
-      )}
+      liked={likedIDs.some((val) => val == item.id)}
+      onLike={() => {
+        if (likedIDs.some((val) => val == item.id)) {
+          saveAction({
+            action: "delete_mark",
+            contentId: item.id,
+            username: username,
+          }).then(() => {
+            removeLikeID(item.id);
+            removeLikedEvent(item.id);
+            removeDislikedEvent(item.id);
+          });
+        } else {
+          handleLike(item);
+        }
+      }}
       onPress={() => {
         setEventSelected(item);
         setModalVisible(true);
       }}
     />
-  ), [likedIDs]);
+  );
 
   if (!layoutState) {
     return <LoadingCard style={{ width: "100%", height: "100%" }} />;
   }
 
-
   return (
     <Box flex={1} backgroundColor="bg_color">
       {!swipedAll && layoutState === "swiper" && (
-        <FlatList
-          ref={flatListRef}
-          data={visibleData}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          showsVerticalScrollIndicator={false}
-          snapToInterval={containerHeight}
-          snapToAlignment="start"
-          pagingEnabled
-          decelerationRate={0.0}
-          disableIntervalMomentum
-          onScroll={handleScroll}
-          initialNumToRender={PAGE_SIZE}
-          maxToRenderPerBatch={PAGE_SIZE}
-          windowSize={5}
-          removeClippedSubviews
-          style={{
-            overscrollBehavior: 'none',
-          }}
-          getItemLayout={(_data, index) => ({
-            length: containerHeight,
-            offset: containerHeight * index,
-            index,
-          })}
-        />
+        <Box flex={1}>
+          <FlatList
+            ref={flatListRef}
+            data={events}
+            renderItem={renderReelsCard}
+            keyExtractor={(item) => item.id.toString()}
+            pagingEnabled
+            showsVerticalScrollIndicator={false}
+            snapToInterval={containerHeight}
+            snapToAlignment="start"
+            decelerationRate="fast"
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig}
+          />
+        </Box>
       )}
 
       {layoutState === "catalog" && !swipedAll && (
@@ -327,8 +294,8 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
           ((tag && !swipedAll) || back) && (
             <Pressable
               onPress={ () => {
-                if (back) router.replace("/tags/organizers");
-                else router.navigate({ pathname: "/tags/[service]", params: { service: service }});
+                if (back) router.back()
+                else router.navigate({ pathname: "/tags/[service]", params: { service: service }})
               }}
             >
               <Box

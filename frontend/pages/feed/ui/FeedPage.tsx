@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {EventsVerticalSwiper} from "@/widgets/events-swiper";
+import {EventsSwiper, EventsVerticalSwiper} from "@/widgets/events-swiper";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
 import {useFeedStore} from "@/features/content";
 import {getPeriodBorders} from "@/shared/scripts/date";
@@ -37,8 +37,8 @@ export const FeedPage = () => {
       flex={1}
       flexDirection="column"
     >
-      {/*<EventsSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll}/>*/}
-      <EventsVerticalSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll} containerHeight={reelsHeight}/>
+      <EventsSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll}/>
+      {/*<EventsVerticalSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll} containerHeight={reelsHeight}/>*/}
     </Box>
   )
 }

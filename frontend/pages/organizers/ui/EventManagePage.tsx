@@ -34,7 +34,7 @@ export const EventManagePage = () => {
 
       <Pressable
         onPress={() => {
-          router.replace("/tags/organizers");
+          router.back();
         }}
         style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}
       >
