@@ -29,7 +29,7 @@ export const OrganizersList = () => {
     <View style={{ width: "100%", flexDirection: "column", gap: 16, paddingTop: 62 }}>
       <Button
         theme={"organizers"} text={`Мероприятия от ${user.username ? user.username : user.id.toString()}`}
-        onPress={() => router.push({
+        onPress={() => router.replace({
           pathname: "/tags/organizers/events",
           params: {
             type: "user",
@@ -41,7 +41,7 @@ export const OrganizersList = () => {
 
       <Button
         theme={"organizers"} text={"Создать мероприятие"}
-        variant={"secondary"} onPress={() => router.push("/tags/organizers/create")}
+        variant={"secondary"} onPress={() => router.replace("/tags/organizers/create")}
       />
 
       <View style={styles.sectionContainer}>
@@ -56,7 +56,7 @@ export const OrganizersList = () => {
         {userOrganizers !== null && userOrganizers.map((organizer) => (
           <OrganizerCard
             organizer={organizer}
-            onPress={() => router.push({
+            onPress={() => router.replace({
               pathname: "/tags/organizers/events",
               params: { type: "organization", id: organizer.id, owned: 1 },
             })}
@@ -76,7 +76,7 @@ export const OrganizersList = () => {
 
         <Button
           theme={"organizers"} text={"Создать организацию"}
-          variant={"secondary"} onPress={() => router.push("/tags/organizers/register")}
+          variant={"secondary"} onPress={() => router.replace("/tags/organizers/register")}
         />
       </View>
 
@@ -92,7 +92,7 @@ export const OrganizersList = () => {
         {organizers !== null && organizers.map((organizer) => (
           <OrganizerCard
             organizer={organizer}
-            onPress={() => router.push({
+            onPress={() => router.replace({
               pathname: "/tags/organizers/events",
               params: { type: "organization", id: organizer.id }
             })}

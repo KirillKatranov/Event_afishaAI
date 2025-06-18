@@ -67,6 +67,7 @@ export const useSignUpOrganizerStore = create<SignUpOrganizerState & SignUpOrgan
             set({ errorMessage: response.error });
           } else {
             if (onSuccess) onSuccess();
+            get().resetForm();
           }
         })
         .catch((e) => set({ errorMessage: e.message }))
