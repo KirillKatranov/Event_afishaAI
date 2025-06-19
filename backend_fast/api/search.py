@@ -14,8 +14,6 @@ from schemas import (
 )
 from loguru import logger
 
-# logger.add("logs/search.log", rotation="500 MB", level="INFO", compression="zip")
-
 router_search = APIRouter(prefix="/api/v1", tags=["search"])
 
 

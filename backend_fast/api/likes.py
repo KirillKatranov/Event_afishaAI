@@ -18,8 +18,6 @@ from schemas import (
 )
 from loguru import logger
 
-# logger.add("logs/likes.log", rotation="500 MB", level="INFO", compression="zip")
-
 app = FastAPI()
 
 router_likes = APIRouter(prefix="/api/v1", tags=["likes"])
@@ -52,7 +50,7 @@ def set_like(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
         db.add(like)
 
     db.commit()
-    logger.info("Like saved")
+    logger.info(f"Like saved from {user.username} for content {content.id}")
     return {
         "user": user.username,
         "content": content.id,
@@ -86,7 +84,7 @@ def set_dislike(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
         db.add(like)
 
     db.commit()
-    logger.info("Dislike saved")
+    logger.info(f"Dislike saved from {user.username} for content {content.id}")
     return {
         "user": user.username,
         "content": content.id,

@@ -5,8 +5,6 @@ from models import get_db, User, Content, Rating
 from schemas import RatingCreateSchema, RatingResponseSchema, ContentRatingStatsSchema
 from loguru import logger
 
-# logger.add("logs/ratings.log", rotation="500 MB", level="INFO", compression="zip")
-
 router_ratings = APIRouter(prefix="/api/v1", tags=["ratings"])
 
 

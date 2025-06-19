@@ -19,8 +19,6 @@ from schemas import (
 )
 from loguru import logger
 
-# logger.add("logs/reviews.log", rotation="500 MB", level="INFO", compression="zip")
-
 router_reviews = APIRouter(prefix="/api/v1", tags=["reviews"])
 
 

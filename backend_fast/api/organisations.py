@@ -33,8 +33,6 @@ from schemas import (
 )
 from loguru import logger
 
-# logger.add("logs/organisations.log", rotation="500 MB", level="INFO", compression="zip")
-
 router_organisations = APIRouter(prefix="/api/v1", tags=["organisations"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

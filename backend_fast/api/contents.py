@@ -34,8 +34,6 @@ from schemas import (
 )
 from loguru import logger
 
-# logger.add("logs/contents.log", rotation="500 MB", level="INFO", compression="zip")
-
 router_contents = APIRouter(prefix="/api/v1", tags=["contents"])
 
 

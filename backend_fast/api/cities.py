@@ -6,8 +6,6 @@ from schemas import (
 )
 from loguru import logger
 
-# logger.add("logs/cities.log", rotation="500 MB", level="INFO", compression="zip")
-
 router_cities = APIRouter(prefix="/api/v1", tags=["cities"])
 
 
