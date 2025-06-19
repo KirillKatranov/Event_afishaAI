@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from "react";
-import {Image, Pressable} from "react-native";
+import {Image, Pressable, ScrollView} from "react-native";
 import {useFocusEffect, useRouter} from "expo-router";
 import {useOnboardingStore} from "@/widgets/onboarding-elements";
 import {Box, Text} from "@/shared/ui";
@@ -26,10 +26,10 @@ export const ProfilePage = () => {
   )
 
   return (
-    <Box
-      flex={1}
-      style={{ backgroundColor: "#FAFBFF"}}
-      gap={"m"} justifyContent={"space-between"}
+    <ScrollView
+      style={{ flex: 1, backgroundColor: "#FAFBFF" }}
+      contentContainerStyle={{flexGrow: 1, justifyContent: "space-between", gap: 16, minHeight: "100%", }}
+      showsVerticalScrollIndicator={false}
     >
       <Image
         source={require("@/shared/assets/images/BlurredCircles.png")}
@@ -63,13 +63,12 @@ export const ProfilePage = () => {
 
       <Box
         flex={1} alignItems={"center"} justifyContent={"center"}
-        gap={"m"} style={{ width: "100%", margin: "auto", gap: 8 }}
+        gap={"m"} style={{ gap: 8, paddingTop: 16 }}
       >
         <Image
           source={{ uri: initDataUnsafe.user.photo_url }}
           style={{
-            width: "100%", height: "100%",
-            maxWidth: 150, maxHeight: 150,
+            width: 150, height: 150,
             borderRadius: 500
           }}
         />
@@ -105,6 +104,6 @@ export const ProfilePage = () => {
       </Box>
 
       <ProfileMenu/>
-    </Box>
+    </ScrollView>
   );
 }

@@ -124,7 +124,7 @@ async def create_organisation(
     # Преобразуем URL изображения для ответа
     logger.info("Converting image URL")
     if organisation.image:
-        organisation.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{organisation.image}"
+        organisation.image = f"https://afishabot.ru/afisha-files/{organisation.image}"
 
     return organisation
 
@@ -158,11 +158,12 @@ def get_organisations(
         query.order_by(Organisation.created.desc()).offset(skip).limit(limit).all()
     )
 
-    # Преобразуем URL изображений в полные URL, если они еще не являются полными URL
+    # Преобразуем URL изображений в полные URL
     logger.info("Converting image URLs")
+
     for org in organisations:
-        if org.image and not org.image.startswith("http"):
-            org.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{org.image}"
+        if org.image:
+            org.image = f"https://afishabot.ru/afisha-files/{org.image}"
 
     return OrganisationListResponse(
         organisations=organisations, total_count=total_count
@@ -194,10 +195,10 @@ def get_organisation_contents(
         logger.warning("Organisation not found")
         raise HTTPException(status_code=404, detail="Organisation not found")
 
-    # Преобразуем URL изображения организации в полный URL, если он еще не является полным URL
+    # Преобразуем URL изображения организации в полный URL
     logger.info("Converting image URL")
-    if organisation.image and not organisation.image.startswith("http"):
-        organisation.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{organisation.image}"
+    if organisation.image:
+        organisation.image = f"https://afishabot.ru/afisha-files/{organisation.image}"
 
     # Базовый запрос для контента
     logger.info("Creating base query for content")
@@ -270,11 +271,11 @@ def get_user_organisations(
     logger.info("Applying pagination")
     organisations = query.offset(skip).limit(limit).all()
 
-    # Преобразуем URL изображений в полные URL, если они еще не являются полными URL
+    # Преобразуем URL изображений в полные URL
     logger.info("Converting image URLs")
     for org in organisations:
-        if org.image and not org.image.startswith("http"):
-            org.image = f"http://{os.getenv('MINIO_ENDPOINT', 'minio:9000')}/{bucket_name}/{org.image}"
+        if org.image:
+            org.image = f"https://afishabot.ru/afisha-files/{org.image}"
 
     return OrganisationListResponse(
         organisations=organisations,

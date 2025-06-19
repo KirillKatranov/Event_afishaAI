@@ -314,3 +314,52 @@ class PopularTagSchema(BaseModel):
 
 class PopularTagsResponseSchema(BaseModel):
     popular_tags: List[PopularTagSchema]
+
+
+# Схемы для макрокатегорий
+class MacroCategorySchema(BaseModel):
+    id: int
+    name: str
+    description: Optional[str] = None
+    image: Optional[str] = None
+
+    @field_validator("image", mode="before")
+    @classmethod
+    def validate_image(cls, image: Optional[str]) -> Optional[str]:
+        if image is None:
+            return None
+        return "https://afishabot.ru/afisha-files/" + image
+
+    model_config = {"from_attributes": True}
+
+
+class MacroCategoriesResponseSchema(BaseModel):
+    macro_categories: List[MacroCategorySchema]
+    total_count: int
+
+
+# Схема для тега с расширенной информацией
+class TagWithDetailsSchema(BaseModel):
+    id: int
+    name: str
+    description: str
+    created: datetime
+    updated: datetime
+
+    model_config = {"from_attributes": True}
+
+
+# Схема для макрокатегории в ответе тегов
+class MacroCategoryInTagsResponseSchema(BaseModel):
+    id: int
+    name: str
+    description: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+
+# Схема для ответа API тегов по макрокатегории
+class TagsByMacroCategoryResponseSchema(BaseModel):
+    macro_category: MacroCategoryInTagsResponseSchema
+    tags: List[TagWithDetailsSchema]
+    total_count: int

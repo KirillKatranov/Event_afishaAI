@@ -53,6 +53,7 @@ export const ProfileMenu = () => {
       <Spacer/>
 
       <MenuItem
+        onPress={() => { router.push({ pathname: '/tags/[service]', params: { service: "organizers" }}) }}
         illustration={"createEvent"}
         text={"Создать мероприятие"}
       />
@@ -60,7 +61,7 @@ export const ProfileMenu = () => {
       <Spacer/>
 
       <MenuItem
-        onPress={() => { router.replace("/profile/feedback") }}
+        onPress={() => { router.push("/profile/feedback") }}
         illustration={"feedback"}
         text={"Обратная связь"}
       />
@@ -71,6 +72,12 @@ export const ProfileMenu = () => {
         onPress={() => { router.replace("/onboarding") }}
         illustration={"strelka"}
         text={"О нас"}
+      />
+
+      <MenuItem
+        onPress={() => { router.push({ pathname: '/tags/[service]', params: { service: "organizers" }}) }}
+        illustration={"manageEvent"}
+        text={"Управление мероприятием"}
       />
     </DropShadow>
   )
