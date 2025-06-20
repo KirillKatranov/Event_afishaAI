@@ -20,6 +20,9 @@ from models import (
 from schemas import (
     TagsResponseSchema,
     TagSchema,
+    TagsByMacroCategoryResponseSchema,
+    TagWithDetailsSchema,
+    MacroCategoryInTagsResponseSchema,
 )
 
 router_tags = APIRouter(prefix="/api/v1", tags=["tags"])
@@ -82,4 +85,55 @@ def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
             for tag in tags
         ],
         preferences=[p.tag_id for p in preferences],
+    )
+
+
+@router_tags.get(
+    "/tags/by-macro-category/{macro_category_name}",
+    response_model=TagsByMacroCategoryResponseSchema,
+)
+def get_tags_by_macro_category(macro_category_name: str, db: Session = Depends(get_db)):
+    """
+    Получить все теги, связанные с конкретной макрокатегорией
+
+    - **macro_category_name**: название макрокатегории (например, "events")
+    """
+    # Ищем макрокатегорию по имени
+    macro_category_obj = (
+        db.query(MacroCategory)
+        .filter(MacroCategory.name == macro_category_name)
+        .first()
+    )
+
+    if not macro_category_obj:
+        raise HTTPException(
+            status_code=404, detail=f"Macro category '{macro_category_name}' not found"
+        )
+
+    # Получаем все теги, связанные с этой макрокатегорией
+    tags = (
+        db.query(Tags)
+        .filter(Tags.macro_category_id == macro_category_obj.id)
+        .order_by(Tags.name.asc())
+        .all()
+    )
+
+    # Формируем ответ
+    return TagsByMacroCategoryResponseSchema(
+        macro_category=MacroCategoryInTagsResponseSchema(
+            id=macro_category_obj.id,
+            name=macro_category_obj.name,
+            description=macro_category_obj.description,
+        ),
+        tags=[
+            TagWithDetailsSchema(
+                id=tag.id,
+                name=tag.name,
+                description=tag.description,
+                created=tag.created,
+                updated=tag.updated,
+            )
+            for tag in tags
+        ],
+        total_count=len(tags),
     )
