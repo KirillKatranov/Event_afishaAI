@@ -7,11 +7,15 @@ from event.models import (
     MacroCategory,
     Review,
     Rating,
+    Organisation,
+    Feedback,
+    RemovedFavorite,
+    UserCategoryPreference,
 )
 
 
 class MacroCategoryFilter(admin.SimpleListFilter):
-    title = "макрокатегория"
+    title = "Макрокатегория"
     parameter_name = "macro_category"
 
     def lookups(self, request, model_admin):
@@ -62,16 +66,48 @@ class ContentAdmin(admin.ModelAdmin):
     readonly_fields = ("unique_id", "created", "updated")
     date_hierarchy = "date_start"
     list_per_page = 25
+    filter_horizontal = ("tags",)
+
+    fieldsets = (
+        ("Основная информация", {"fields": ("name", "description", "image", "tags")}),
+        (
+            "Детали мероприятия",
+            {
+                "fields": (
+                    "date_start",
+                    "date_end",
+                    "time",
+                    "location",
+                    "cost",
+                    "city",
+                    "event_type",
+                )
+            },
+        ),
+        ("Контакты", {"fields": ("contact",)}),
+        ("Публикация", {"fields": ("publisher_type", "publisher_id")}),
+        (
+            "Системная информация",
+            {"fields": ("unique_id", "created", "updated"), "classes": ("collapse",)},
+        ),
+    )
 
 
 @admin.register(Tags)
 class TagsAdmin(admin.ModelAdmin):
-    list_display = ("name", "description")
+    list_display = ("name", "description", "macro_category", "created", "updated")
+    list_filter = ("macro_category", "created")
+    search_fields = ("name", "description")
+    readonly_fields = ("created", "updated")
 
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("user", "content", "value", "created")
+    list_filter = ("value", "created", "content__city")
+    search_fields = ("user__username", "content__name")
+    readonly_fields = ("created", "updated")
+    autocomplete_fields = ["user", "content"]
 
 
 @admin.register(User)
@@ -84,7 +120,60 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(MacroCategory)
 class MacroCategoryAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+    list_display = ("name", "description")
+    search_fields = ("name", "description")
+
+
+@admin.register(Organisation)
+class OrganisationAdmin(admin.ModelAdmin):
+    list_display = ("name", "email", "phone", "user", "created")
+    list_filter = ("created", "user__city")
+    search_fields = ("name", "email", "phone", "user__username")
+    readonly_fields = ("created", "updated")
+    autocomplete_fields = ["user"]
+
+    fieldsets = (
+        ("Основная информация", {"fields": ("name", "email", "phone", "image")}),
+        ("Связь с пользователем", {"fields": ("user",)}),
+        ("Безопасность", {"fields": ("password",)}),
+        (
+            "Системная информация",
+            {"fields": ("created", "updated"), "classes": ("collapse",)},
+        ),
+    )
+
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ("user", "message_short", "created")
+    list_filter = ("created", "user__city")
+    search_fields = ("user__username", "message")
+    readonly_fields = ("created", "updated")
+    autocomplete_fields = ["user"]
+
+    def message_short(self, obj):
+        if len(obj.message) > 50:
+            return obj.message[:50] + "..."
+        return obj.message
+
+    message_short.short_description = "Сообщение"
+
+
+@admin.register(RemovedFavorite)
+class RemovedFavoriteAdmin(admin.ModelAdmin):
+    list_display = ("user", "content", "removed_at")
+    list_filter = ("removed_at", "content__city")
+    search_fields = ("user__username", "content__name")
+    readonly_fields = ("removed_at",)
+    autocomplete_fields = ["user", "content"]
+
+
+@admin.register(UserCategoryPreference)
+class UserCategoryPreferenceAdmin(admin.ModelAdmin):
+    list_display = ("user", "tag")
+    list_filter = ("tag__macro_category",)
+    search_fields = ("user__username", "tag__name")
+    autocomplete_fields = ["user", "tag"]
 
 
 @admin.register(Review)

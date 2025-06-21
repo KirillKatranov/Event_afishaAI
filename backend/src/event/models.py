@@ -21,68 +21,121 @@ class PublisherType(models.TextChoices):
 
 
 class GenericModel(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
 
     class Meta:
         abstract = True
 
 
 class User(GenericModel):
-    username = models.CharField(max_length=250, db_index=True)
-    city = models.CharField(max_length=50, choices=CITY_CHOICES, default="nn")
+    username = models.CharField(
+        max_length=250, db_index=True, verbose_name="Имя пользователя"
+    )
+    city = models.CharField(
+        max_length=50, choices=CITY_CHOICES, default="nn", verbose_name="Город"
+    )
 
     def __str__(self):
         return f"{self.username}"
 
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+
 
 class MacroCategory(models.Model):
-    name = models.CharField(max_length=250, db_index=True)
-    description = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=250, db_index=True, verbose_name="Название")
+    description = models.TextField(blank=True, null=True, verbose_name="Описание")
     image = models.ImageField(
-        upload_to="images_macrocategory", max_length=300, blank=True, null=True
+        upload_to="images_macrocategory",
+        max_length=300,
+        blank=True,
+        null=True,
+        verbose_name="Изображение",
     )
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Макрокатегория"
+        verbose_name_plural = "Макрокатегории"
+
 
 class Tags(GenericModel):
-    name = models.CharField(max_length=250, db_index=True)
-    description = models.TextField()
+    name = models.CharField(max_length=250, db_index=True, verbose_name="Название")
+    description = models.TextField(verbose_name="Описание")
     macro_category = models.ForeignKey(
         MacroCategory,
         on_delete=models.SET_NULL,
         related_name="tags",
         null=True,
         blank=True,
+        verbose_name="Макрокатегория",
     )
 
     def __str__(self):
         return f"{self.name}"
 
+    class Meta:
+        verbose_name = "Тег"
+        verbose_name_plural = "Теги"
+
 
 class Content(GenericModel):
-    name = models.CharField(max_length=250)
-    description = models.TextField()
-    tags = models.ManyToManyField(Tags, related_name="contents")
-    image = models.ImageField(upload_to="images", max_length=300, null=True, blank=True)
-    contact = models.JSONField(default=dict, null=True, blank=True)
-    date_start = models.DateField(null=True, blank=True, db_index=True)
-    date_end = models.DateField(null=True, blank=True, db_index=True)
-    time = models.CharField(max_length=250, null=True, blank=True, default=None)
-    location = models.CharField(max_length=250, null=True, blank=True, default=None)
-    cost = models.IntegerField(null=True, blank=True, default=None)
-    city = models.CharField(max_length=50, choices=CITY_CHOICES, default="nn")
-    unique_id = models.CharField(max_length=250, unique=True, editable=False)
+    name = models.CharField(max_length=250, verbose_name="Название")
+    description = models.TextField(verbose_name="Описание")
+    tags = models.ManyToManyField(Tags, related_name="contents", verbose_name="Теги")
+    image = models.ImageField(
+        upload_to="images",
+        max_length=300,
+        null=True,
+        blank=True,
+        verbose_name="Изображение",
+    )
+    contact = models.JSONField(
+        default=dict, null=True, blank=True, verbose_name="Контакты"
+    )
+    date_start = models.DateField(
+        null=True, blank=True, db_index=True, verbose_name="Дата начала"
+    )
+    date_end = models.DateField(
+        null=True, blank=True, db_index=True, verbose_name="Дата окончания"
+    )
+    time = models.CharField(
+        max_length=250, null=True, blank=True, default=None, verbose_name="Время"
+    )
+    location = models.CharField(
+        max_length=250,
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name="Место проведения",
+    )
+    cost = models.IntegerField(
+        null=True, blank=True, default=None, verbose_name="Стоимость"
+    )
+    city = models.CharField(
+        max_length=50, choices=CITY_CHOICES, default="nn", verbose_name="Город"
+    )
+    unique_id = models.CharField(
+        max_length=250, unique=True, editable=False, verbose_name="Уникальный ID"
+    )
 
     event_type = models.CharField(
-        max_length=10, choices=EventType.choices, default=EventType.OFFLINE
+        max_length=10,
+        choices=EventType.choices,
+        default=EventType.OFFLINE,
+        verbose_name="Тип мероприятия",
     )
     publisher_type = models.CharField(
-        max_length=20, choices=PublisherType.choices, default=PublisherType.USER
+        max_length=20,
+        choices=PublisherType.choices,
+        default=PublisherType.USER,
+        verbose_name="Тип издателя",
     )
-    publisher_id = models.IntegerField(default=1_000_000)
+    publisher_id = models.IntegerField(default=1_000_000, verbose_name="ID издателя")
 
     def get_tags(self):
         tags = self.tags.all()
@@ -108,6 +161,8 @@ class Content(GenericModel):
         return f"{self.name}"
 
     class Meta:
+        verbose_name = "Мероприятие"
+        verbose_name_plural = "Мероприятия"
         ordering = ["date_start"]
         indexes = [
             models.Index(fields=["date_start"]),
@@ -117,12 +172,15 @@ class Content(GenericModel):
 
 
 class Organisation(GenericModel):
-    name = models.CharField(max_length=250)
-    phone = models.CharField(max_length=20)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, verbose_name="Название")
+    phone = models.CharField(max_length=20, verbose_name="Телефон")
+    email = models.EmailField(unique=True, verbose_name="Email")
+    password = models.CharField(max_length=250, verbose_name="Пароль")
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="organisations"
+        User,
+        on_delete=models.CASCADE,
+        related_name="organisations",
+        verbose_name="Пользователь",
     )
     image = models.ImageField(
         upload_to="organisation_images",
@@ -130,22 +188,37 @@ class Organisation(GenericModel):
         null=True,
         blank=True,
         storage=MinioMediaStorage(),
+        verbose_name="Изображение",
     )
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Организация"
+        verbose_name_plural = "Организации"
+
 
 class Like(GenericModel):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="likes", db_index=True
+        User,
+        on_delete=models.CASCADE,
+        related_name="likes",
+        db_index=True,
+        verbose_name="Пользователь",
     )
     content = models.ForeignKey(
-        Content, on_delete=models.CASCADE, related_name="likes", db_index=True
+        Content,
+        on_delete=models.CASCADE,
+        related_name="likes",
+        db_index=True,
+        verbose_name="Мероприятие",
     )
-    value = models.BooleanField()
+    value = models.BooleanField(verbose_name="Значение лайка")
 
     class Meta:
+        verbose_name = "Лайк"
+        verbose_name_plural = "Лайки"
         unique_together = ("user", "content")
         indexes = [models.Index(fields=["user", "content"])]
 
@@ -244,31 +317,60 @@ class Rating(GenericModel):
 
 
 class Feedback(GenericModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="feedback")
-    message = models.TextField()
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="feedback",
+        verbose_name="Пользователь",
+    )
+    message = models.TextField(verbose_name="Сообщение")
+
+    class Meta:
+        verbose_name = "Обратная связь"
+        verbose_name_plural = "Обратная связь"
+
+    def __str__(self):
+        return f"Обратная связь от {self.user.username}"
 
 
 class RemovedFavorite(models.Model):
     """Эта таблица будет фиксировать, что пользователь исключил конкретный контент из избранного."""
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
-    content = models.ForeignKey(Content, on_delete=models.CASCADE, db_index=True)
-    removed_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, db_index=True, verbose_name="Пользователь"
+    )
+    content = models.ForeignKey(
+        Content, on_delete=models.CASCADE, db_index=True, verbose_name="Мероприятие"
+    )
+    removed_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата удаления")
 
     class Meta:
+        verbose_name = "Удаленное из избранного"
+        verbose_name_plural = "Удаленное из избранного"
         unique_together = ("user", "content")
         indexes = [models.Index(fields=["user", "content"])]
+
+    def __str__(self):
+        return f"{self.user.username} - {self.content.name}"
 
 
 class UserCategoryPreference(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="category_preferences"
+        User,
+        on_delete=models.CASCADE,
+        related_name="category_preferences",
+        verbose_name="Пользователь",
     )
     tag = models.ForeignKey(
-        Tags, on_delete=models.CASCADE, related_name="user_preferences"
+        Tags,
+        on_delete=models.CASCADE,
+        related_name="user_preferences",
+        verbose_name="Тег",
     )
 
     class Meta:
+        verbose_name = "Предпочтение пользователя"
+        verbose_name_plural = "Предпочтения пользователей"
         unique_together = ("user", "tag")
 
     def __str__(self):
