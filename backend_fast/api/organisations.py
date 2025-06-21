@@ -31,6 +31,7 @@ from schemas import (
     OrganisationListResponse,
     OrganisationContentListResponse,
 )
+from loguru import logger
 
 router_organisations = APIRouter(prefix="/api/v1", tags=["organisations"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -65,16 +66,20 @@ async def create_organisation(
     # Проверяем существование пользователя
     user = db.query(User).filter(User.username == username).first()
     if not user:
+        logger.warning(f"User {username} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     # Проверяем уникальность email
     if db.query(exists().where(Organisation.email == email)).scalar():
+        logger.warning(f"Email {email} already registered")
         raise HTTPException(status_code=400, detail="Email already registered")
 
     # Хешируем пароль
+    logger.info("Hashing password")
     hashed_password = pwd_context.hash(password)
 
     # Создаем организацию
+    logger.info("Creating organisation")
     organisation = Organisation(
         name=name,
         phone=phone,
@@ -87,6 +92,7 @@ async def create_organisation(
     if image:
         try:
             # Генерируем уникальное имя файла
+            logger.info("Uploading image with unique name")
             file_ext = os.path.splitext(image.filename)[1]
             object_name = f"organisation_images/{str(uuid.uuid4())}{file_ext}"
 
@@ -106,6 +112,7 @@ async def create_organisation(
             organisation.image = object_name
 
         except Exception as e:
+            logger.error(f"Error uploading image: {e}")
             raise HTTPException(
                 status_code=500, detail=f"Error uploading image: {str(e)}"
             )
@@ -115,6 +122,7 @@ async def create_organisation(
     db.refresh(organisation)
 
     # Преобразуем URL изображения для ответа
+    logger.info("Converting image URL")
     if organisation.image:
         organisation.image = f"https://afishabot.ru/afisha-files/{organisation.image}"
 
@@ -134,19 +142,25 @@ def get_organisations(
     # Если есть поисковый запрос, фильтруем по имени или email
     if search:
         search = f"%{search}%"
+        logger.info(f"Search query: {search}")
         query = query.filter(
             Organisation.name.ilike(search) | Organisation.email.ilike(search)
         )
+        logger.info(f"Filtered query: {query}")
 
     # Получаем общее количество организаций
+    logger.info("Getting total organisation count")
     total_count = query.count()
 
     # Применяем пагинацию
+    logger.info("Applying pagination")
     organisations = (
         query.order_by(Organisation.created.desc()).offset(skip).limit(limit).all()
     )
 
     # Преобразуем URL изображений в полные URL
+    logger.info("Converting image URLs")
+
     for org in organisations:
         if org.image:
             org.image = f"https://afishabot.ru/afisha-files/{org.image}"
@@ -178,13 +192,16 @@ def get_organisation_contents(
     )
 
     if not organisation:
+        logger.warning("Organisation not found")
         raise HTTPException(status_code=404, detail="Organisation not found")
 
     # Преобразуем URL изображения организации в полный URL
+    logger.info("Converting image URL")
     if organisation.image:
         organisation.image = f"https://afishabot.ru/afisha-files/{organisation.image}"
 
     # Базовый запрос для контента
+    logger.info("Creating base query for content")
     query = (
         db.query(Content)
         .options(selectinload(Content.tags))
@@ -195,18 +212,22 @@ def get_organisation_contents(
     )
 
     # Применяем фильтры по датам
+    logger.info("Applying date filters")
     if date_start or date_end:
         date_filters = create_date_filter(date_start, date_end)
         query = query.filter(and_(*date_filters))
 
     # Фильтр по типу мероприятия
+    logger.info("Applying event type filter")
     if event_type:
         query = query.filter(Content.event_type == event_type)
 
     # Получаем общее количество контента
+    logger.info("Getting total content count")
     total_count = query.count()
 
     # Применяем пагинацию и сортировку
+    logger.info("Applying pagination and sorting")
     contents = (
         query.order_by(Content.date_start.asc().nullslast(), Content.created.desc())
         .offset(skip)
@@ -231,6 +252,7 @@ def get_user_organisations(
     # Проверяем существование пользователя
     user = db.query(User).filter(User.username == username).first()
     if not user:
+        logger.warning(f"User {username} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     # Получаем организации пользователя
@@ -242,12 +264,15 @@ def get_user_organisations(
     )
 
     # Получаем общее количество организаций
+    logger.info("Getting total organisation count")
     total_count = query.count()
 
     # Применяем пагинацию
+    logger.info("Applying pagination")
     organisations = query.offset(skip).limit(limit).all()
 
     # Преобразуем URL изображений в полные URL
+    logger.info("Converting image URLs")
     for org in organisations:
         if org.image:
             org.image = f"https://afishabot.ru/afisha-files/{org.image}"
@@ -267,25 +292,32 @@ def delete_organisation(
     db: Session = Depends(get_db),
 ):
     # Получаем организацию
+    logger.info("Getting organisation")
     organisation = (
         db.query(Organisation).filter(Organisation.id == organisation_id).first()
     )
 
     if not organisation:
+        logger.warning("Organisation not found")
         raise HTTPException(status_code=404, detail="Organisation not found")
 
     # Получаем пользователя
+    logger.info("Getting user")
     user = db.query(User).filter(User.username == username).first()
     if not user:
+        logger.warning("User not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     # Проверка, что пользователь владелец организации
+    logger.info("Checking if user is owner of the organisation")
     if organisation.user_id != user.id:
+        logger.warning("User is not owner of the organisation")
         raise HTTPException(
             status_code=403, detail="You are not allowed to delete this organisation"
         )
 
     # Удаляем организацию
+    logger.info("Deleting organisation")
     db.delete(organisation)
     db.commit()
 
