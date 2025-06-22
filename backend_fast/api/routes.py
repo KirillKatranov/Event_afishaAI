@@ -52,6 +52,7 @@ def get_routes(
             "duration_hours": route.duration_hours,
             "city": route.city,
             "places_count": len(route.places),
+            "places": route.places,
             "tags": route.tags,
             "photos": route.photos,
         }
