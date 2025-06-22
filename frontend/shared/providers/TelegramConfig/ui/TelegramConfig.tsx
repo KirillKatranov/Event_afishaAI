@@ -30,6 +30,7 @@ export const MockConfig: TelegramWebapp = {
     subtitle_text_color: "",
     destructive_text_color: "",
   },
+  onEvent: () => {},
   initDataUnsafe: {
     user: {
       username: "mock_user",

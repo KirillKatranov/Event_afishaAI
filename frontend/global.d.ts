@@ -63,6 +63,8 @@ type TelegramWebapp = {
   close: () => void;
   safeAreaInset?: { top?: number; bottom?: number; left?: number; right?: number };
   BackButton?: BackButton;
+  onEvent: (eventType, eventHandler) => void,
+  viewportHeight?: number,
   HapticFeedback?: TelegramHapticFeedback;
 };
 

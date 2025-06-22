@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {EventsVerticalSwiper} from "@/widgets/events-swiper";
 import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
 import {useFeedStore} from "@/features/content";
@@ -6,9 +6,11 @@ import {getPeriodBorders} from "@/shared/scripts/date";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {useCalendarStore} from "@/features/dates";
 import {Dimensions} from "react-native";
+import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
 
 export const FeedPage = () => {
   const username = useConfig().initDataUnsafe.user.username;
+  const onEvent = useConfig().onEvent;
   const {
     feed,
     isLoading, hasError,
@@ -17,8 +19,17 @@ export const FeedPage = () => {
   } = useFeedStore();
   const { selectedDays} = useCalendarStore();
 
+  const NAV_BAR_HEIGHT = 57;
+  const { bottom} = useSafeAreaInsets();
   const { height } = Dimensions.get('window');
-  const reelsHeight = height - 57;
+  const [swiperHeight, setSwiperHeight] = useState(height - NAV_BAR_HEIGHT - bottom);
+
+  useEffect(() => {
+    onEvent("viewportChanged", () => {
+      // @ts-ignore
+      setSwiperHeight(window.Telegram.WebApp.viewportHeight - NAV_BAR_HEIGHT - bottom);
+    })
+  }, [setSwiperHeight]);
 
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
@@ -37,8 +48,7 @@ export const FeedPage = () => {
       flex={1}
       flexDirection="column"
     >
-      {/*<EventsSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll}/>*/}
-      <EventsVerticalSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll} containerHeight={reelsHeight}/>
+      <EventsVerticalSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll} containerHeight={swiperHeight}/>
     </Box>
   )
 }

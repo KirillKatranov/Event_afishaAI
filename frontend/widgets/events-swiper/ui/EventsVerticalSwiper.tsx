@@ -52,16 +52,14 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   const [selectedEvent, setEventSelected] = React.useState<Event | undefined>(undefined);
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  const PAGE_SIZE = 1;
-  const BUFFER = 1;
   const [allEvents] = useState<Event[]>(events); // Сохраняем все данные
   const [visibleData, setVisibleData] = useState<Event[]>([]);
   const scrollEndTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     getEventCardsLayout().then((state) => {
-      setLayoutState(state || "swiper");
-      if (!state) setEventCardsLayout("swiper");
+      setLayoutState(state || "catalog");
+      if (!state) setEventCardsLayout("catalog");
     });
     setVisibleData(allEvents.slice(0, 2));
   }, [allEvents]);
@@ -117,50 +115,43 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
     setEventCardsLayout(newLayout).then(() => setLayoutState(newLayout));
   }, [layoutState]);
 
+  useEffect(() => {
+    if (currentIndex == allEvents.length) {
+      setSwipedAll(true);
+    }
+
+    const newVisibleData = [...allEvents.slice(
+      Math.max(0, currentIndex - 1),
+      Math.min(allEvents.length, currentIndex + 2)
+    )];
+
+    setVisibleData(newVisibleData);
+  }, [currentIndex, allEvents]);
+
   // Упрощенный обработчик скролла
   const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetY = event.nativeEvent.contentOffset.y;
-    console.log(offsetY, containerHeight)
     const newIndex = Math.round(offsetY / containerHeight);
-    setCurrentIndex(newIndex);
 
     if (scrollEndTimeout.current) {
       clearTimeout(scrollEndTimeout.current);
     }
+
     scrollEndTimeout.current = setTimeout(() => {
-      if (newIndex >= visibleData.length - BUFFER && visibleData.length < allEvents.length) {
-        const nextChunkSize = Math.min(PAGE_SIZE, allEvents.length - visibleData.length);
-        const newVisibleData = [
-          ...visibleData,
-          ...allEvents.slice(visibleData.length, visibleData.length + nextChunkSize)
-        ];
-        setVisibleData(newVisibleData);
-
-        requestAnimationFrame(() => {
-          flatListRef.current?.scrollToIndex({
-            index: newIndex,
-            animated: false,
-          });
-        });
-      }
+      if ((currentIndex == 0 && newIndex == 1) || (currentIndex > 0 && newIndex == 2)) setCurrentIndex(currentIndex + 1)
+      else if ((currentIndex > 0 && newIndex == 0)) setCurrentIndex(currentIndex - 1);
     }, 100);
-  }, [containerHeight, visibleData]);
+  }, [containerHeight, currentIndex, visibleData]);
 
-  const renderItem = useCallback(({ item, index }: { item: Event, index: number }) => {
-    const isVisible = index >= currentIndex - BUFFER && index <= currentIndex + BUFFER;
-
+  const renderItem = useCallback(({ item }: { item: Event }) => {
     return (
       <View style={{ height: containerHeight, width: '100%' }}>
-        {isVisible ? (
-          <EventCard
-            event={item}
-            onLike={() => handleEventAction("like", item)}
-            onDislike={() => handleEventAction("dislike", item)}
-            owned={!!owned}
-          />
-        ) : (
-          <View style={{ height: containerHeight }} />
-        )}
+        <EventCard
+          event={item}
+          onLike={() => handleEventAction("like", item)}
+          onDislike={() => handleEventAction("dislike", item)}
+          owned={!!owned}
+        />
       </View>
     );
   }, [currentIndex, containerHeight, owned]);
@@ -191,22 +182,16 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
         <FlatList
           ref={flatListRef}
           data={visibleData}
+          initialScrollIndex={currentIndex === 0 ? 0 : 1}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
-          snapToInterval={containerHeight}
-          snapToAlignment="start"
-          pagingEnabled
-          decelerationRate={0.0}
           disableIntervalMomentum
+          snapToInterval={containerHeight}
+          snapToAlignment="end"
+          pagingEnabled
+          decelerationRate={1}
           onScroll={handleScroll}
-          initialNumToRender={PAGE_SIZE}
-          maxToRenderPerBatch={PAGE_SIZE}
-          windowSize={5}
-          removeClippedSubviews
-          style={{
-            overscrollBehavior: 'none',
-          }}
           getItemLayout={(_data, index) => ({
             length: containerHeight,
             offset: containerHeight * index,
