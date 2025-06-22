@@ -171,6 +171,60 @@ class Content(GenericModel):
         ]
 
 
+class EventManager(models.Manager):
+    """Менеджер для событий - фильтрует контент с тегами из категорий кроме 'places'"""
+
+    def get_queryset(self):
+        # Исключаем контент, который имеет теги только из категории 'places'
+        # Включаем контент без тегов или с тегами из других категорий
+        return (
+            super()
+            .get_queryset()
+            .exclude(tags__macro_category__name="places")
+            .distinct()
+        )
+
+
+class PlaceManager(models.Manager):
+    """Менеджер для мест - фильтрует контент с тегами из категории 'places'"""
+
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(tags__macro_category__name="places")
+            .distinct()
+        )
+
+
+class Event(Content):
+    """Прокси-модель для событий/мероприятий"""
+
+    objects = EventManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = "Событие"
+        verbose_name_plural = "События"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+
+class Place(Content):
+    """Прокси-модель для мест"""
+
+    objects = PlaceManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = "Место"
+        verbose_name_plural = "Места"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+
 class Organisation(GenericModel):
     name = models.CharField(max_length=250, verbose_name="Название")
     phone = models.CharField(max_length=20, verbose_name="Телефон")
