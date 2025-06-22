@@ -1,6 +1,8 @@
 from django.contrib import admin
 from event.models import (
     Content,
+    Event,
+    Place,
     Tags,
     Like,
     User,
@@ -37,8 +39,50 @@ class MacroCategoryFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(Content)
-class ContentAdmin(admin.ModelAdmin):
+class EventTagsFilter(admin.SimpleListFilter):
+    """Фильтр тегов только для событий (исключая places)"""
+
+    title = "Теги событий"
+    parameter_name = "event_tags"
+
+    def lookups(self, request, model_admin):
+        # Получаем теги, исключая категорию 'places'
+        tags = Tags.objects.exclude(macro_category__name="places").distinct()
+        return [
+            (
+                tag.id,
+                f"{tag.name} ({tag.macro_category.name if tag.macro_category else 'Без категории'})",
+            )
+            for tag in tags
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(tags__id=self.value()).distinct()
+        return queryset
+
+
+class PlaceTagsFilter(admin.SimpleListFilter):
+    """Фильтр тегов только для мест (категория places)"""
+
+    title = "Теги мест"
+    parameter_name = "place_tags"
+
+    def lookups(self, request, model_admin):
+        # Получаем теги только из категории 'places'
+        tags = Tags.objects.filter(macro_category__name="places").distinct()
+        return [(tag.id, tag.name) for tag in tags]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(tags__id=self.value()).distinct()
+        return queryset
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    """Админка для событий/мероприятий"""
+
     list_display = (
         "id",
         "name",
@@ -48,7 +92,6 @@ class ContentAdmin(admin.ModelAdmin):
         "event_type",
         "publisher_type",
         "get_tags",
-        "get_macro",
         "created",
     )
     list_filter = (
@@ -57,7 +100,7 @@ class ContentAdmin(admin.ModelAdmin):
         "publisher_type",
         "date_start",
         "created",
-        MacroCategoryFilter,  # Добавляем наш кастомный фильтр
+        EventTagsFilter,
     )
     search_fields = (
         "name",
@@ -71,7 +114,7 @@ class ContentAdmin(admin.ModelAdmin):
     filter_horizontal = ("tags",)
 
     fieldsets = (
-        ("Основная информация", {"fields": ("name", "description", "image", "tags")}),
+        ("Основная информация", {"fields": ("name", "description", "image")}),
         (
             "Детали мероприятия",
             {
@@ -86,6 +129,7 @@ class ContentAdmin(admin.ModelAdmin):
                 )
             },
         ),
+        ("Теги", {"fields": ("tags",)}),
         ("Контакты", {"fields": ("contact",)}),
         ("Публикация", {"fields": ("publisher_type", "publisher_id")}),
         (
@@ -93,6 +137,104 @@ class ContentAdmin(admin.ModelAdmin):
             {"fields": ("unique_id", "created", "updated"), "classes": ("collapse",)},
         ),
     )
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """Ограничиваем теги только для событий (исключая places)"""
+        if db_field.name == "tags":
+            kwargs["queryset"] = Tags.objects.exclude(macro_category__name="places")
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+
+@admin.register(Place)
+class PlaceAdmin(admin.ModelAdmin):
+    """Админка для мест"""
+
+    list_display = (
+        "id",
+        "name",
+        "city",
+        "location",
+        "get_tags",
+        "created",
+    )
+    list_filter = (
+        "city",
+        "created",
+        PlaceTagsFilter,
+    )
+    search_fields = (
+        "name",
+        "description",
+        "location",
+        "unique_id",
+    )
+    readonly_fields = ("unique_id", "created", "updated")
+    list_per_page = 25
+    filter_horizontal = ("tags",)
+
+    fieldsets = (
+        ("Основная информация", {"fields": ("name", "description", "image")}),
+        ("Местоположение", {"fields": ("location", "city")}),
+        ("Теги", {"fields": ("tags",)}),
+        ("Контакты", {"fields": ("contact",)}),
+        ("Публикация", {"fields": ("publisher_type", "publisher_id")}),
+        (
+            "Системная информация",
+            {"fields": ("unique_id", "created", "updated"), "classes": ("collapse",)},
+        ),
+    )
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """Ограничиваем теги только для мест (категория places)"""
+        if db_field.name == "tags":
+            kwargs["queryset"] = Tags.objects.filter(macro_category__name="places")
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+
+@admin.register(Content)
+class ContentAdmin(admin.ModelAdmin):
+    """Админка для просмотра всего контента (только для чтения)"""
+
+    list_display = (
+        "id",
+        "name",
+        "city",
+        "date_start",
+        "date_end",
+        "location",
+        "event_type",
+        "publisher_type",
+        "get_tags",
+        "get_macro",
+        "created",
+    )
+    list_filter = (
+        "city",
+        "event_type",
+        "publisher_type",
+        "date_start",
+        "created",
+        MacroCategoryFilter,
+    )
+    search_fields = (
+        "name",
+        "description",
+        "location",
+        "unique_id",
+    )
+    readonly_fields = ("unique_id", "created", "updated")
+    date_hierarchy = "date_start"
+    list_per_page = 25
+
+    # Делаем админку только для чтения
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Tags)
