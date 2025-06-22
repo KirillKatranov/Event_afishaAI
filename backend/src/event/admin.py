@@ -11,6 +11,8 @@ from event.models import (
     Feedback,
     RemovedFavorite,
     UserCategoryPreference,
+    Route,
+    RoutePhoto,
 )
 
 
@@ -260,5 +262,98 @@ class RatingAdmin(admin.ModelAdmin):
     autocomplete_fields = ["user", "content"]
 
     def get_queryset(self, request):
-        """Оптимизируем запросы, подгружая связанные объекты"""
-        return super().get_queryset(request).select_related("user", "content")
+        """Оптимизация запросов для избежания N+1 проблемы"""
+        qs = super().get_queryset(request)
+        return qs.select_related("user", "content")
+
+
+class RoutePhotoInline(admin.TabularInline):
+    """Inline для фотографий в админке маршрутов"""
+
+    model = RoutePhoto
+    extra = 1
+    fields = ("image", "description", "order")
+    readonly_fields = ("created", "updated")
+
+
+@admin.register(Route)
+class RouteAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "city",
+        "duration_km",
+        "duration_hours",
+        "get_places_count",
+        "get_tags_list",
+        "created",
+    )
+    list_filter = (
+        "city",
+        "created",
+        "tags__macro_category",
+    )
+    search_fields = (
+        "name",
+        "description",
+        "places__name",
+        "tags__name",
+    )
+    readonly_fields = ("created", "updated")
+    date_hierarchy = "created"
+    list_per_page = 25
+    filter_horizontal = ("places", "tags")
+    inlines = [RoutePhotoInline]
+
+    fieldsets = (
+        ("Основная информация", {"fields": ("name", "description", "city")}),
+        (
+            "Характеристики маршрута",
+            {"fields": ("duration_km", "duration_hours", "map_link")},
+        ),
+        ("Связи", {"fields": ("places", "tags")}),
+        (
+            "Системная информация",
+            {"fields": ("created", "updated"), "classes": ("collapse",)},
+        ),
+    )
+
+    def get_places_count(self, obj):
+        """Возвращает количество мест в маршруте"""
+        return obj.places.count()
+
+    get_places_count.short_description = "Количество мест"
+
+    def get_queryset(self, request):
+        """Оптимизация запросов для избежания N+1 проблемы"""
+        qs = super().get_queryset(request)
+        return qs.prefetch_related("places", "tags", "photos")
+
+
+@admin.register(RoutePhoto)
+class RoutePhotoAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "route",
+        "description",
+        "order",
+        "created",
+    )
+    list_filter = (
+        "route__city",
+        "created",
+    )
+    search_fields = (
+        "route__name",
+        "description",
+    )
+    readonly_fields = ("created", "updated")
+    list_editable = ("order",)
+
+    fieldsets = (
+        ("Основная информация", {"fields": ("route", "image", "description", "order")}),
+        (
+            "Системная информация",
+            {"fields": ("created", "updated"), "classes": ("collapse",)},
+        ),
+    )

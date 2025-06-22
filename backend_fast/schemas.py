@@ -363,3 +363,88 @@ class TagsByMacroCategoryResponseSchema(BaseModel):
     macro_category: MacroCategoryInTagsResponseSchema
     tags: List[TagWithDetailsSchema]
     total_count: int
+
+
+# Схемы для маршрутов
+
+
+class RoutePhotoSchema(BaseModel):
+    id: int
+    image: str
+    description: Optional[str] = None
+    order: int
+
+    @field_validator("image", mode="before")
+    @classmethod
+    def validate_image(cls, image: Optional[str]) -> Optional[str]:
+        if image is None:
+            return None
+        return "https://afishabot.ru/afisha-files/" + image
+
+    model_config = {"from_attributes": True}
+
+
+class PlaceInRouteSchema(BaseModel):
+    id: int
+    name: str
+    description: str
+    location: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+
+class RouteSchema(BaseModel):
+    id: int
+    name: str
+    description: str
+    duration_km: str
+    duration_hours: str
+    map_link: str
+    city: str
+    created: datetime
+    updated: datetime
+    places: List[PlaceInRouteSchema]
+    tags: List[TagSchema]
+    photos: List[RoutePhotoSchema]
+
+    model_config = {"from_attributes": True}
+
+
+class RouteListSchema(BaseModel):
+    id: int
+    name: str
+    description: str
+    duration_km: str
+    duration_hours: str
+    city: str
+    places_count: int
+    tags: List[TagSchema]
+    photos: List[RoutePhotoSchema]
+
+    model_config = {"from_attributes": True}
+
+
+class RouteListResponseSchema(BaseModel):
+    routes: List[RouteListSchema]
+    total_count: int
+
+
+class RouteCreateSchema(BaseModel):
+    name: str
+    description: str
+    duration_km: str
+    duration_hours: str
+    map_link: str
+    city: str = "nn"
+    places: List[int]  # список ID мест
+    tags: List[int]  # список ID тегов
+
+
+class RouteUpdateSchema(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    duration_km: Optional[str] = None
+    duration_hours: Optional[str] = None
+    map_link: Optional[str] = None
+    places: Optional[List[int]] = None
+    tags: Optional[List[int]] = None

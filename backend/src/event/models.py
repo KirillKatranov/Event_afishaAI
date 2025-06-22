@@ -375,3 +375,70 @@ class UserCategoryPreference(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.tag.name}"
+
+
+class Route(GenericModel):
+    """Модель маршрутов"""
+
+    name = models.CharField(max_length=250, verbose_name="Название маршрута")
+    description = models.TextField(verbose_name="Описание")
+    places = models.ManyToManyField(
+        Content,
+        related_name="routes",
+        verbose_name="Места",
+        limit_choices_to={"tags__macro_category__name": "places"},
+    )
+    duration_km = models.CharField(max_length=50, verbose_name="Протяжённость (км)")
+    duration_hours = models.CharField(max_length=50, verbose_name="Время (часы)")
+    tags = models.ManyToManyField(
+        Tags,
+        related_name="routes",
+        verbose_name="Теги",
+        limit_choices_to={"macro_category__name": "маршрут"},
+    )
+    map_link = models.URLField(verbose_name="Ссылка на карты")
+    city = models.CharField(
+        max_length=50, choices=CITY_CHOICES, default="nn", verbose_name="Город"
+    )
+
+    class Meta:
+        verbose_name = "Маршрут"
+        verbose_name_plural = "Маршруты"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def get_places_list(self):
+        """Возвращает список мест маршрута через запятую"""
+        return " / ".join([place.name for place in self.places.all()])
+
+    def get_tags_list(self):
+        """Возвращает список тегов маршрута через запятую"""
+        return " / ".join([tag.name for tag in self.tags.all()])
+
+
+class RoutePhoto(GenericModel):
+    """Модель фотографий маршрутов"""
+
+    route = models.ForeignKey(
+        Route, on_delete=models.CASCADE, related_name="photos", verbose_name="Маршрут"
+    )
+    image = models.ImageField(
+        upload_to="route_images",
+        max_length=300,
+        storage=MinioMediaStorage(),
+        verbose_name="Фотография",
+    )
+    description = models.CharField(
+        max_length=250, blank=True, null=True, verbose_name="Описание фото"
+    )
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+
+    class Meta:
+        verbose_name = "Фотография маршрута"
+        verbose_name_plural = "Фотографии маршрутов"
+        ordering = ["order", "created"]
+
+    def __str__(self):
+        return f"Фото маршрута {self.route.name}"
