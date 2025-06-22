@@ -315,9 +315,85 @@ Content.ratings = relationship("Rating", back_populates="content")
 Content.removed_favorites = relationship("RemovedFavorite", back_populates="content")
 
 
+# Создание всех таблиц
+Base.metadata.create_all(bind=engine)
+
+
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+
+# Модель маршрутов
+class Route(GenericModel):
+    __tablename__ = "event_route"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+    description = Column(Text, nullable=False)
+    duration_km = Column(String(50), nullable=False)  # Протяжённость в км
+    duration_hours = Column(String(50), nullable=False)  # Время в часах
+    map_link = Column(String(500), nullable=False)  # Ссылка на карты
+    city = Column(String(50), default="nn")
+
+    # Связи
+    places = relationship(
+        "Content", secondary="event_route_places", back_populates="routes"
+    )
+    tags = relationship("Tags", secondary="event_route_tags", back_populates="routes")
+    photos = relationship(
+        "RoutePhoto", back_populates="route", cascade="all, delete-orphan"
+    )
+
+    def __str__(self):
+        return self.name
+
+
+# Модель фотографий маршрутов
+class RoutePhoto(GenericModel):
+    __tablename__ = "event_routephoto"
+
+    id = Column(Integer, primary_key=True)
+    route_id = Column(Integer, ForeignKey("event_route.id"), nullable=False)
+    image = Column(String(300), nullable=False)
+    description = Column(String(250), nullable=True)
+    order = Column(Integer, default=0)
+
+    route = relationship("Route", back_populates="photos")
+
+    def __str__(self):
+        return f"Фото маршрута {self.route.name}"
+
+
+# Связь маршрутов с местами (many-to-many)
+class RoutePlaces(Base):
+    __tablename__ = "event_route_places"
+
+    route_id = Column(
+        Integer, ForeignKey("event_route.id", ondelete="CASCADE"), primary_key=True
+    )
+    content_id = Column(
+        Integer, ForeignKey("event_content.id", ondelete="CASCADE"), primary_key=True
+    )
+
+
+# Связь маршрутов с тегами (many-to-many)
+class RouteTags(Base):
+    __tablename__ = "event_route_tags"
+
+    route_id = Column(
+        Integer, ForeignKey("event_route.id", ondelete="CASCADE"), primary_key=True
+    )
+    tags_id = Column(
+        Integer, ForeignKey("event_tags.id", ondelete="CASCADE"), primary_key=True
+    )
+
+
+# Добавляем отношения к существующим моделям
+Content.routes = relationship(
+    "Route", secondary="event_route_places", back_populates="places"
+)
+Tags.routes = relationship("Route", secondary="event_route_tags", back_populates="tags")
