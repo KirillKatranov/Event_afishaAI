@@ -108,8 +108,8 @@ export const LikedEventCard: React.FC<LikedEventCardProps> = ({
             )}
 
             <LinearGradient
-              colors={[theme.colors.bg_color, `${theme.colors.bg_color}E0`, `${theme.colors.bg_color}B5`, `${theme.colors.bg_color}7F`, `${theme.colors.bg_color}00`]}
-              locations={[0.53, 0.75, 0.85, 0.91, 1]}
+              colors={[theme.colors.bg_color, `${theme.colors.bg_color}00`]}
+              locations={[0.9, 1]}
               style={{
                 position: "absolute", top: 0, right: 0, left: 0, bottom: 0, zIndex: -1
               }}
