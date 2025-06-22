@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.utils.html import format_html
 from event.models import (
     Content,
     Tags,
@@ -268,29 +267,17 @@ class RatingAdmin(admin.ModelAdmin):
         return qs.select_related("user", "content")
 
 
-class RoutePhotoInline(admin.StackedInline):
-    """Inline для фотографий в админке маршрутов"""
-
+class RoutePhotoInline(admin.TabularInline):
     model = RoutePhoto
-    extra = 3  # Показывать 3 пустые формы по умолчанию
-    max_num = 10  # Максимум 10 фотографий
-    fields = ("image", "image_preview", "description", "order")
-    readonly_fields = ("created", "updated", "image_preview")
+    extra = 1
+    can_delete = True
+    fields = ("image", "description", "order")
 
-    def image_preview(self, obj):
-        if obj.image:
-            return format_html(
-                '<img src="{}" width="200" height="150" style="object-fit: cover;" />',
-                obj.image.url,
-            )
-        return "Нет изображения"
-
-    image_preview.short_description = "Предпросмотр"
-
-    class Media:
-        js = (
-            "admin/js/inlines.js",
-        )  # Включает JavaScript для динамического добавления форм
+    def get_extra(self, request, obj=None, **kwargs):
+        """Динамически определяем количество дополнительных форм"""
+        if obj:
+            return 1
+        return 3
 
 
 @admin.register(Route)
