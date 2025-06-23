@@ -101,6 +101,28 @@ class PlaceImageFilter(admin.SimpleListFilter):
         return queryset
 
 
+class EventImageFilter(admin.SimpleListFilter):
+    """Фильтр событий по наличию изображения"""
+
+    title = "Наличие изображения"
+    parameter_name = "has_image"
+
+    def lookups(self, request, model_admin):
+        return [
+            ("no_image", "Без изображения"),
+            ("has_image", "С изображением"),
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == "no_image":
+            # События без изображения (поле пустое или None)
+            return queryset.filter(image__isnull=True) | queryset.filter(image="")
+        elif self.value() == "has_image":
+            # События с изображением
+            return queryset.filter(image__isnull=False).exclude(image="")
+        return queryset
+
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     """Админка для событий/мероприятий"""
@@ -114,6 +136,7 @@ class EventAdmin(admin.ModelAdmin):
         "event_type",
         "publisher_type",
         "get_tags",
+        "has_image",
         "created",
     )
     list_filter = (
@@ -123,6 +146,7 @@ class EventAdmin(admin.ModelAdmin):
         "date_start",
         "created",
         EventTagsFilter,
+        EventImageFilter,
     )
     search_fields = (
         "name",
@@ -168,6 +192,14 @@ class EventAdmin(admin.ModelAdmin):
         if db_field.name == "tags":
             kwargs["queryset"] = Tags.objects.exclude(macro_category__name="places")
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+    def has_image(self, obj):
+        """Показывает есть ли изображение у события"""
+        if obj.image:
+            return "✅ Есть"
+        return "❌ Нет"
+
+    has_image.short_description = "Изображение"
 
 
 @admin.register(Place)
