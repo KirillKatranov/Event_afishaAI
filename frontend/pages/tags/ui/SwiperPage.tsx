@@ -1,11 +1,13 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useLocalSearchParams} from "expo-router";
 import {useConfig} from "@/shared/providers/TelegramConfig";
-import {EventsSwiper} from "@/widgets/events-swiper";
+import {EventsVerticalSwiper} from "@/widgets/events-swiper";
 import {useEventsSwiperStore} from "@/features/content";
 import {getPeriodBorders} from "@/shared/scripts/date";
 import {ErrorCard, LoadingCard} from "@/shared/ui";
 import {useCalendarStore} from "@/features/dates";
+import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
+import {Dimensions} from "react-native";
 
 export const SwiperPage = () => {
   const { tag } = useLocalSearchParams<{ tag: string }>();
@@ -20,6 +22,19 @@ export const SwiperPage = () => {
 
   const { selectedDays } = useCalendarStore();
 
+  const onEvent = useConfig().onEvent;
+  const NAV_BAR_HEIGHT = 57;
+  const { height } = Dimensions.get('window');
+  const { bottom} = useSafeAreaInsets();
+  const [swiperHeight, setSwiperHeight] = useState(height - NAV_BAR_HEIGHT - bottom);
+
+  useEffect(() => {
+    onEvent("viewportChanged", () => {
+      // @ts-ignore
+      setSwiperHeight(window.Telegram.WebApp.viewportHeight - NAV_BAR_HEIGHT - bottom);
+    })
+  }, [setSwiperHeight]);
+
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
     fetchEvents({
@@ -33,5 +48,5 @@ export const SwiperPage = () => {
   if (isLoading) return <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>
   if (hasError) return <ErrorCard />
 
-  return <EventsSwiper events={events} swipedAll={swipedAll} setSwipedAll={setSwipedAll}/>;
+  return <EventsVerticalSwiper events={events} swipedAll={swipedAll} setSwipedAll={setSwipedAll} containerHeight={swiperHeight}/>;
 }
