@@ -364,6 +364,8 @@ class TagsByMacroCategoryResponseSchema(BaseModel):
     tags: List[TagWithDetailsSchema]
     total_count: int
 
+    model_config = {"from_attributes": True}
+
 
 # Схемы для маршрутов
 
@@ -425,6 +427,7 @@ class RouteListSchema(BaseModel):
     description: str
     duration_km: str
     duration_hours: str
+    map_link: str
     city: str
     places_count: int
     places: List[PlaceInRouteSchema]
