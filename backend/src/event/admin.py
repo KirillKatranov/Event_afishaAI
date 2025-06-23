@@ -108,13 +108,16 @@ class EventAdmin(admin.ModelAdmin):
         "location",
         "unique_id",
     )
-    readonly_fields = ("unique_id", "created", "updated")
+    readonly_fields = ("created", "updated")
     date_hierarchy = "date_start"
     list_per_page = 25
     filter_horizontal = ("tags",)
 
     fieldsets = (
-        ("Основная информация", {"fields": ("name", "description", "image")}),
+        (
+            "Основная информация",
+            {"fields": ("name", "description", "image", "unique_id")},
+        ),
         (
             "Детали мероприятия",
             {
@@ -134,7 +137,7 @@ class EventAdmin(admin.ModelAdmin):
         ("Публикация", {"fields": ("publisher_type", "publisher_id")}),
         (
             "Системная информация",
-            {"fields": ("unique_id", "created", "updated"), "classes": ("collapse",)},
+            {"fields": ("created", "updated"), "classes": ("collapse",)},
         ),
     )
 
@@ -168,19 +171,22 @@ class PlaceAdmin(admin.ModelAdmin):
         "location",
         "unique_id",
     )
-    readonly_fields = ("unique_id", "created", "updated")
+    readonly_fields = ("created", "updated")
     list_per_page = 25
     filter_horizontal = ("tags",)
 
     fieldsets = (
-        ("Основная информация", {"fields": ("name", "description", "image")}),
+        (
+            "Основная информация",
+            {"fields": ("name", "description", "image", "unique_id")},
+        ),
         ("Местоположение", {"fields": ("location", "city")}),
         ("Теги", {"fields": ("tags",)}),
         ("Контакты", {"fields": ("contact",)}),
         ("Публикация", {"fields": ("publisher_type", "publisher_id")}),
         (
             "Системная информация",
-            {"fields": ("unique_id", "created", "updated"), "classes": ("collapse",)},
+            {"fields": ("created", "updated"), "classes": ("collapse",)},
         ),
     )
 
