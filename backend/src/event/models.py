@@ -175,12 +175,13 @@ class EventManager(models.Manager):
     """Менеджер для событий - фильтрует контент с тегами из категорий кроме 'places'"""
 
     def get_queryset(self):
-        # Исключаем контент, который имеет теги только из категории 'places'
-        # Включаем контент без тегов или с тегами из других категорий
+        # Показываем только контент, который имеет теги НЕ из категории 'places'
+        # Исключаем контент без тегов и контент только с тегами из 'places'
         return (
             super()
             .get_queryset()
-            .exclude(tags__macro_category__name="places")
+            .filter(tags__isnull=False)  # Только с тегами
+            .exclude(tags__macro_category__name="places")  # Исключаем places
             .distinct()
         )
 
