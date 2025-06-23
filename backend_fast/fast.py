@@ -15,6 +15,11 @@ from api.reviews import router_reviews
 from api.ratings import router_ratings
 from api.search import router_search
 from api.macro_categories import router_macro_categories
+from api.routes import router as router_routes
+
+from loguru import logger
+
+logger.add("logs/fast.log", rotation="500 MB", level="INFO", compression="zip")
 
 app = FastAPI()
 app.add_middleware(
@@ -38,3 +43,4 @@ app.include_router(router_reviews)
 app.include_router(router_ratings)
 app.include_router(router_search)
 app.include_router(router_macro_categories)
+app.include_router(router_routes)

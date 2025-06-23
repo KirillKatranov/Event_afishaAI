@@ -76,7 +76,12 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
             <WebLottieView src={require("@/shared/assets/lottie/places.json")} maxHeight={boxHeight} maxWidth={boxWidth}/>
           </Box>
         )}
-        {(service.id == "trips" || service.id == "organizers") && (
+        {service.id == "organizers" && (
+          <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure}>
+            <WebLottieView src={require("@/shared/assets/lottie/organizers.json")} maxHeight={boxHeight} maxWidth={boxWidth}/>
+          </Box>
+        )}
+        {(service.id == "trips") && (
           <Box
             flex={1} justifyContent={"center"} onLayout={layoutMeasure}
             opacity={service.id == "trips" ? 0.5 : 1}
