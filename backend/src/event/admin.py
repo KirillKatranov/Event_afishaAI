@@ -417,15 +417,9 @@ class RatingAdmin(admin.ModelAdmin):
 
 class RoutePhotoInline(admin.TabularInline):
     model = RoutePhoto
-    extra = 1
+    extra = 10
     can_delete = True
     fields = ("image", "description", "order")
-
-    def get_extra(self, request, obj=None, **kwargs):
-        """Динамически определяем количество дополнительных форм"""
-        if obj:
-            return 1
-        return 3
 
 
 @admin.register(Route)
