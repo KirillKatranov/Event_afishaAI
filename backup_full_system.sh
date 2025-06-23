@@ -26,18 +26,25 @@ fi
 
 echo ""
 echo "📁 2. Создаем бэкап MinIO хранилища..."
-docker exec backend-minio-1 tar -czf "/tmp/minio_$TIMESTAMP.tar.gz" /data
 
-# Копируем архив из контейнера
-docker cp "backend-minio-1:/tmp/minio_$TIMESTAMP.tar.gz" "./minio_$TIMESTAMP.tar.gz"
+# Создаем папку для MinIO файлов
+mkdir -p "minio_data_$TIMESTAMP"
 
-if [ -f "minio_$TIMESTAMP.tar.gz" ]; then
+# Копируем все данные из MinIO контейнера
+echo "   📋 Копируем файлы из MinIO контейнера..."
+docker cp backend-minio-1:/data/. "./minio_data_$TIMESTAMP/"
+
+if [ -d "minio_data_$TIMESTAMP" ] && [ "$(ls -A minio_data_$TIMESTAMP)" ]; then
+    # Создаем архив из скопированных файлов
+    echo "   🗜️  Создаем архив..."
+    tar -czf "minio_$TIMESTAMP.tar.gz" "minio_data_$TIMESTAMP"
+
+    # Удаляем временную папку
+    rm -rf "minio_data_$TIMESTAMP"
+
     echo "✅ MinIO сохранено: minio_$TIMESTAMP.tar.gz ($(du -h minio_$TIMESTAMP.tar.gz | cut -f1))"
-    # Удаляем временный файл из контейнера
-    docker exec backend-minio-1 rm "/tmp/minio_$TIMESTAMP.tar.gz"
 else
-    echo "❌ Ошибка создания бэкапа MinIO!"
-    exit 1
+    echo "❌ Ошибка создания бэкапа MinIO - нет данных для копирования!"
 fi
 
 cd ..
