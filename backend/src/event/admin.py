@@ -223,9 +223,7 @@ class EventAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         """Разрешаем удаление событий"""
-        return request.user.is_superuser or request.user.has_perm(
-            "event.delete_content"
-        )
+        return True  # Разрешаем удаление всем авторизованным пользователям
 
 
 @admin.register(Place)
@@ -310,9 +308,7 @@ class PlaceAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         """Разрешаем удаление мест"""
-        return request.user.is_superuser or request.user.has_perm(
-            "event.delete_content"
-        )
+        return True  # Разрешаем удаление всем авторизованным пользователям
 
 
 @admin.register(Content)
