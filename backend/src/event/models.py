@@ -95,7 +95,7 @@ class Content(GenericModel):
         verbose_name="Изображение",
     )
     contact = models.JSONField(
-        default=dict, null=True, blank=True, verbose_name="Контакты"
+        default=lambda: [{}], null=True, blank=True, verbose_name="Контакты"
     )
     date_start = models.DateField(
         null=True, blank=True, db_index=True, verbose_name="Дата начала"
