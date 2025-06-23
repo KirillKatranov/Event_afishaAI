@@ -187,6 +187,14 @@ class EventAdmin(admin.ModelAdmin):
         ),
     )
 
+    def get_queryset(self, request):
+        """Переопределяем queryset без distinct() для возможности массового удаления"""
+        return (
+            self.model._default_manager.get_queryset()
+            .filter(tags__isnull=False)  # Только с тегами
+            .exclude(tags__macro_category__name="places")  # Исключаем places
+        )
+
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         """Ограничиваем теги только для событий (исключая places)"""
         if db_field.name == "tags":
@@ -245,6 +253,12 @@ class PlaceAdmin(admin.ModelAdmin):
             {"fields": ("created", "updated"), "classes": ("collapse",)},
         ),
     )
+
+    def get_queryset(self, request):
+        """Переопределяем queryset без distinct() для возможности массового удаления"""
+        return self.model._default_manager.get_queryset().filter(
+            tags__macro_category__name="places"
+        )
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         """Ограничиваем теги только для мест (категория places)"""
