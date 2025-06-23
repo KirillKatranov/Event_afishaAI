@@ -50,6 +50,7 @@ def get_routes(
             "description": route.description,
             "duration_km": route.duration_km,
             "duration_hours": route.duration_hours,
+            "map_link": route.map_link,
             "city": route.city,
             "places_count": len(route.places),
             "places": route.places,
