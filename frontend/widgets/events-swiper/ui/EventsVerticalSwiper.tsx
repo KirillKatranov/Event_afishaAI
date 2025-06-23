@@ -86,7 +86,6 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   const swipedAllInfoOpacity = useSharedValue(0);
   const swipedAllInfoStyle = useAnimatedStyle(() => ({
     opacity: swipedAllInfoOpacity.value,
-    gap: 40,
   }));
 
   useEffect(() => {
@@ -154,7 +153,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
           onProgressChange={progress}
           vertical
           snapEnabled
-          windowSize={5}
+          windowSize={3}
           loop={false}
           renderItem={({ item }: { item: Event }) => {
             return (
@@ -310,7 +309,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             padding="xl"
           >
             <Animated.View
-              style={swipedAllInfoStyle}
+              style={[swipedAllInfoStyle, { gap: 40 }]}
             >
               <Text
                 variant="body"
