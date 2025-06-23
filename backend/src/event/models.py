@@ -20,6 +20,11 @@ class PublisherType(models.TextChoices):
     ORGANISATION = "organisation", "Организация"
 
 
+def default_contact():
+    """Функция для значения по умолчанию поля contact"""
+    return [{}]
+
+
 class GenericModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
@@ -95,7 +100,7 @@ class Content(GenericModel):
         verbose_name="Изображение",
     )
     contact = models.JSONField(
-        default=lambda: [{}], null=True, blank=True, verbose_name="Контакты"
+        default=default_contact, null=True, blank=True, verbose_name="Контакты"
     )
     date_start = models.DateField(
         null=True, blank=True, db_index=True, verbose_name="Дата начала"
