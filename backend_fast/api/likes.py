@@ -16,6 +16,7 @@ from schemas import (
     LikeSchema,
     LikeRequestSchema,
 )
+from loguru import logger
 
 app = FastAPI()
 
@@ -34,6 +35,7 @@ def set_like(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
     content = db.query(Content).filter(Content.id == request_data.content_id).first()
 
     if not content:
+        logger.warning(f"Content {request_data.content_id} not found")
         raise HTTPException(status_code=404, detail="Content not found")
 
     like = (
@@ -48,6 +50,7 @@ def set_like(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
         db.add(like)
 
     db.commit()
+    logger.info(f"Like saved from {user.username} for content {content.id}")
     return {
         "user": user.username,
         "content": content.id,
@@ -66,6 +69,7 @@ def set_dislike(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
 
     content = db.query(Content).filter(Content.id == request_data.content_id).first()
     if not content:
+        logger.warning(f"Content {request_data.content_id} not found")
         raise HTTPException(status_code=404, detail="Content not found")
 
     like = (
@@ -80,6 +84,7 @@ def set_dislike(request_data: LikeRequestSchema, db: Session = Depends(get_db)):
         db.add(like)
 
     db.commit()
+    logger.info(f"Dislike saved from {user.username} for content {content.id}")
     return {
         "user": user.username,
         "content": content.id,

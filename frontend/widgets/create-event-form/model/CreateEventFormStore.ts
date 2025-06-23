@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import CreateEventService from "@/widgets/create-event-form/api/CreateEventService";
-import {cities, CityID} from "@/features/city-select";
 
 type EventFormat = 'online' | 'offline';
 type TicketType = 'free' | 'paid';
@@ -32,8 +31,7 @@ interface EventFormState {
   errorMessage?: string;
   isFormValid: boolean;
 
-  categoryOptions: { label: string, value: string }[];
-  citiesOptions: { label: string, value: string }[];
+  categoryOptions: { label: string, value: string }[]
 }
 
 interface EventFormActions {
@@ -60,7 +58,6 @@ interface EventFormActions {
   submitForm: (username: string, onSuccess?: () => void) => void;
 
   getAvailableTags: (username: string) => void;
-  getAvailableCities: () => void;
 }
 
 const initialState: EventFormState = {
@@ -75,7 +72,6 @@ const initialState: EventFormState = {
   time: '',
   category: [],
   categoryOptions: [],
-  citiesOptions: [],
   ticketType: 'free',
   priceStart: '', priceEnd: '',
   publisherType: "user",
@@ -148,10 +144,10 @@ export const useEventFormStore = create<EventFormState & EventFormActions>()(
           contact: formData.contact,
           date_start: formData.dateStart ? formData.dateStart.toISOString().split("T")[0] : undefined,
           date_end: formData.dateEnd ? formData.dateEnd.toISOString().split("T")[0] : undefined,
-          time: formData.time !== '' ? formData.time : undefined,
-          location: formData.address !== '' ? formData.address : undefined,
+          time: formData.time,
+          location: formData.address,
           cost: formData.ticketType == "free" ? 0 : (!isNaN(Number(formData.priceStart)) ? Number(formData.priceStart) : 0),
-          city: formData.city !== '' ? formData.city : undefined,
+          city: formData.city,
           event_type: formData.format,
           tags: formData.category.join(","),
           publisher_type: formData.publisherType,
@@ -163,7 +159,6 @@ export const useEventFormStore = create<EventFormState & EventFormActions>()(
             set({ errorMessage: response.error })
           } else {
             if (onSuccess) onSuccess();
-            get().resetForm()
           }
         })
         .catch(e => set({ errorMessage: e.message }))
@@ -175,16 +170,6 @@ export const useEventFormStore = create<EventFormState & EventFormActions>()(
           if (response && response.data) {
             const tags = response.data.tags.map((tag) => ({ label: tag.name, value: tag.id.toString() }))
             set({ categoryOptions: tags })
-          }
-        })
-    },
-
-    getAvailableCities: () => {
-      CreateEventService.getAvailableCities()
-        .then((response) => {
-          if (response && response.data) {
-            const availableCities = response.data.cities.map((city) => ({ label: cities[city as CityID].name, value: city }))
-            set({ citiesOptions:  availableCities })
           }
         })
     }

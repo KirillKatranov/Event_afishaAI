@@ -10,6 +10,7 @@ from models import User, Tags, UserCategoryPreference, get_db
 from schemas import (
     UserPreferencesResponseSchema,
 )
+from loguru import logger
 
 router_preferences = APIRouter(prefix="/api/v1", tags=["preferences"])
 
@@ -26,12 +27,15 @@ def set_category_preference(
     user = db.query(User).filter(User.username == username).first()
 
     if not user:
+        logger.warning(f"User {username} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     tag = db.query(Tags).filter(Tags.id == tag_id).first()
     if not tag:
+        logger.warning(f"Tag {tag_id} not found")
         raise HTTPException(status_code=404, detail="Tag not found")
 
+    logger.info(f"Setting preference for user {user.username} and tag {tag.name}")
     preference = (
         db.query(UserCategoryPreference)
         .filter(
@@ -41,6 +45,7 @@ def set_category_preference(
         .first()
     )
     if not preference:
+        logger.info(f"Creating new preference for user {user.username} and tag {tag.name}")
         preference = UserCategoryPreference(user_id=user.id, tag_id=tag_id)
         db.add(preference)
         db.commit()
@@ -60,8 +65,10 @@ def delete_category_preference(
     user = db.query(User).filter(User.username == username).first()
 
     if not user:
+        logger.warning(f"User {username} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
+    logger.info(f"Deleting preference for user {user.username} and tag {tag_id}")
     preference = (
         db.query(UserCategoryPreference)
         .filter(
@@ -71,6 +78,7 @@ def delete_category_preference(
         .first()
     )
     if not preference:
+        logger.warning(f"Preference not found for user {user.username} and tag {tag_id}")
         raise HTTPException(
             status_code=404, detail="Preference not found for the specified tag"
         )
@@ -90,9 +98,11 @@ def get_user_preferences(
     """
     Возвращает список всех предпочтений пользователя по категориям (тегам).
     """
+    logger.info(f"Getting preferences for user {username}")
     user = db.query(User).filter(User.username == username).first()
 
     if not user:
+        logger.warning(f"User {username} not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     preferences = (
