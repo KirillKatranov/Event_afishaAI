@@ -221,6 +221,12 @@ class EventAdmin(admin.ModelAdmin):
 
     has_image.short_description = "Изображение"
 
+    def has_delete_permission(self, request, obj=None):
+        """Разрешаем удаление событий"""
+        return request.user.is_superuser or request.user.has_perm(
+            "event.delete_content"
+        )
+
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
@@ -301,6 +307,12 @@ class PlaceAdmin(admin.ModelAdmin):
         return "❌ Нет"
 
     has_image.short_description = "Изображение"
+
+    def has_delete_permission(self, request, obj=None):
+        """Разрешаем удаление мест"""
+        return request.user.is_superuser or request.user.has_perm(
+            "event.delete_content"
+        )
 
 
 @admin.register(Content)
