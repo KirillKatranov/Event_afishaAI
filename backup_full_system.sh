@@ -34,9 +34,12 @@ mkdir -p "minio_data_$TIMESTAMP"
 echo "   📋 Копируем файлы из MinIO контейнера..."
 docker cp backend-minio-1:/data/. "./minio_data_$TIMESTAMP/"
 
-if [ -d "minio_data_$TIMESTAMP" ] && [ "$(ls -A minio_data_$TIMESTAMP)" ]; then
+# Проверяем, есть ли файлы (исключая скрытые папки . и ..)
+FILE_COUNT=$(find "./minio_data_$TIMESTAMP" -type f | wc -l)
+
+if [ "$FILE_COUNT" -gt 0 ]; then
     # Создаем архив из скопированных файлов
-    echo "   🗜️  Создаем архив..."
+    echo "   🗜️  Создаем архив из $FILE_COUNT файлов..."
     tar -czf "minio_$TIMESTAMP.tar.gz" "minio_data_$TIMESTAMP"
 
     # Удаляем временную папку
@@ -44,7 +47,9 @@ if [ -d "minio_data_$TIMESTAMP" ] && [ "$(ls -A minio_data_$TIMESTAMP)" ]; then
 
     echo "✅ MinIO сохранено: minio_$TIMESTAMP.tar.gz ($(du -h minio_$TIMESTAMP.tar.gz | cut -f1))"
 else
-    echo "❌ Ошибка создания бэкапа MinIO - нет данных для копирования!"
+    # Удаляем пустую папку
+    rm -rf "minio_data_$TIMESTAMP"
+    echo "ℹ️  MinIO хранилище пустое - нет файлов для архивирования"
 fi
 
 cd ..
