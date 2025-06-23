@@ -120,7 +120,7 @@ class Content(GenericModel):
         max_length=50, choices=CITY_CHOICES, default="nn", verbose_name="Город"
     )
     unique_id = models.CharField(
-        max_length=250, unique=True, editable=False, verbose_name="Уникальный ID"
+        max_length=250, unique=True, verbose_name="Уникальный ID"
     )
 
     event_type = models.CharField(
