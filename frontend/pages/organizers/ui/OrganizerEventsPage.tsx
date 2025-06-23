@@ -1,16 +1,28 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Dimensions, View} from "react-native";
-import {EventsSwiper, EventsVerticalSwiper} from "@/widgets/events-swiper";
+import {EventsVerticalSwiper} from "@/widgets/events-swiper";
 import {useFocusEffect, useLocalSearchParams} from "expo-router";
 import {useOrganizerEventsStore} from "@/features/organizer-content";
 import {LoadingCard} from "@/shared/ui";
+import {useConfig} from "@/shared/providers/TelegramConfig";
+import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
 
 export const OrganizerEventsPage = () => {
   const { type, id } = useLocalSearchParams<{ type: "organization" | "user", id: string }>()
   const {events, getEvents, isLoading, swipedAll, setSwipedAll} = useOrganizerEventsStore();
 
+  const onEvent = useConfig().onEvent;
+  const { bottom} = useSafeAreaInsets();
+  const NAV_BAR_HEIGHT = 57;
   const { height } = Dimensions.get('window');
-  const reelsHeight = height - 57;
+  const [swiperHeight, setSwiperHeight] = useState(height - NAV_BAR_HEIGHT - bottom);
+
+  useEffect(() => {
+    onEvent("viewportChanged", () => {
+      // @ts-ignore
+      setSwiperHeight(window.Telegram.WebApp.viewportHeight - NAV_BAR_HEIGHT - bottom);
+    })
+  }, [setSwiperHeight]);
 
   useFocusEffect(
     useCallback(() => {
@@ -26,8 +38,7 @@ export const OrganizerEventsPage = () => {
     <View
       style={{ flex: 1, backgroundColor: "white", width: "100%" }}
     >
-      {/*<EventsSwiper events={events} setSwipedAll={setSwipedAll} swipedAll={swipedAll} back/>*/}
-      <EventsVerticalSwiper events={events} setSwipedAll={setSwipedAll} swipedAll={swipedAll} back containerHeight={reelsHeight}/>
+      <EventsVerticalSwiper events={events} setSwipedAll={setSwipedAll} swipedAll={swipedAll} back containerHeight={swiperHeight}/>
     </View>
   );
 };
