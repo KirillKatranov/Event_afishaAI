@@ -2,3 +2,4 @@ venv
 .idea
 __pycache__/
 logs
+backend_fast/test.db

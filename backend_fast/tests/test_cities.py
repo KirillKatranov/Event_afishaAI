@@ -3,7 +3,6 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from api.cities import CITY_CHOICES
 from fastapi.testclient import TestClient
 from fast import app
 

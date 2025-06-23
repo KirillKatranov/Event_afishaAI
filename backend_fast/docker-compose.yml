@@ -6,6 +6,8 @@ services:
       context: .
     volumes:
       - ./:/app
+    env_file:
+      - test_mode.env
     ports:
       - "8001:8000"
     image: fastapi_backend

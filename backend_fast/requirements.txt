@@ -12,3 +12,4 @@ minio>=7.2.8,<8.0.0
 httpx>=0.23.0,<0.24.0
 pytest
 loguru>=0.7.0
+pydantic_settings

@@ -82,11 +82,11 @@ class Content(GenericModel):
 
     tags = relationship("Tags", secondary="event_content_tags")
 
-    __table_args__ = (
-        Index("ix_event_content_date_start", "date_start"),
-        Index("ix_event_content_date_end", "date_end"),
-        Index("ix_event_content_publisher", "publisher_type", "publisher_id"),
-    )
+    # __table_args__ = (
+    #     Index("ix_event_content_date_start", "date_start"),
+    #     Index("ix_event_content_date_end", "date_end"),
+    #     Index("ix_event_content_publisher", "publisher_type", "publisher_id"),
+    # )
 
     def get_tags(self):
         return "\n".join([t.name for t in self.tags])
