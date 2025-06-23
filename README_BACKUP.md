@@ -25,14 +25,17 @@ cat backup_20241223_143052.sql | docker exec -i backend-db-1 psql -U afisha -d a
 
 ### Создание бэкапа MinIO:
 ```bash
-# Создать архив всех файлов
-docker exec backend-minio-1 tar -czf /tmp/minio_backup_$(date +%Y%m%d_%H%M%S).tar.gz /data
+# Создать папку для временных файлов
+mkdir -p minio_backup_$(date +%Y%m%d_%H%M%S)
 
-# Скопировать архив на хост
-docker cp backend-minio-1:/tmp/minio_backup_$(date +%Y%m%d_%H%M%S).tar.gz ./
+# Скопировать все файлы из контейнера
+docker cp backend-minio-1:/data/. ./minio_backup_$(date +%Y%m%d_%H%M%S)/
 
-# Удалить временный файл из контейнера
-docker exec backend-minio-1 rm /tmp/minio_backup_$(date +%Y%m%d_%H%M%S).tar.gz
+# Создать архив
+tar -czf minio_backup_$(date +%Y%m%d_%H%M%S).tar.gz minio_backup_$(date +%Y%m%d_%H%M%S)
+
+# Удалить временную папку
+rm -rf minio_backup_$(date +%Y%m%d_%H%M%S)
 ```
 
 ### Восстановление MinIO:
@@ -40,14 +43,17 @@ docker exec backend-minio-1 rm /tmp/minio_backup_$(date +%Y%m%d_%H%M%S).tar.gz
 # Остановить MinIO
 docker-compose stop minio
 
-# Скопировать архив в контейнер
-docker cp minio_backup_YYYYMMDD_HHMMSS.tar.gz backend-minio-1:/tmp/
+# Извлечь архив
+tar -xzf minio_backup_YYYYMMDD_HHMMSS.tar.gz
 
-# Восстановить файлы
-docker exec backend-minio-1 tar -xzf /tmp/minio_backup_YYYYMMDD_HHMMSS.tar.gz -C /
+# Скопировать файлы в контейнер
+docker cp minio_backup_YYYYMMDD_HHMMSS/. backend-minio-1:/data/
 
 # Запустить MinIO
 docker-compose start minio
+
+# Очистить временные файлы
+rm -rf minio_backup_YYYYMMDD_HHMMSS
 ```
 
 ## 🚀 Полный бэкап системы
@@ -98,3 +104,4 @@ ls -lh backup_*.sql
 - Регулярно проверяйте возможность восстановления из бэкапов
 - Учетные данные: пользователь `afisha`, база данных `afisha`
 - MinIO хранилище содержит все изображения событий, мест и маршрутов
+- MinIO контейнер использует минималистичный образ без утилиты tar
