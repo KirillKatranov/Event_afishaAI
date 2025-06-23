@@ -189,10 +189,22 @@ class EventAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         """Переопределяем queryset без distinct() для возможности массового удаления"""
-        return (
-            self.model._default_manager.get_queryset()
-            .filter(tags__isnull=False)  # Только с тегами
-            .exclude(tags__macro_category__name="places")  # Исключаем places
+        # Используем подзапрос для избежания distinct()
+        from django.db.models import Exists, OuterRef
+        from .models import Tags, Content
+
+        # Контент с тегами из places
+        places_tags_subquery = Tags.objects.filter(
+            macro_category__name="places", contents=OuterRef("pk")
+        )
+
+        # Контент с любыми тегами
+        any_tags_subquery = Tags.objects.filter(contents=OuterRef("pk"))
+
+        return Content.objects.filter(
+            Exists(any_tags_subquery)  # Имеет теги
+        ).exclude(
+            Exists(places_tags_subquery)  # Но не из places
         )
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
@@ -256,9 +268,15 @@ class PlaceAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         """Переопределяем queryset без distinct() для возможности массового удаления"""
-        return self.model._default_manager.get_queryset().filter(
-            tags__macro_category__name="places"
+        # Используем подзапрос для избежания distinct()
+        from django.db.models import Exists, OuterRef
+        from .models import Tags, Content
+
+        places_tags_subquery = Tags.objects.filter(
+            macro_category__name="places", contents=OuterRef("pk")
         )
+
+        return Content.objects.filter(Exists(places_tags_subquery))
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         """Ограничиваем теги только для мест (категория places)"""
