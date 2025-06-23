@@ -79,6 +79,28 @@ class PlaceTagsFilter(admin.SimpleListFilter):
         return queryset
 
 
+class PlaceImageFilter(admin.SimpleListFilter):
+    """Фильтр мест по наличию изображения"""
+
+    title = "Наличие изображения"
+    parameter_name = "has_image"
+
+    def lookups(self, request, model_admin):
+        return [
+            ("no_image", "Без изображения"),
+            ("has_image", "С изображением"),
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == "no_image":
+            # Места без изображения (поле пустое или None)
+            return queryset.filter(image__isnull=True) | queryset.filter(image="")
+        elif self.value() == "has_image":
+            # Места с изображением
+            return queryset.filter(image__isnull=False).exclude(image="")
+        return queryset
+
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     """Админка для событий/мероприятий"""
@@ -158,12 +180,14 @@ class PlaceAdmin(admin.ModelAdmin):
         "city",
         "location",
         "get_tags",
+        "has_image",
         "created",
     )
     list_filter = (
         "city",
         "created",
         PlaceTagsFilter,
+        PlaceImageFilter,
     )
     search_fields = (
         "name",
@@ -195,6 +219,24 @@ class PlaceAdmin(admin.ModelAdmin):
         if db_field.name == "tags":
             kwargs["queryset"] = Tags.objects.filter(macro_category__name="places")
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+    def get_form(self, request, obj=None, **kwargs):
+        """Переопределяем форму для принудительного обновления queryset"""
+        form = super().get_form(request, obj, **kwargs)
+        # Принудительно обновляем queryset для поля tags
+        if "tags" in form.base_fields:
+            form.base_fields["tags"].queryset = Tags.objects.filter(
+                macro_category__name="places"
+            )
+        return form
+
+    def has_image(self, obj):
+        """Показывает есть ли изображение у места"""
+        if obj.image:
+            return "✅ Есть"
+        return "❌ Нет"
+
+    has_image.short_description = "Изображение"
 
 
 @admin.register(Content)
