@@ -13,6 +13,7 @@ type TelegramTheme = {
   section_separator_color: string;
   subtitle_text_color: string;
   destructive_text_color: string;
+  bottom_bar_bg_color: string;
 };
 
 
@@ -66,6 +67,9 @@ type TelegramWebapp = {
   onEvent: (eventType, eventHandler) => void,
   viewportHeight?: number,
   HapticFeedback?: TelegramHapticFeedback;
+  setHeaderColor: (color) => void;
+  setBottomBarColor: (color) => void;
+  setBackgroundColor: (color) => void;
 };
 
 
