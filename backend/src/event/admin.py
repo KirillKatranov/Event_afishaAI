@@ -79,6 +79,50 @@ class PlaceTagsFilter(admin.SimpleListFilter):
         return queryset
 
 
+class PlaceImageFilter(admin.SimpleListFilter):
+    """Фильтр мест по наличию изображения"""
+
+    title = "Наличие изображения"
+    parameter_name = "has_image"
+
+    def lookups(self, request, model_admin):
+        return [
+            ("no_image", "Без изображения"),
+            ("has_image", "С изображением"),
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == "no_image":
+            # Места без изображения (поле пустое или None)
+            return queryset.filter(image__isnull=True) | queryset.filter(image="")
+        elif self.value() == "has_image":
+            # Места с изображением
+            return queryset.filter(image__isnull=False).exclude(image="")
+        return queryset
+
+
+class EventImageFilter(admin.SimpleListFilter):
+    """Фильтр событий по наличию изображения"""
+
+    title = "Наличие изображения"
+    parameter_name = "has_image"
+
+    def lookups(self, request, model_admin):
+        return [
+            ("no_image", "Без изображения"),
+            ("has_image", "С изображением"),
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == "no_image":
+            # События без изображения (поле пустое или None)
+            return queryset.filter(image__isnull=True) | queryset.filter(image="")
+        elif self.value() == "has_image":
+            # События с изображением
+            return queryset.filter(image__isnull=False).exclude(image="")
+        return queryset
+
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     """Админка для событий/мероприятий"""
@@ -92,6 +136,7 @@ class EventAdmin(admin.ModelAdmin):
         "event_type",
         "publisher_type",
         "get_tags",
+        "has_image",
         "created",
     )
     list_filter = (
@@ -101,6 +146,7 @@ class EventAdmin(admin.ModelAdmin):
         "date_start",
         "created",
         EventTagsFilter,
+        EventImageFilter,
     )
     search_fields = (
         "name",
@@ -141,11 +187,43 @@ class EventAdmin(admin.ModelAdmin):
         ),
     )
 
+    def get_queryset(self, request):
+        """Переопределяем queryset без distinct() для возможности массового удаления"""
+        # Используем подзапрос для избежания distinct()
+        from django.db.models import Exists, OuterRef
+        from .models import Tags, Content
+
+        # Контент с тегами из places
+        places_tags_subquery = Tags.objects.filter(
+            macro_category__name="places", contents=OuterRef("pk")
+        )
+
+        # Контент с любыми тегами
+        any_tags_subquery = Tags.objects.filter(contents=OuterRef("pk"))
+
+        return Content.objects.filter(
+            Exists(any_tags_subquery)  # Имеет теги
+        ).exclude(
+            Exists(places_tags_subquery)  # Но не из places
+        )
+
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         """Ограничиваем теги только для событий (исключая places)"""
         if db_field.name == "tags":
             kwargs["queryset"] = Tags.objects.exclude(macro_category__name="places")
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+    def has_image(self, obj):
+        """Показывает есть ли изображение у события"""
+        if obj.image:
+            return "✅ Есть"
+        return "❌ Нет"
+
+    has_image.short_description = "Изображение"
+
+    def has_delete_permission(self, request, obj=None):
+        """Разрешаем удаление событий"""
+        return True  # Разрешаем удаление всем авторизованным пользователям
 
 
 @admin.register(Place)
@@ -158,12 +236,14 @@ class PlaceAdmin(admin.ModelAdmin):
         "city",
         "location",
         "get_tags",
+        "has_image",
         "created",
     )
     list_filter = (
         "city",
         "created",
         PlaceTagsFilter,
+        PlaceImageFilter,
     )
     search_fields = (
         "name",
@@ -190,11 +270,45 @@ class PlaceAdmin(admin.ModelAdmin):
         ),
     )
 
+    def get_queryset(self, request):
+        """Переопределяем queryset без distinct() для возможности массового удаления"""
+        # Используем подзапрос для избежания distinct()
+        from django.db.models import Exists, OuterRef
+        from .models import Tags, Content
+
+        places_tags_subquery = Tags.objects.filter(
+            macro_category__name="places", contents=OuterRef("pk")
+        )
+
+        return Content.objects.filter(Exists(places_tags_subquery))
+
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         """Ограничиваем теги только для мест (категория places)"""
         if db_field.name == "tags":
             kwargs["queryset"] = Tags.objects.filter(macro_category__name="places")
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+    def get_form(self, request, obj=None, **kwargs):
+        """Переопределяем форму для принудительного обновления queryset"""
+        form = super().get_form(request, obj, **kwargs)
+        # Принудительно обновляем queryset для поля tags
+        if "tags" in form.base_fields:
+            form.base_fields["tags"].queryset = Tags.objects.filter(
+                macro_category__name="places"
+            )
+        return form
+
+    def has_image(self, obj):
+        """Показывает есть ли изображение у места"""
+        if obj.image:
+            return "✅ Есть"
+        return "❌ Нет"
+
+    has_image.short_description = "Изображение"
+
+    def has_delete_permission(self, request, obj=None):
+        """Разрешаем удаление мест"""
+        return True  # Разрешаем удаление всем авторизованным пользователям
 
 
 @admin.register(Content)

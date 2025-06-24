@@ -1,11 +1,9 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {
-  Animated,
+  Animated, Dimensions,
   FlatList,
   Image,
   Modal,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   Pressable,
   View,
 } from "react-native";
@@ -23,6 +21,7 @@ import {getEventCardsLayout, setEventCardsLayout} from "@/shared/utils/storage/l
 import {CatalogEventCard} from "@/entities/event/ui/CatalogEventCard";
 import {useCatalogLikesStore} from "@/widgets/events-swiper";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
+import Carousel, {ICarouselInstance} from "react-native-reanimated-carousel";
 
 interface EventsSwiperProps {
   events: Event[];
@@ -31,6 +30,8 @@ interface EventsSwiperProps {
   back?: boolean;
   containerHeight: number;
 }
+
+const width = Dimensions.get("window").width;
 
 export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   events,
@@ -44,25 +45,33 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   const theme = useTheme<Theme>();
   const router = useRouter();
   const username = useConfig().initDataUnsafe.user.username;
-  const flatListRef = useRef<FlatList<Event>>(null);
 
   const [layoutState, setLayoutState] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const ref = React.useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
 
   const [selectedEvent, setEventSelected] = React.useState<Event | undefined>(undefined);
   const [modalVisible, setModalVisible] = React.useState(false);
 
-  const [allEvents] = useState<Event[]>(events); // Сохраняем все данные
-  const [visibleData, setVisibleData] = useState<Event[]>([]);
-  const scrollEndTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [allEvents] = useState<Event[]>(events);
 
   useEffect(() => {
     getEventCardsLayout().then((state) => {
       setLayoutState(state || "catalog");
       if (!state) setEventCardsLayout("catalog");
     });
-    setVisibleData(allEvents.slice(0, 2));
   }, [allEvents]);
+
+  useEffect(() => {
+    window.addEventListener("wheel", (e) => {
+      if (e.deltaY > 0) {
+        ref.current?.next();
+      } else if (e.deltaY < 0) {
+        ref.current?.prev();
+      }
+    });
+  }, []);
 
   const { selectedDays } = useCalendarStore();
   const {
@@ -77,7 +86,6 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   const swipedAllInfoOpacity = useSharedValue(0);
   const swipedAllInfoStyle = useAnimatedStyle(() => ({
     opacity: swipedAllInfoOpacity.value,
-    gap: 40,
   }));
 
   useEffect(() => {
@@ -115,47 +123,6 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
     setEventCardsLayout(newLayout).then(() => setLayoutState(newLayout));
   }, [layoutState]);
 
-  useEffect(() => {
-    if (currentIndex == allEvents.length) {
-      setSwipedAll(true);
-    }
-
-    const newVisibleData = [...allEvents.slice(
-      Math.max(0, currentIndex - 1),
-      Math.min(allEvents.length, currentIndex + 2)
-    )];
-
-    setVisibleData(newVisibleData);
-  }, [currentIndex, allEvents]);
-
-  // Упрощенный обработчик скролла
-  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    const newIndex = Math.round(offsetY / containerHeight);
-
-    if (scrollEndTimeout.current) {
-      clearTimeout(scrollEndTimeout.current);
-    }
-
-    scrollEndTimeout.current = setTimeout(() => {
-      if ((currentIndex == 0 && newIndex == 1) || (currentIndex > 0 && newIndex == 2)) setCurrentIndex(currentIndex + 1)
-      else if ((currentIndex > 0 && newIndex == 0)) setCurrentIndex(currentIndex - 1);
-    }, 100);
-  }, [containerHeight, currentIndex, visibleData]);
-
-  const renderItem = useCallback(({ item }: { item: Event }) => {
-    return (
-      <View style={{ height: containerHeight, width: '100%' }}>
-        <EventCard
-          event={item}
-          onLike={() => handleEventAction("like", item)}
-          onDislike={() => handleEventAction("dislike", item)}
-          owned={!!owned}
-        />
-      </View>
-    );
-  }, [currentIndex, containerHeight, owned]);
-
   const renderCatalogItem = useCallback(({ item }: { item: Event }) => (
     <CatalogEventCard
       event={item}
@@ -175,28 +142,31 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
     return <LoadingCard style={{ width: "100%", height: "100%" }} />;
   }
 
-
   return (
     <Box flex={1} backgroundColor="bg_color">
       {!swipedAll && layoutState === "swiper" && (
-        <FlatList
-          ref={flatListRef}
-          data={visibleData}
-          initialScrollIndex={currentIndex === 0 ? 0 : 1}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          showsVerticalScrollIndicator={false}
-          disableIntervalMomentum
-          snapToInterval={containerHeight}
-          snapToAlignment="end"
-          pagingEnabled
-          decelerationRate={1}
-          onScroll={handleScroll}
-          getItemLayout={(_data, index) => ({
-            length: containerHeight,
-            offset: containerHeight * index,
-            index,
-          })}
+        <Carousel
+          ref={ref}
+          width={width}
+          height={containerHeight}
+          data={events}
+          onProgressChange={progress}
+          vertical
+          snapEnabled
+          windowSize={5}
+          loop={false}
+          renderItem={({ item }: { item: Event }) => {
+            return (
+              <View style={{ height: containerHeight, width: '100%' }}>
+                <EventCard
+                  event={item}
+                  onLike={() => handleEventAction("like", item)}
+                  onDislike={() => handleEventAction("dislike", item)}
+                  owned={!!owned}
+                />
+              </View>
+            );
+          }}
         />
       )}
 
@@ -339,7 +309,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             padding="xl"
           >
             <Animated.View
-              style={swipedAllInfoStyle}
+              style={[swipedAllInfoStyle, { gap: 40 }]}
             >
               <Text
                 variant="body"
