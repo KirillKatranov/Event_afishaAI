@@ -153,7 +153,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
           onProgressChange={progress}
           vertical
           snapEnabled
-          windowSize={3}
+          windowSize={5}
           loop={false}
           renderItem={({ item }: { item: Event }) => {
             return (
