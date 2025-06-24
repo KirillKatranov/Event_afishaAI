@@ -13,7 +13,7 @@ import {useTheme} from "@shopify/restyle";
 import {useCalendarStore} from "@/features/dates";
 import {useReactionsStore} from "@/features/likes-dislikes";
 import {Event, EventCard} from "@/entities/event";
-import {Box, LoadingCard, SearchBar, Text} from "@/shared/ui";
+import {Box, GradientText, LoadingCard, SearchBar, Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import Icon from "@/shared/ui/Icons/Icon";
@@ -29,6 +29,7 @@ interface EventsSwiperProps {
   swipedAll: boolean;
   setSwipedAll: (swipedAll: boolean) => void;
   back?: boolean;
+  tag?: string;
   containerHeight: number;
   allowSearch?: boolean;
   searchUtils?: {
@@ -46,11 +47,12 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   swipedAll,
   setSwipedAll,
   back,
+  tag,
   containerHeight,
   allowSearch,
   searchUtils
 }) => {
-  const { service, tag, owned } = useLocalSearchParams<{ service: string; tag: string; owned: string }>();
+  const { service, owned } = useLocalSearchParams<{ service: string; tag: string; owned: string }>();
 
   const theme = useTheme<Theme>();
   const router = useRouter();
@@ -165,7 +167,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
               onProgressChange={progress}
               vertical
               snapEnabled
-              windowSize={5}
+              windowSize={3}
               loop={false}
               renderItem={({ item }: { item: Event }) => {
                 return (
@@ -325,6 +327,26 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             onSearch={searchUtils.onSearch}
             fetchSuggestions={searchUtils.fetchSuggestions}
           />
+        )}
+
+
+        {layoutState === "catalog" && !allowSearch && tag && (
+          <View
+            style={{
+              flex: 1, height: 30,
+              alignItems: "center", justifyContent: "center",
+              backgroundColor: "rgba(255,255,255,0.5)",
+              borderRadius: 10, marginTop: 5,
+            }}
+          >
+            <GradientText
+              id={tag}
+              colors={["#E600FF", "#C700FF", "#8E00FF", "#6F01C7"]}
+              stops={[0, 0.21, 0.66, 1]}
+              text={tag.toUpperCase()} fontSize={20} textStyle={{ fontFamily: "UnboundedExtraBold" }}
+              gradientStop={{ x: 0, y: 1 }}
+            />
+          </View>
         )}
       </Box>
 

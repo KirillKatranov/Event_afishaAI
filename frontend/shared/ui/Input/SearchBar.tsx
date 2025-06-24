@@ -169,6 +169,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
+    borderWidth: 0,
+    outline: "none",
   },
   clearButton: {
     marginLeft: 8,
