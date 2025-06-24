@@ -13,7 +13,7 @@ import {useTheme} from "@shopify/restyle";
 import {useCalendarStore} from "@/features/dates";
 import {useReactionsStore} from "@/features/likes-dislikes";
 import {Event, EventCard} from "@/entities/event";
-import {Box, LoadingCard, Text} from "@/shared/ui";
+import {Box, LoadingCard, SearchBar, Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import Icon from "@/shared/ui/Icons/Icon";
@@ -25,20 +25,30 @@ import Carousel, {ICarouselInstance} from "react-native-reanimated-carousel";
 
 interface EventsSwiperProps {
   events: Event[];
+  isLoading: boolean;
   swipedAll: boolean;
   setSwipedAll: (swipedAll: boolean) => void;
   back?: boolean;
   containerHeight: number;
+  allowSearch?: boolean;
+  searchUtils?: {
+    query: string, setQuery: (query: string) => void;
+    onSearch: (query: string) => void;
+    fetchSuggestions: (query: string) => Promise<string[]>;
+  }
 }
 
 const width = Dimensions.get("window").width;
 
 export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   events,
+  isLoading,
   swipedAll,
   setSwipedAll,
   back,
   containerHeight,
+  allowSearch,
+  searchUtils
 }) => {
   const { service, tag, owned } = useLocalSearchParams<{ service: string; tag: string; owned: string }>();
 
@@ -145,29 +155,35 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   return (
     <Box flex={1} backgroundColor="bg_color">
       {!swipedAll && layoutState === "swiper" && (
-        <Carousel
-          ref={ref}
-          width={width}
-          height={containerHeight}
-          data={events}
-          onProgressChange={progress}
-          vertical
-          snapEnabled
-          windowSize={5}
-          loop={false}
-          renderItem={({ item }: { item: Event }) => {
-            return (
-              <View style={{ height: containerHeight, width: '100%' }}>
-                <EventCard
-                  event={item}
-                  onLike={() => handleEventAction("like", item)}
-                  onDislike={() => handleEventAction("dislike", item)}
-                  owned={!!owned}
-                />
-              </View>
-            );
-          }}
-        />
+        <>
+          {!isLoading && (
+            <Carousel
+              ref={ref}
+              width={width}
+              height={containerHeight}
+              data={events}
+              onProgressChange={progress}
+              vertical
+              snapEnabled
+              windowSize={5}
+              loop={false}
+              renderItem={({ item }: { item: Event }) => {
+                return (
+                  <View style={{ height: containerHeight, width: '100%' }}>
+                    <EventCard
+                      event={item}
+                      onLike={() => handleEventAction("like", item)}
+                      onDislike={() => handleEventAction("dislike", item)}
+                      owned={!!owned}
+                    />
+                  </View>
+                );
+              }}
+            />
+          )}
+
+          {isLoading && <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>}
+        </>
       )}
 
       {layoutState === "catalog" && !swipedAll && (
@@ -186,18 +202,21 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             }}
           />
 
-          <FlatList
-            data={events}
-            renderItem={renderCatalogItem}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            columnWrapperStyle={{ gap: 16, marginBottom: 16 }}
-            style={{
-              flex: 1,
-              gap: 16,
-              paddingHorizontal: 16,
-            }}
-          />
+          {isLoading && <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>}
+          {!isLoading && (
+            <FlatList
+              data={events}
+              renderItem={renderCatalogItem}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+              columnWrapperStyle={{ gap: 16, marginBottom: 16 }}
+              style={{
+                flex: 1,
+                gap: 16,
+                paddingHorizontal: 16,
+              }}
+            />
+          )}
 
           <Modal
             visible={modalVisible}
@@ -255,13 +274,15 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
       <Box
         flexDirection={"row"}
         height={16 + 40 + 16}
+        width={"100%"}
         gap={"m"}
         justifyContent={"flex-start"}
         position={"absolute"} zIndex={1}
         alignSelf={"flex-start"}
         style={{
           paddingTop: 20,
-          paddingLeft: 20
+          paddingLeft: 20,
+          paddingRight: 72,
         }}
       >
         {!swipedAll && (
@@ -297,6 +318,14 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             </Pressable>
           )
         }
+
+        {layoutState === "catalog" && allowSearch && searchUtils && (
+          <SearchBar
+            query={searchUtils.query} setQuery={searchUtils.setQuery}
+            onSearch={searchUtils.onSearch}
+            fetchSuggestions={searchUtils.fetchSuggestions}
+          />
+        )}
       </Box>
 
       {
