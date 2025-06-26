@@ -1,4 +1,5 @@
 import datetime
+import os
 from sqlalchemy import (
     create_engine,
     Column,
@@ -27,9 +28,16 @@ class PublisherType(str, enum.Enum):
     USER = "user"
     ORGANISATION = "organisation"
 
-
-# Создаем движок SQLAlchemy (engine)
-engine = create_engine("postgresql://afisha:password@db/afisha", echo=True)
+# Настройка движка SQLAlchemy (engine)
+TEST_MODE = os.getenv("TEST_MODE", "False").lower() == "true"
+if TEST_MODE:
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    )
+else:
+    SQLALCHEMY_DATABASE_URL = "postgresql://afisha:password@db/afisha"
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
 # Создаем фабрику сессий (SessionLocal)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
