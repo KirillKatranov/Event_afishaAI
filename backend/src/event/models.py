@@ -173,6 +173,28 @@ class Content(GenericModel):
             models.Index(fields=["date_start"]),
             models.Index(fields=["date_end"]),
             models.Index(fields=["publisher_type", "publisher_id"]),
+            models.Index(
+                fields=["name", "date_start", "location"]
+            ),  # Для поиска дубликатов
+            models.Index(
+                fields=["name", "description"], name="name_desc_idx"
+            ),  # Для поиска по содержимому
+        ]
+        constraints = [
+            # Составные уникальные ограничения для предотвращения дубликатов
+            models.UniqueConstraint(
+                fields=["name", "date_start", "location", "city"],
+                name="unique_content_by_details",
+                condition=models.Q(name__isnull=False)
+                & models.Q(date_start__isnull=False),
+            ),
+            # Ограничение на уникальность по содержимому для коротких описаний
+            models.UniqueConstraint(
+                fields=["name", "city"],
+                name="unique_content_by_name_city",
+                condition=models.Q(name__isnull=False)
+                & models.Q(date_start__isnull=True),
+            ),
         ]
 
 
