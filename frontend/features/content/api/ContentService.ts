@@ -59,7 +59,7 @@ class ContentService {
       const response: SuggestionsResponse = await axiosInstance.get(
         '/search/suggestions',
         {
-          params: params
+          params: params,
         });
 
       return { data: response.data };

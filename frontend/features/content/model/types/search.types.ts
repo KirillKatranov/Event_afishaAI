@@ -27,6 +27,6 @@ export type SuggestionsResponse = {
   status: number,
   data: {
     suggestions: string[],
-    query: string
+    query: string,
   }
 }

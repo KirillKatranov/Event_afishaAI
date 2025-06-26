@@ -21,4 +21,4 @@ export {LoadingCard} from "./MessageCards/LoadingCard";
 export {ErrorCard} from "./MessageCards/ErrorCard";
 
 export {Topbar} from "./Navigation/Topbar";
-export {Stepper} from "./Navigation/Stepper"
+export {Stepper} from "./Navigation/Stepper";

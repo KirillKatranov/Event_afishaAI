@@ -49,7 +49,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   tag,
   containerHeight,
   allowSearch,
-  searchUtils
+  searchUtils,
 }) => {
   const { service, owned } = useLocalSearchParams<{ service: string; tag: string; owned: string }>();
 
