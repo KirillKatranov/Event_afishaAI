@@ -45,7 +45,6 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   events,
   isLoading,
   swipedAll,
-  setSwipedAll,
   back,
   tag,
   containerHeight,
@@ -56,6 +55,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
 
   const theme = useTheme<Theme>();
   const router = useRouter();
+  const config = useConfig();
   const username = useConfig().initDataUnsafe.user.username;
 
   const [layoutState, setLayoutState] = useState<string | null>(null);
@@ -65,15 +65,14 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
 
   const [selectedEvent, setEventSelected] = React.useState<Event | undefined>(undefined);
   const [modalVisible, setModalVisible] = React.useState(false);
-
-  const [allEvents] = useState<Event[]>(events);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
 
   useEffect(() => {
     getEventCardsLayout().then((state) => {
       setLayoutState(state || "catalog");
       if (!state) setEventCardsLayout("catalog");
     });
-  }, [allEvents]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener("wheel", (e) => {
@@ -169,6 +168,8 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
               snapEnabled
               windowSize={3}
               loop={false}
+              defaultIndex={currentIndex}
+              onSnapToItem={(index) => setCurrentIndex(index)}
               renderItem={({ item }: { item: Event }) => {
                 return (
                   <View style={{ height: containerHeight, width: '100%' }}>
@@ -347,6 +348,34 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
               gradientStop={{ x: 0, y: 1 }}
             />
           </View>
+        )}
+
+        {layoutState !== "catalog" && (
+          <Pressable
+            onPress={ () => {
+              const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${events[currentIndex].id}`;
+              const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
+
+              console.log("Sharing event with link:", link);
+
+              config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
+            }}
+          >
+            <Box
+              backgroundColor={"cardBGColor"}
+              height={40}
+              width={40}
+              alignItems={"center"}
+              justifyContent={"center"}
+              borderRadius={"xl"}
+            >
+              <Icon
+                name={"share"}
+                color={theme.colors.white}
+                size={24}
+              />
+            </Box>
+          </Pressable>
         )}
       </Box>
 
