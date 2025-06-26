@@ -117,7 +117,6 @@ def get_content(
     date_end: Optional[date] = None,
     db: Session = Depends(get_db),
 ) -> List[ContentSchema]:
-
     logger.info(f"Fetching content for user: {username} with tag: {tag}")
 
     q_filter = create_date_filter(date_start, date_end)
@@ -141,7 +140,9 @@ def get_content(
 
     contents = content_query.all()
 
-    logger.info(f"Returning {len(contents)} contents for user: {username} with tag: {tag}")
+    logger.info(
+        f"Returning {len(contents)} contents for user: {username} with tag: {tag}"
+    )
 
     return contents
 
@@ -154,7 +155,6 @@ def get_liked_content(
     value: bool = True,
     db: Session = Depends(get_db),
 ) -> list[ContentSchema]:
-
     logger.info(f"Fetching liked content for user: {username}")
 
     user_id = db.query(User.id).filter(User.username == username).scalar()
@@ -299,7 +299,9 @@ async def create_content(
             )
 
         # Проверяем существование пользователя и его права на организацию
-        logger.info(f"Checking user {username} and his organisation {organisation_id} permissions")
+        logger.info(
+            f"Checking user {username} and his organisation {organisation_id} permissions"
+        )
         user = db.query(User).filter(User.username == username).first()
         if not user:
             logger.warning(f"User {username} not found")
@@ -311,7 +313,9 @@ async def create_content(
             .first()
         )
         if not organisation:
-            logger.warning(f"User {username} doesn't have permission to publish content for organisation {organisation_id}")
+            logger.warning(
+                f"User {username} doesn't have permission to publish content for organisation {organisation_id}"
+            )
             raise HTTPException(
                 status_code=403,
                 detail="You don't have permission to publish content for this organisation",
@@ -447,7 +451,7 @@ def get_user_contents(
     )
 
     # Добавляем macro_category для каждого контента
-    logger.info(f"Adding macro_category for each content")
+    logger.info("Adding macro_category for each content")
     for content in contents:
         if content.tags and content.tags[0].macro_category:
             content.macro_category = content.tags[0].macro_category.name
@@ -489,11 +493,15 @@ async def delete_content(content_id: int, username: str, db: Session = Depends(g
         raise HTTPException(status_code=404, detail="Content not found")
 
     # Проверяем права на удаление
-    logger.info(f"Checking permissions for user {username} to delete content {content_id}")
+    logger.info(
+        f"Checking permissions for user {username} to delete content {content_id}"
+    )
     if content.publisher_type == PublisherType.USER:
         # Для контента, опубликованного пользователем
         if content.publisher_id != user.id:
-            logger.warning(f"User {username} doesn't have permission to delete content {content_id}")
+            logger.warning(
+                f"User {username} doesn't have permission to delete content {content_id}"
+            )
             raise HTTPException(
                 status_code=403,
                 detail="You don't have permission to delete this content",
@@ -509,7 +517,9 @@ async def delete_content(content_id: int, username: str, db: Session = Depends(g
             .first()
         )
         if not organisation:
-            logger.warning(f"User {username} doesn't have permission to delete content {content_id}")
+            logger.warning(
+                f"User {username} doesn't have permission to delete content {content_id}"
+            )
             raise HTTPException(
                 status_code=403,
                 detail="You don't have permission to delete this content",
@@ -554,7 +564,7 @@ def get_users_who_liked_content(content_id: int, db: Session = Depends(get_db)):
     likes = (
         db.query(User)
         .join(Like, Like.user_id == User.id)
-        .filter(Like.content_id == content_id, Like.value is True)
+        .filter(Like.content_id == content_id, Like.value == True)  # noqa: E712
         .all()
     )
     logger.info(f"Users who liked content {content_id}: {likes}")
