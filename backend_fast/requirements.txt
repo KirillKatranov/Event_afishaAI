@@ -13,3 +13,4 @@ httpx>=0.23.0,<0.24.0
 pytest
 loguru>=0.7.0
 pydantic_settings
+python-dotenv
