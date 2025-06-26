@@ -1,6 +1,8 @@
-import {ContentParams, EventResponse, EventsResponse} from "@/features/content";
+import {ContentParams, EventResponse, EventsResponse, SearchResponse, SuggestionsResponse} from "@/features/content";
 import {Event} from "@/entities/event";
 import axiosInstance from "@/shared/api/AxiosConfig";
+import {SearchParams} from "@/features/content";
+import {AxiosError} from "axios";
 
 class ContentService {
   async getContent (
@@ -31,6 +33,43 @@ class ContentService {
     return response;
   };
 
+  async searchEvents(params: SearchParams) {
+    try {
+      console.log("Send GET search request with params: ", params);
+
+      const response: SearchResponse = await axiosInstance.get(
+        '/search',
+        {
+          params: params
+        });
+
+      return { data: response };
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        return { error: e.response?.data?.message };
+      }
+      return { error: "Неизвестная ошибка" }
+    }
+  }
+
+  async searchSuggestions(params: { q: string }) {
+    try {
+      console.log("Send GET search suggestions with params: ", params);
+
+      const response: SuggestionsResponse = await axiosInstance.get(
+        '/search/suggestions',
+        {
+          params: params,
+        });
+
+      return { data: response.data };
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        return { error: e.response?.data?.message };
+      }
+      return { error: "Неизвестная ошибка" }
+    }
+  }
 
   async getSingleEvent(
     id: string | number

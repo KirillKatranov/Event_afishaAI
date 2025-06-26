@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {EventsVerticalSwiper} from "@/widgets/events-swiper";
-import {Box, ErrorCard, LoadingCard} from "@/shared/ui";
+import {Box, ErrorCard} from "@/shared/ui";
 import {useFeedStore} from "@/features/content";
 import {getPeriodBorders} from "@/shared/scripts/date";
 import {useConfig} from "@/shared/providers/TelegramConfig";
@@ -16,6 +16,8 @@ export const FeedPage = () => {
     isLoading, hasError,
     swipedAll, setSwipedAll,
     fetchFeed,
+    fetchSearch, fetchSuggestions,
+    searchQuery, setSearchQuery,
   } = useFeedStore();
   const { selectedDays} = useCalendarStore();
 
@@ -40,7 +42,23 @@ export const FeedPage = () => {
     });
   }, [selectedDays]);
 
-  if (isLoading) return <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>
+  const onSearch = (query: string) => {
+    const borders = getPeriodBorders(Object.keys(selectedDays));
+    if (query === "") {
+      fetchFeed({
+        username: username,
+        date_start: borders.date_start,
+        date_end: borders.date_end
+      });
+    } else {
+      fetchSearch({
+        q: query,
+        date_from: borders.date_start,
+        date_to: borders.date_end
+      })
+    }
+  }
+
   if (hasError) return <ErrorCard />
 
   return (
@@ -48,7 +66,18 @@ export const FeedPage = () => {
       flex={1}
       flexDirection="column"
     >
-      <EventsVerticalSwiper events={feed} swipedAll={swipedAll} setSwipedAll={setSwipedAll} containerHeight={swiperHeight}/>
+      <EventsVerticalSwiper
+        events={feed}
+        isLoading={isLoading}
+        swipedAll={swipedAll} setSwipedAll={setSwipedAll}
+        containerHeight={swiperHeight}
+        allowSearch
+        searchUtils={{
+          query: searchQuery, setQuery: setSearchQuery,
+          onSearch: onSearch,
+          fetchSuggestions: fetchSuggestions
+        }}
+      />
     </Box>
   )
 }

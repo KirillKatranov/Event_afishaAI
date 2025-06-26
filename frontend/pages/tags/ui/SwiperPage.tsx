@@ -4,7 +4,7 @@ import {useConfig} from "@/shared/providers/TelegramConfig";
 import {EventsVerticalSwiper} from "@/widgets/events-swiper";
 import {useEventsSwiperStore} from "@/features/content";
 import {getPeriodBorders} from "@/shared/scripts/date";
-import {ErrorCard, LoadingCard} from "@/shared/ui";
+import {ErrorCard} from "@/shared/ui";
 import {useCalendarStore} from "@/features/dates";
 import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
 import {Dimensions} from "react-native";
@@ -45,8 +45,15 @@ export const SwiperPage = () => {
     });
   }, [selectedDays]);
 
-  if (isLoading) return <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>
   if (hasError) return <ErrorCard />
 
-  return <EventsVerticalSwiper events={events} swipedAll={swipedAll} setSwipedAll={setSwipedAll} containerHeight={swiperHeight}/>;
+  return (
+    <EventsVerticalSwiper
+      events={events}
+      swipedAll={swipedAll} setSwipedAll={setSwipedAll}
+      containerHeight={swiperHeight}
+      isLoading={isLoading}
+      tag={tag}
+    />
+  );
 }
