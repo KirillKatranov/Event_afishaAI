@@ -28,7 +28,7 @@ export const DynamicThemeProvider:  React.FC<{ children: React.ReactNode }> = (
     },
     spacing: Spacing,
     borderRadii: BorderRadii,
-    textVariants: Text,
+    textVariants: Text
   });
 
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;

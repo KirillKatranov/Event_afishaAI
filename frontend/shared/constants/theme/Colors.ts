@@ -40,7 +40,7 @@ export const baseTheme = {
   section_header_text_color: "#168acd",
   section_separator_color: "#e7e7e7",
   subtitle_text_color: "#999999",
-  text_color: "#000000",
+  text_color: "#000000"
 }
 
 export const getTint = (color: string): "default" | "dark" => {

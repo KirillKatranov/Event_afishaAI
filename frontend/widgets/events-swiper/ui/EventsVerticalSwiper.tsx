@@ -36,7 +36,7 @@ interface EventsSwiperProps {
     query: string, setQuery: (query: string) => void;
     onSearch: (query: string) => void;
     fetchSuggestions: (query: string) => Promise<string[]>;
-  }
+  };
 }
 
 const width = Dimensions.get("window").width;
