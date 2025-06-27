@@ -8,6 +8,7 @@ import {useCalendarStore} from "@/features/dates";
 
 interface TagsState {
   tags: Tag[];
+  lastService?: string;
   preferences: number[];
   onTagLike: (params: PreferencesRequest) => void;
   isLoading: boolean;
@@ -15,7 +16,7 @@ interface TagsState {
   fetchTags: (params: TagsRequest) => void;
 }
 
-export const useTagsStore = create<TagsState>((set) => ({
+export const useTagsStore = create<TagsState>((set,get) => ({
   tags: [],
   preferences: [],
   isLoading: true,
@@ -53,7 +54,11 @@ export const useTagsStore = create<TagsState>((set) => ({
   },
 
   fetchTags: (params) => {
-    set({ isLoading: true, hasError: false });
+    if (!get().lastService || get().lastService !== params.macro_category) {
+      set({ lastService: params.macro_category, isLoading: true, hasError: false })
+    } else {
+      set({ isLoading: false, hasError: false });
+    }
 
     tagsService.getTags(params)
       .then((response) => {
@@ -69,7 +74,7 @@ export const useTagsStore = create<TagsState>((set) => ({
         console.log(`Events request error: ${e}`);
         set({ hasError: true, isLoading: false });
       });
-  }
+  },
 }));
 
 const sortTagsByPreferences = (tags: Tag[], preferences: number[]): Tag[] => {
