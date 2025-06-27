@@ -36,7 +36,7 @@ export const useFeedStore = create<FeedState>((set) => ({
             console.log(`Successfully get feed`);
             set({ feed: response.data.data.contents, swipedAll: false });
           } else {
-            console.log(`No feed events on provided params`);
+            console.log(`No feed events on provided  params `);
             set({ swipedAll: true });
           }
         } else if (response && response.error) {

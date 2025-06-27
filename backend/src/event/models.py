@@ -173,6 +173,17 @@ class Content(GenericModel):
             models.Index(fields=["date_start"]),
             models.Index(fields=["date_end"]),
             models.Index(fields=["publisher_type", "publisher_id"]),
+            models.Index(
+                fields=["name", "date_start", "location"]
+            ),  # Для поиска дубликатов
+            models.Index(
+                fields=["name"], name="name_idx"
+            ),  # Индекс только по названию (description слишком большое)
+        ]
+        constraints = [
+            # Составные уникальные ограничения для предотвращения дубликатов
+            # Примечание: не добавляем слишком строгие ограничения, так как это может заблокировать легитимные события
+            # Оставляем только уникальность unique_id, которая уже есть на уровне поля
         ]
 
 

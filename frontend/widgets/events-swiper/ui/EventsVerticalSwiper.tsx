@@ -13,7 +13,7 @@ import {useTheme} from "@shopify/restyle";
 import {useCalendarStore} from "@/features/dates";
 import {useReactionsStore} from "@/features/likes-dislikes";
 import {Event, EventCard} from "@/entities/event";
-import {Box, LoadingCard, SearchBar, Text} from "@/shared/ui";
+import {Box, GradientText, LoadingCard, SearchBar, Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import Icon from "@/shared/ui/Icons/Icon";
@@ -29,13 +29,14 @@ interface EventsSwiperProps {
   swipedAll: boolean;
   setSwipedAll: (swipedAll: boolean) => void;
   back?: boolean;
+  tag?: string;
   containerHeight: number;
   allowSearch?: boolean;
   searchUtils?: {
     query: string, setQuery: (query: string) => void;
     onSearch: (query: string) => void;
     fetchSuggestions: (query: string) => Promise<string[]>;
-  }
+  };
 }
 
 const width = Dimensions.get("window").width;
@@ -44,16 +45,17 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   events,
   isLoading,
   swipedAll,
-  setSwipedAll,
   back,
+  tag,
   containerHeight,
   allowSearch,
-  searchUtils
+  searchUtils,
 }) => {
-  const { service, tag, owned } = useLocalSearchParams<{ service: string; tag: string; owned: string }>();
+  const { service, owned } = useLocalSearchParams<{ service: string; tag: string; owned: string }>();
 
   const theme = useTheme<Theme>();
   const router = useRouter();
+  const config = useConfig();
   const username = useConfig().initDataUnsafe.user.username;
 
   const [layoutState, setLayoutState] = useState<string | null>(null);
@@ -63,15 +65,14 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
 
   const [selectedEvent, setEventSelected] = React.useState<Event | undefined>(undefined);
   const [modalVisible, setModalVisible] = React.useState(false);
-
-  const [allEvents] = useState<Event[]>(events);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
 
   useEffect(() => {
     getEventCardsLayout().then((state) => {
       setLayoutState(state || "catalog");
       if (!state) setEventCardsLayout("catalog");
     });
-  }, [allEvents]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener("wheel", (e) => {
@@ -165,8 +166,10 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
               onProgressChange={progress}
               vertical
               snapEnabled
-              windowSize={5}
+              windowSize={3}
               loop={false}
+              defaultIndex={currentIndex}
+              onSnapToItem={(index) => setCurrentIndex(index)}
               renderItem={({ item }: { item: Event }) => {
                 return (
                   <View style={{ height: containerHeight, width: '100%' }}>
@@ -304,7 +307,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             <Pressable
               onPress={ () => {
                 if (back) router.replace("/tags/organizers");
-                else router.navigate({ pathname: "/tags/[service]", params: { service: service }});
+                else router.replace({ pathname: "/tags/[service]", params: { service: service }});
               }}
             >
               <Box
@@ -325,6 +328,54 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             onSearch={searchUtils.onSearch}
             fetchSuggestions={searchUtils.fetchSuggestions}
           />
+        )}
+
+
+        {layoutState === "catalog" && !allowSearch && tag && (
+          <View
+            style={{
+              flex: 1, height: 30,
+              alignItems: "center", justifyContent: "center",
+              backgroundColor: "rgba(255,255,255,0.5)",
+              borderRadius: 10, marginTop: 5,
+            }}
+          >
+            <GradientText
+              id={tag}
+              colors={["#E600FF", "#C700FF", "#8E00FF", "#6F01C7"]}
+              stops={[0, 0.21, 0.66, 1]}
+              text={tag.toUpperCase()} fontSize={20} textStyle={{ fontFamily: "UnboundedExtraBold" }}
+              gradientStop={{ x: 0, y: 1 }}
+            />
+          </View>
+        )}
+
+        {layoutState !== "catalog" && (
+          <Pressable
+            onPress={ () => {
+              const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${events[currentIndex].id}`;
+              const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
+
+              console.log("Sharing event with link:", link);
+
+              config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
+            }}
+          >
+            <Box
+              backgroundColor={"cardBGColor"}
+              height={40}
+              width={40}
+              alignItems={"center"}
+              justifyContent={"center"}
+              borderRadius={"xl"}
+            >
+              <Icon
+                name={"share"}
+                color={theme.colors.white}
+                size={24}
+              />
+            </Box>
+          </Pressable>
         )}
       </Box>
 

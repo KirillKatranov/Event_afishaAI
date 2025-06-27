@@ -87,7 +87,7 @@ export const TagsList: React.FC<TagsListProps> = ({
               tag={item}
               onPress={(event) => {
                 event.preventDefault();
-                router.push({
+                router.replace({
                   pathname: "/tags/[service]/[tag]",
                   params: { service: service, tag: item.name }
                 });

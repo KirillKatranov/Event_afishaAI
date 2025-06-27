@@ -69,7 +69,7 @@ type TelegramWebapp = {
   HapticFeedback?: TelegramHapticFeedback;
   setHeaderColor: (color) => void;
   setBottomBarColor: (color) => void;
-  setBackgroundColor: (color) => void;
+  setBackgroundColor: (color) =>  void;
 };
 
 

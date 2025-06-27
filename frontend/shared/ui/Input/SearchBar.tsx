@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   container: {
-    zIndex: 101, // Должен быть выше оверлея
+    zIndex: 101,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -169,6 +169,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
+    borderWidth: 0,
+    outline: "none",
   },
   clearButton: {
     marginLeft: 8,

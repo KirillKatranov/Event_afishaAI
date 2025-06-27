@@ -17,7 +17,7 @@ export const FeedPage = () => {
     swipedAll, setSwipedAll,
     fetchFeed,
     fetchSearch, fetchSuggestions,
-    searchQuery, setSearchQuery
+    searchQuery, setSearchQuery,
   } = useFeedStore();
   const { selectedDays} = useCalendarStore();
 
