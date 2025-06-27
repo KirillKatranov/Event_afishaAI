@@ -37,7 +37,7 @@ export const TagCard: React.FC<TagCardProps> = ({
   const opacity = useAnimatedStyle(() => ({
     opacity: interpolate(
       scrollY.value,
-      [ (index - 1) * 124 + 300, index * 124 + 300 ],
+      [ (index - 1) * 124 + 260, index * 124 + 260 ],
       [1, 0],
       "clamp"
     ),
@@ -45,7 +45,7 @@ export const TagCard: React.FC<TagCardProps> = ({
       {
         scale: interpolate(
           scrollY.value,
-          [ (index - 1) * 124 + 300, index * 124 + 300 ],
+          [ (index - 1) * 124 + 260, index * 124 + 260 ],
           [1, 0.8],
           "clamp"
         ),
@@ -53,7 +53,7 @@ export const TagCard: React.FC<TagCardProps> = ({
       {
         translateY: interpolate(
           scrollY.value,
-          [ (index - 1) * 124 + 300, index * 124 + 300 ],
+          [ (index - 1) * 124 + 260, index * 124 + 260 ],
           [0, 30],
           "clamp"
         ),

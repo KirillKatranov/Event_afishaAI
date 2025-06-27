@@ -5,6 +5,7 @@ import Icon from "@/shared/ui/Icons/Icon";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
+import DropShadow from "react-native-drop-shadow";
 
 interface TagsHeaderProps {
   title: string;
@@ -18,8 +19,13 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
   const theme = useTheme<Theme>();
 
   return (
-    <Box
-      style={{ paddingBottom: 16, paddingTop: 108 }}
+    <DropShadow
+      style={{
+        shadowOffset: {width: 2, height: 2},
+        shadowColor: "rgba(0,0,0,0.25)",
+        shadowRadius: 8,
+        paddingBottom: 8, paddingTop: 60, marginBottom: 16, borderBottomStartRadius: 20, borderBottomEndRadius: 20,
+      }}
     >
       <Pressable
         onPress={() => {
@@ -36,9 +42,9 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
         </Box>
       </Pressable>
 
-      <Text variant={"tagsHeader"} color={"text_color"} textAlign={"center"}>
-        {props.title}
+      <Text style={{ fontFamily: "UnboundedSemiBold", fontSize: 32, textAlign: "center", color: theme.colors.black }}>
+        {props.title.toUpperCase()}
       </Text>
-    </Box>
+    </DropShadow>
   );
 };
