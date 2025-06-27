@@ -1,51 +1,49 @@
 import React from "react";
-import {ScrollView, Image, Pressable, View} from "react-native";
+import {ScrollView, Dimensions} from "react-native";
 import {OrganizersList} from "@/widgets/organizers-list";
-import Icon from "@/shared/ui/Icons/Icon";
-import {useRouter} from "expo-router";
-import {useTheme} from "@shopify/restyle";
+import Animated, {interpolate, useAnimatedStyle, useSharedValue} from "react-native-reanimated";
+import {ServicesColors} from "@/entities/service";
+import {BlurView} from "expo-blur";
+import {TagsHeader} from "@/widgets/tags-list";
+
+const window = Dimensions.get("window");
 
 export const OrganizersPage = () => {
-  const router = useRouter();
-  const theme = useTheme();
+  const scrollY = useSharedValue(0);
+
+  const gradientStyle = useAnimatedStyle(() => {
+    const translateY = interpolate(
+      scrollY.value,
+      [0, 250],
+      [0, 100],
+      'clamp'
+    );
+
+    return { top: -(window.height * 0.05) - translateY };
+  });
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       style={{ flex: 1, backgroundColor: "white" }}
-      contentContainerStyle={{
-        flexGrow: 1, minHeight: '100%',
-        padding: 16, gap: 16,
-      }}
+      contentContainerStyle={{ flexGrow: 1, minHeight: '100%', alignItems: "center" }}
     >
-      <Image
-        source={require("@/shared/assets/images/BlurredCircles.png")}
-        resizeMode="stretch"
-        style={{
-          position: "absolute",
-          zIndex: 0,
-          width: "100%",
-          height: 120,
-          top: -15,
-          opacity: 0.75,
-          alignSelf: "center"
-        }}
+      <Animated.View
+        style={[{
+          backgroundColor: ServicesColors["organizers"], opacity: 0.75,
+          position: "absolute", zIndex: -1,
+          width: window.height * 0.1,
+          height: window.height * 0.1,
+          borderRadius: window.height * 0.1 / 2,
+          transform: [{ scaleX: window.width / (window.height * 0.1) }],
+        }, gradientStyle]}
       />
 
-      <Pressable
-        onPress={() => {
-          router.replace("/tags");
-        }}
-        style={{ position: "absolute", zIndex: 1, top: 20, left: 20 }}
-      >
-        <View
-          style={{ width: 40, height: 40, borderRadius: 100, alignItems: "center", justifyContent: "center" }}
-        >
-          <Icon name={"chevronLeft"} color={theme.colors.text_color} size={24}/>
-        </View>
-      </Pressable>
+      <BlurView intensity={100} style={{ width: "100%", height: "100%", zIndex: 1, gap: 16, }}>
+        <TagsHeader title={"Организаторы"} service={"organizers"}/>
 
-      <OrganizersList/>
+        <OrganizersList/>
+      </BlurView>
     </ScrollView>
   );
 };

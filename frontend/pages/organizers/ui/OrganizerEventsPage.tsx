@@ -38,7 +38,7 @@ export const OrganizerEventsPage = () => {
     <View
       style={{ flex: 1, backgroundColor: "white", width: "100%" }}
     >
-      <EventsVerticalSwiper events={events} setSwipedAll={setSwipedAll} swipedAll={swipedAll} back containerHeight={swiperHeight}/>
+      <EventsVerticalSwiper events={events} setSwipedAll={setSwipedAll} swipedAll={swipedAll} back containerHeight={swiperHeight} isLoading={isLoading}/>
     </View>
   );
 };

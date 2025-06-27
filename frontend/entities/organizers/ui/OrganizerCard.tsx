@@ -61,7 +61,6 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({
               style={{
                 height: "100%",
                 width: "40%",
-                backgroundColor: "white",
                 position: "absolute",
                 left: 0
               }}
@@ -74,14 +73,13 @@ export const OrganizerCard: React.FC<OrganizerCardProps> = ({
               style={{
                 height: "100%",
                 width: "40%",
-                backgroundColor: "white",
                 display: imageLoading ? "none" : "flex"
               }}
             />
 
             {imageLoading && (
               <Box width={"40%"} height={"100%"} alignItems={"center"} justifyContent={"center"}>
-                <LoadingCard style={{ width: "100%", height: "100%", position: "absolute", zIndex: -1, borderRadius: 8 }}/>
+                <LoadingCard style={{ width: "100%", height: "100%", position: "absolute", zIndex: -1 }}/>
                 <Illustration name={"strelka"} width={64} height={64}/>
               </Box>
             )}

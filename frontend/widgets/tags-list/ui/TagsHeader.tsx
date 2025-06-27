@@ -24,7 +24,7 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
         shadowOffset: {width: 2, height: 2},
         shadowColor: "rgba(0,0,0,0.25)",
         shadowRadius: 8,
-        paddingBottom: 8, paddingTop: 60, marginBottom: 16, borderBottomStartRadius: 20, borderBottomEndRadius: 20,
+        paddingBottom: 12, paddingTop: 60, borderBottomStartRadius: 20, borderBottomEndRadius: 20,
       }}
     >
       <Pressable

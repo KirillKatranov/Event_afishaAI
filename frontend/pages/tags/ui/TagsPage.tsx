@@ -1,6 +1,6 @@
 import React, {useCallback} from "react";
 import { Box} from "@/shared/ui";
-import { TagsHeader } from "@/pages/tags/ui/TagsHeader";
+import { TagsHeader } from "@/widgets/tags-list";
 import {TagsList, useTagsStore} from "@/widgets/tags-list";
 import Animated, {
   useSharedValue,
@@ -71,7 +71,7 @@ export const TagsPage = () => {
         <Animated.ScrollView
           onScroll={onScroll}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20, flexGrow: 1 }}
+          contentContainerStyle={{ paddingBottom: 20, flexGrow: 1, gap: 16 }}
           scrollEnabled={!isLoading}
         >
           {/* Parallax Header */}
