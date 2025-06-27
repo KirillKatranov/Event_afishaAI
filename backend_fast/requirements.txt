@@ -14,3 +14,4 @@ pytest
 loguru>=0.7.0
 pydantic_settings
 python-dotenv
+pytest-dotenv
