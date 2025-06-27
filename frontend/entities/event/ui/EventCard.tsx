@@ -3,7 +3,6 @@ import {Image, ImageBackground, Platform, Pressable, Modal, FlatList} from "reac
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useTheme} from "@shopify/restyle";
 import {Hyperlink} from "react-native-hyperlink";
-import {useEventCardStore} from "@/entities/event/model/store/useEventCardStore";
 import {Event} from "@/entities/event/model/types/events";
 import {Box} from "@/shared/ui/Base/Box";
 import {Text} from "@/shared/ui/Base/Text";
@@ -50,11 +49,8 @@ export const EventCard: React.FC<EventCardProps> = memo(({
   const [contactsHeight, setContactsHeight] = useState(0);
   const [additionalInfoHeight, setAdditionalInfoHeight] = useState(0);
 
-  const [tagsScrolling, setTagsScrolling] = useState(false);
   const [descriptionExpanded, setDescriptionExpanded] = useState(expanded ? expanded : false);
   const [imageLoading, setImageLoading] = useState(true);
-
-  const { setSwipeEnabled } = useEventCardStore();
 
   useEffect(() => {
     heightValue.value = withTiming(
@@ -62,14 +58,6 @@ export const EventCard: React.FC<EventCardProps> = memo(({
       { duration: 250 },
     );
   }, [descriptionExpanded, cardHeight]);
-
-  useEffect(() => {
-    if (descriptionExpanded || tagsScrolling) {
-      setSwipeEnabled(false)
-    } else {
-      setSwipeEnabled(true)
-    }
-  }, [descriptionExpanded, tagsScrolling]);
 
   const animatedInfoStyle = useAnimatedStyle(() => ({
     height: heightValue.value,
@@ -92,17 +80,10 @@ export const EventCard: React.FC<EventCardProps> = memo(({
   const [loadingParticipants, setLoadingParticipants] = useState(true);
   const [participantsModalVisible, setParticipantsModalVisible] = useState(false);
 
-  // Загрузка участников при монтировании
   useEffect(() => {
     const loadParticipants = async () => {
       try {
-        const response = await ParticipantsService.getParticipants({
-          content_id: event.id.toString()
-        });
-        if (response?.data) {
-          console.log(event.id.toString())
-          setParticipants(response.data);
-        }
+        return await ParticipantsService.getParticipants({content_id: event.id.toString()});
       } catch (error) {
         console.error('Error fetching participants:', error);
       } finally {
@@ -110,33 +91,35 @@ export const EventCard: React.FC<EventCardProps> = memo(({
       }
     };
 
-    loadParticipants();
+    loadParticipants().then((response) => {
+      if (response && response.data) setParticipants(response.data);
+    });
   }, [event.id]);
 
-  // Добавляем эмоджи к участникам
   const participantsWithEmojis = useMemo(() => {
     return participants.map(participant => ({
       ...participant,
-      emoji: userEmoji[participant.id % userEmoji.length] // Детерминированный выбор эмоджи
+      emoji: userEmoji[participant.id % userEmoji.length]
     }));
   }, [participants]);
 
   const renderParticipantItem = useCallback(({ item }: { item: User & { emoji: string } }) => (
-    <Box flexDirection="row" alignItems="center" padding="s" gap="s">
+    <Pressable
+      onPress={() => config.openTelegramLink(`https://t.me/${item.username}`)}
+      style={{ flexDirection: "row", alignItems: "center", paddingVertical: 4, paddingHorizontal: 8, gap: 8 }}
+    >
       <Box
-        width={40}
-        height={40}
+        width={40} height={40}
         borderRadius={"eventCard"}
         backgroundColor="gray"
-        justifyContent="center"
-        alignItems="center"
+        justifyContent="center" alignItems="center"
       >
-        <Text fontSize={20}>{item.emoji}</Text>
+        <Text fontSize={20} selectable={false}>{item.emoji}</Text>
       </Box>
       <Text variant="cardText" color="cardMainTextColor">
         {item.username}
       </Text>
-    </Box>
+    </Pressable>
   ), []);
 
   const renderParticipantsPreview = useCallback(() => {
@@ -147,21 +130,17 @@ export const EventCard: React.FC<EventCardProps> = memo(({
 
     return (
       <Pressable onPress={() => setParticipantsModalVisible(true)}>
-        <Box flexDirection="row" alignItems="center" paddingHorizontal="eventCardPadding">
+        <Box flexDirection="row" alignItems="center" paddingHorizontal="eventCardPadding" style={{ marginBottom : 16 }}>
           <Text variant="cardSubInfo" color="cardMainTextColor" marginRight="s">
             Понравилось:
           </Text>
           {previewParticipants.map((participant, index) => (
             <Box
               key={participant.id}
-              width={24}
-              height={24}
-              borderRadius={"eventCard"}
-              borderWidth={1}
-              borderColor={"gray"}
+              width={24} height={24}
+              borderRadius={"eventCard"} borderWidth={1} borderColor={"gray"}
               backgroundColor="white"
-              justifyContent="center"
-              alignItems="center"
+              justifyContent="center" alignItems="center"
               style={{ marginLeft: index > 0 ? -8 : 0 }}
             >
               <Text fontSize={12}>{participant.emoji}</Text>
@@ -169,13 +148,10 @@ export const EventCard: React.FC<EventCardProps> = memo(({
           ))}
           {remainingCount > 0 && (
             <Box
-              width={24}
-              height={24}
+              width={24} height={24}
               borderRadius={"eventCard"}
-              backgroundColor="gray"
-              justifyContent="center"
-              alignItems="center"
-              style={{ marginLeft: -8 }}
+              justifyContent="center" alignItems="center"
+              style={{ marginRight: 8 }}
             >
               <Text variant="cardSubInfo" color="white">
                 +{remainingCount}
@@ -252,8 +228,6 @@ export const EventCard: React.FC<EventCardProps> = memo(({
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}
                 scrollEnabled={true}
-                onTouchStart={() => setTagsScrolling(true)}
-                onTouchEnd={() => setTagsScrolling(false)}
                 contentContainerStyle={{ gap: 4, flexGrow: 1, justifyContent: "center", alignItems: "center" }}
               >
                 {renderTags()}
@@ -274,9 +248,11 @@ export const EventCard: React.FC<EventCardProps> = memo(({
           </Box>
         </Box>
 
-        <Animated.View style={[
-          animatedInfoStyle,
-          { backgroundColor: theme.colors.cardBGColor, gap: theme.spacing.m }]}
+        <Animated.View
+          style={[
+            animatedInfoStyle,
+            { backgroundColor: theme.colors.cardBGColor, gap: theme.spacing.m }
+          ]}
         >
           {/* Location */}
           <Box flexDirection="column" gap="s" paddingHorizontal="eventCardPadding"
