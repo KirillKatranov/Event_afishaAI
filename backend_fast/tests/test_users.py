@@ -15,8 +15,6 @@ from tests.config import test_settings
 
 class TestRegisterUser:
     def test_register_user_success(self, client):
-        assert test_settings.TEST_MODE == True
-
         response = client.post(
             "/api/v1/register", json={"username": "testuser", "city": "nn"}
         )
@@ -31,8 +29,6 @@ class TestRegisterUser:
             assert user.city == "nn"
 
     def test_register_existing_user(self, client):
-        assert test_settings.TEST_MODE == True
-
         client.post("/api/v1/register", json={"username": "existing", "city": "spb"})
         response = client.post("/api/v1/register", json={"username": "existing", "city": "spb"})
         assert response.status_code == 400

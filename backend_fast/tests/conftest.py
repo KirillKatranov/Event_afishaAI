@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from fastapi.testclient import TestClient
 from fast import app
-from models import Base, get_db, User
+from models import Base, Content, get_db, User
 from tests.config import test_settings
 
 # Тестовая база SQLite
@@ -18,6 +18,7 @@ engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -44,6 +45,20 @@ def client():
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
+
+@pytest.fixture()
+def create_test_user(client):
+    with TestingSessionLocal() as db:
+        user = User(username="TestUser")
+        db.add(user)
+        db.commit()
+
+@pytest.fixture()
+def create_test_content():
+    with TestingSessionLocal() as db:
+        content = Content(name="TestContent", description="TestDescription")
+        db.add(content)
+        db.commit()
 
 @pytest.fixture(autouse=True)
 def clear_db():
