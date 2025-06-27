@@ -307,7 +307,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             <Pressable
               onPress={ () => {
                 if (back) router.replace("/tags/organizers");
-                else router.navigate({ pathname: "/tags/[service]", params: { service: service }});
+                else router.replace({ pathname: "/tags/[service]", params: { service: service }});
               }}
             >
               <Box

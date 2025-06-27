@@ -12,7 +12,7 @@ interface CitySelectState {
 
 interface CitySelectActions {
   getCities: () => void,
-  onCitySelected: (city: CityID) => void,
+  onCitySelected: (city: CityID | undefined) => void,
   saveCity: (username: string, onSuccess?: () => void) => void,
 }
 
@@ -33,7 +33,7 @@ export const useCitySelectStore = create<CitySelectState & CitySelectActions>((s
         if (response && response.error) {
           set({ hasError: true })
         } else if (response && response.data) {
-          set({ availableCities: response.data.cities, citySelected: response.data.cities[0] })
+          set({ availableCities: response.data.cities })
         }
       })
       .catch(() => {
