@@ -18,11 +18,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, sessionmaker, declarative_base
 import enum
 print(os.environ)
-class TestSettings(BaseSettings): 
-    TEST_MODE: bool 
-    
-    model_config = SettingsConfigDict() 
-settings = TestSettings()
+
 
 # Определение перечислений
 class EventType(str, enum.Enum):
@@ -36,15 +32,9 @@ class PublisherType(str, enum.Enum):
 
 # Настройка движка SQLAlchemy (engine)
 
-print(settings.TEST_MODE)
-if settings.TEST_MODE:
-    SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-    )
-else:
-    SQLALCHEMY_DATABASE_URL = "postgresql://afisha:password@localhost:5532/afisha"
-    engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
+
+SQLALCHEMY_DATABASE_URL = "postgresql://afisha:password@db/afisha"
+engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
 # Создаем фабрику сессий (SessionLocal)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
