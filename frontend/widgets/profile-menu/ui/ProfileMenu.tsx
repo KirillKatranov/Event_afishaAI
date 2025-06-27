@@ -46,7 +46,7 @@ export const ProfileMenu = () => {
     }}
     >
       <MenuItem
-        onPress={() => { router.push({ pathname: '/tags/[service]', params: { service: "organizers" }}) }}
+        onPress={() => { router.push('/tags/organizers/register') }}
         illustration={"createEvent"}
         text={"Создать организацию"}
       />
@@ -54,9 +54,9 @@ export const ProfileMenu = () => {
       <Spacer/>
 
       <MenuItem
-        onPress={() => { router.push({ pathname: '/tags/[service]', params: { service: "organizers" }}) }}
+        onPress={() => { router.push('/tags/organizers') }}
         illustration={"manageEvent"}
-        text={"Управление организацией"}
+        text={"Управление организациями"}
       />
 
       <Spacer/>
