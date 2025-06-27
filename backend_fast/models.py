@@ -1,5 +1,6 @@
 import datetime
 import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import (
     create_engine,
     Column,
@@ -16,7 +17,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship, sessionmaker, declarative_base
 import enum
-
+print(os.environ)
+class TestSettings(BaseSettings): 
+    TEST_MODE: bool 
+    
+    model_config = SettingsConfigDict() 
+settings = TestSettings()
 
 # Определение перечислений
 class EventType(str, enum.Enum):
@@ -29,14 +35,15 @@ class PublisherType(str, enum.Enum):
     ORGANISATION = "organisation"
 
 # Настройка движка SQLAlchemy (engine)
-TEST_MODE = os.getenv("TEST_MODE", "False").lower() == "true"
-if TEST_MODE:
+
+print(settings.TEST_MODE)
+if settings.TEST_MODE:
     SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
     )
 else:
-    SQLALCHEMY_DATABASE_URL = "postgresql://afisha:password@db/afisha"
+    SQLALCHEMY_DATABASE_URL = "postgresql://afisha:password@localhost:5532/afisha"
     engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
 # Создаем фабрику сессий (SessionLocal)
