@@ -18,6 +18,7 @@ import {router} from "expo-router";
 import ParticipantsService from "@/features/participants/api/ParticipantsService";
 import {User} from "@/entities/user";
 import {userEmoji} from "@/features/participants";
+import {useEventCardStore} from "@/entities/event";
 
 const DraggableScrollView = Platform.select({
   web: () => require('@/shared/providers/DraggableScroll').DraggableScrollView,
@@ -51,6 +52,13 @@ export const EventCard: React.FC<EventCardProps> = memo(({
 
   const [descriptionExpanded, setDescriptionExpanded] = useState(expanded ? expanded : false);
   const [imageLoading, setImageLoading] = useState(true);
+
+  const { triggerLikeAnimation } = useEventCardStore();
+
+  const handleLike = useCallback(() => {
+    onLike();
+    triggerLikeAnimation();
+  }, [onLike, triggerLikeAnimation]);
 
   useEffect(() => {
     heightValue.value = withTiming(
@@ -244,7 +252,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({
             paddingVertical="s"
           >
             <ActionButton type="dislike" onPress={onDislike} />
-            <ActionButton type="like" onPress={onLike} />
+            <ActionButton type="like" onPress={handleLike} />
           </Box>
         </Box>
 

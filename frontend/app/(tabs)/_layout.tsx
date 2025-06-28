@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useTheme} from "@shopify/restyle";
 import {Tabs, useSegments} from "expo-router";
 import {Theme} from "@/shared/providers/Theme";
@@ -8,6 +8,14 @@ import {Box} from "@/shared/ui";
 import { Pressable, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useConfig } from '@/shared/providers/TelegramConfig';
+import {useEventCardStore} from "@/entities/event";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming
+} from "react-native-reanimated";
 
 export default function TabLayout() {
   const theme = useTheme<Theme>();
@@ -18,6 +26,28 @@ export default function TabLayout() {
 
   // @ts-ignore
   const isCalendarScreen = segments.includes("calendar");
+
+  const { likeTrigger } = useEventCardStore();
+
+  const scale = useSharedValue(1);
+  const [animation, setAnimation] = useState(false)
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: scale.value },
+    ],
+  }));
+
+  useEffect(() => {
+    if (likeTrigger > 0) {
+      setAnimation(true)
+
+      scale.value = withSequence(
+        withTiming(1.4, { duration: 150 }),
+        withSpring(1, { damping: 5, stiffness: 100 }, () => setAnimation(false))
+      );
+    }
+  }, [likeTrigger]);
 
   return (
     <Box
@@ -64,7 +94,19 @@ export default function TabLayout() {
         <Tabs.Screen
           name="likes"
           options={{
-            tabBarIcon: ({color}) => <Icon name={"likeFilled"} size={24} color={color}/>,
+            tabBarIcon: ({ color }) => (
+              <Animated.View style={animatedStyle}>
+                <Icon
+                  name={"likeFilled"}
+                  size={24}
+                  color={
+                    color === theme.colors.text_color ?
+                      color :
+                      animation ? theme.colors.red : theme.colors.subtitle_text_color
+                  }
+                />
+              </Animated.View>
+            ),
             tabBarShowLabel: false,
           }}
         />
