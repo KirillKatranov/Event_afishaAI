@@ -8,6 +8,13 @@ export type AvailableTagsResponse = {
   }
 }
 
+export type AvailableCitiesResponse = {
+  status: number;
+  data: {
+    cities: string[],
+  }
+}
+
 export type CreateEventRequest = {
   name: string,
   description: string,
