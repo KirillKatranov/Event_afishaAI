@@ -15,22 +15,25 @@ interface CatalogEventCardProps {
   onPress?: () => void;
 }
 
-export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
-  props
-) => {
+export const CatalogEventCard: React.FC<CatalogEventCardProps> = ({
+  event,
+  liked,
+  onLike,
+  onPress
+}) => {
   const [imageLoading, setImageLoading] = useState(true);
   const config = useConfig();
 
   const likeScale = useSharedValue(1);
 
   useEffect(() => {
-    if (props.liked) {
+    if (liked) {
       likeScale.value = withSequence(
         withTiming(1.4, { duration: 150 }),
         withSpring(1, { damping: 5, stiffness: 100 })
       )
     }
-  }, [props.liked]);
+  }, [liked]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
@@ -39,10 +42,10 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
   }));
 
   return (
-    <Pressable onPress={props.onPress} style={{ flex: 1 }}>
+    <Pressable onPress={onPress} style={{ flex: 1 }}>
       <Box width={"100%"} flexDirection={"column"} style={{ gap: 8 }}>
         <Image
-          source={{ uri: props.event.image || undefined }}
+          source={{ uri: event.image || undefined }}
           onLoadEnd={() => setImageLoading(false)}
           style={{
             width: "100%", height: 173,
@@ -58,7 +61,7 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
           </Box>
         )}
 
-        {props.event.cost != undefined && (
+        {event.cost != undefined && (
           <DropShadow
             style={{
               shadowColor: "rgba(64,63,63,0.25)",
@@ -70,18 +73,18 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
             }}
           >
             <Text style={{fontFamily: "InterRegular", fontSize: 12, color: "#A22CFF"}}>
-              {props.event.cost != "0" ? `${props.event.cost} ₽` : "Бесплатно"}
+              {event.cost != "0" ? `${event.cost} ₽` : "Бесплатно"}
             </Text>
           </DropShadow>
         )}
 
         <Text style={{ fontFamily: "MontserratSemiBold", fontSize: 14 }} numberOfLines={2} color={"text_color"}>
-          {props.event.name}
+          {event.name}
         </Text>
 
         <Pressable
           onPress={() => {
-            const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${props.event.id}`;
+            const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${event.id}`;
             const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
 
             console.log("Sharing event with link:", link);
@@ -98,7 +101,7 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
         </Pressable>
 
         <Pressable
-          onPress={props.onLike}
+          onPress={onLike}
           style={{
             position: "absolute", right: 8, top: 8,
           }}
@@ -106,7 +109,7 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = (
           <Animated.View style={[animatedStyle, { alignItems: "center", justifyContent: "center"}]}>
             <Box style={{ zIndex: 2 }}><Icon name={"like"} color={"#ffffff"} size={20}/></Box>
 
-            {props.liked && (
+            {liked && (
               <Box style={{ position: "absolute", zIndex: 1 }}>
                 <Icon name={"likeFilled"} color={"#ff0000"} size={20}/>
               </Box>

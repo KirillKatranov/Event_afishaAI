@@ -12,16 +12,16 @@ import {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanima
 import {useTheme} from "@shopify/restyle";
 import {useCalendarStore} from "@/features/dates";
 import {useReactionsStore} from "@/features/likes-dislikes";
-import {Event, EventCard} from "@/entities/event";
+import {Event, EventCard, useEventCardStore} from "@/entities/event";
 import {Box, GradientText, LoadingCard, SearchBar, Text} from "@/shared/ui";
 import {Theme} from "@/shared/providers/Theme";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import Icon from "@/shared/ui/Icons/Icon";
 import {getEventCardsLayout, setEventCardsLayout} from "@/shared/utils/storage/layoutSettings";
 import {CatalogEventCard} from "@/entities/event/ui/CatalogEventCard";
-import {useCatalogLikesStore} from "@/widgets/events-swiper";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
 import Carousel, {ICarouselInstance} from "react-native-reanimated-carousel";
+import {getPeriodBorders} from "@/shared/scripts/date";
 
 interface EventsSwiperProps {
   events: Event[];
@@ -70,7 +70,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   useEffect(() => {
     getEventCardsLayout().then((state) => {
       setLayoutState(state || "catalog");
-      if (!state) setEventCardsLayout("catalog");
+      if (!state) setEventCardsLayout("catalog").then(() => console.log("layout state inits"));
     });
   }, []);
 
@@ -85,14 +85,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   }, []);
 
   const { selectedDays } = useCalendarStore();
-  const {
-    addLikedEvent,
-    addDislikedEvent,
-    removeLikedEvent,
-    removeDislikedEvent,
-    saveAction,
-  } = useReactionsStore();
-  const { likedIDs, addLikeID, resetLikesID, removeLikeID } = useCatalogLikesStore();
+  const {saveAction, fetchReactions, likes} = useReactionsStore();
 
   const swipedAllInfoOpacity = useSharedValue(0);
   const swipedAllInfoStyle = useAnimatedStyle(() => ({
@@ -103,30 +96,21 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
     swipedAllInfoOpacity.value = withTiming(swipedAll ? 1 : 0);
   }, [swipedAll]);
 
-  useEffect(() => {
-    resetLikesID();
-  }, [events]);
+  const {triggerLikeAnimation} = useEventCardStore();
 
   const handleEventAction = useCallback(async (action: "like" | "dislike" | "delete_mark", event: Event) => {
-    await saveAction({
+    saveAction({
       action,
       contentId: event.id,
       username,
+    }, () => {
+      const borders = getPeriodBorders(Object.keys(selectedDays));
+      fetchReactions({
+        username: username,
+        date_start: borders.date_start, date_end: borders.date_end
+      });
+      if (action === "like") triggerLikeAnimation();
     });
-
-    if (action === "like") {
-      addLikeID(event.id);
-      addLikedEvent(event);
-      removeDislikedEvent(event.id);
-    } else if (action === "dislike") {
-      removeLikeID(event.id);
-      addDislikedEvent(event);
-      removeLikedEvent(event.id);
-    } else {
-      removeLikeID(event.id);
-      removeLikedEvent(event.id);
-      removeDislikedEvent(event.id);
-    }
   }, [username]);
 
   const handleLayoutChange = useCallback(() => {
@@ -137,17 +121,14 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   const renderCatalogItem = useCallback(({ item }: { item: Event }) => (
     <CatalogEventCard
       event={item}
-      liked={likedIDs.includes(item.id)}
-      onLike={() => handleEventAction(
-        likedIDs.includes(item.id) ? "delete_mark" : "like",
-        item
-      )}
+      liked={!!likes?.some((event) => event.id === item.id)}
+      onLike={() => handleEventAction(likes?.some((event) => event.id === item.id) ? "dislike" : "like", item)}
       onPress={() => {
         setEventSelected(item);
         setModalVisible(true);
       }}
     />
-  ), [likedIDs]);
+  ), [likes]);
 
   if (!layoutState) {
     return <LoadingCard style={{ width: "100%", height: "100%" }} />;
@@ -210,6 +191,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             <FlatList
               data={events}
               renderItem={renderCatalogItem}
+              keyExtractor={(item) => item.id.toString()}
               numColumns={2}
               showsVerticalScrollIndicator={false}
               columnWrapperStyle={{ gap: 16, marginBottom: 16 }}
@@ -246,28 +228,8 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             {selectedEvent && (
               <EventCard
                 event={selectedEvent} expanded
-                onLike={() => saveAction({
-                  action: "like",
-                  contentId: selectedEvent.id,
-                  username: username
-                }).then(() => {
-                  addLikeID(selectedEvent.id);
-                  addLikedEvent(selectedEvent);
-                  removeDislikedEvent(selectedEvent.id);
-                  setModalVisible(false);
-                })}
-                onDislike={() => {
-                  saveAction({
-                    action: "dislike",
-                    contentId: selectedEvent.id,
-                    username: username
-                  }).then(() => {
-                    removeLikeID(selectedEvent.id);
-                    addDislikedEvent(selectedEvent);
-                    removeLikedEvent(selectedEvent.id);
-                    setModalVisible(false);
-                  })
-                }}
+                onLike={() => handleEventAction("like", selectedEvent).then(() => setModalVisible(false))}
+                onDislike={() => handleEventAction("dislike", selectedEvent).then(() => setModalVisible(false))}
               />
             )}
           </Modal>
