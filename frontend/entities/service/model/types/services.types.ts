@@ -2,7 +2,7 @@ export const Services: Service[] = [
   { id: "events", name: "События", illustration: "events", description: "Актуальные мероприятия и интересные события в Вашем городе" },
   { id: "places", name: "Места", illustration: "places", description: "Лучшие локации для отдыха и развлечений" },
   { id: "organizers", name: "Организаторы", illustration: "organizers", description: "Организация мероприятий для юридических лиц" },
-  { id: "trips", name: "Путешествия", illustration: "trips", description: "В разработке" },
+  { id: "trips", name: "Маршруты", illustration: "trips", description: "В разработке" },
 ]
 
 export const ServicesColors = {
@@ -14,7 +14,7 @@ export const ServicesColors = {
 
 export type Service = {
   id: "events" | "places" | "organizers" | "trips";
-  name: "События" | "Места" | "Организаторы" | "Путешествия";
+  name: "События" | "Места" | "Организаторы" | "Маршруты";
   illustration: "events" | "places" | "organizers" | "trips";
   description: string;
 }
