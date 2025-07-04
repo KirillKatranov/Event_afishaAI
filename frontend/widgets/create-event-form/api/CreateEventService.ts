@@ -1,6 +1,6 @@
 import axiosInstance from "@/shared/api/AxiosConfig";
 import {AxiosError} from "axios";
-import {AvailableTagsResponse, CreateEventRequest} from "@/widgets/create-event-form";
+import {AvailableCitiesResponse, AvailableTagsResponse, CreateEventRequest} from "@/widgets/create-event-form";
 
 class CreateEventService {
   async createEvent(params: { username: string, data: CreateEventRequest }) {
@@ -32,6 +32,23 @@ class CreateEventService {
 
       const response: AvailableTagsResponse = await axiosInstance.get(
         `/tags?username=${params.username}&macro_category=events`
+      );
+
+      return { data: response.data };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return { error: error.message };
+      }
+      return { error: "Неизвестная ошибка" }
+    }
+  }
+
+  async getAvailableCities() {
+    try {
+      console.log("Send GET available cities list");
+
+      const response: AvailableCitiesResponse = await axiosInstance.get(
+        `/cities`
       );
 
       return { data: response.data };

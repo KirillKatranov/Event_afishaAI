@@ -93,6 +93,7 @@ export const SignUpOrganizerForm = () => {
           theme={"organizers"}
           text={"Зарегистрироваться"}
           disabled={state.isLoading || !state.isFormValid}
+          isLoading={state.isLoading}
           onPress={() => state.submitSignUp(user.username ? user.username : user.id.toString(), () => {
             router.back();
             getOrganizers();

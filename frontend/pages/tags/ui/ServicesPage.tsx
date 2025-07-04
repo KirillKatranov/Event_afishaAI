@@ -35,10 +35,8 @@ export const ServicesPage = () => {
         style={{ width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}
       >
         <Carousel
-          autoPlayInterval={2000}
           data={Services}
           loop={true}
-          pagingEnabled={true}
           snapEnabled={true}
           width={window.width * 0.9}
           height={Math.min(window.height - 64, 550)}
@@ -53,12 +51,10 @@ export const ServicesPage = () => {
           }}
           onProgressChange={swipeProgress}
           renderItem={({item}) => <ServiceCard service={item} onPress={() => {
-            if (item.id != "trips") {
-              router.push({
-                pathname: '/tags/[service]',
-                params: { service: item.id }
-              })
-            }
+            router.push({
+              pathname: '/tags/[service]',
+              params: { service: item.id }
+            })
           }}/>}
         />
       </BlurView>
