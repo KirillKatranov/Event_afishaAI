@@ -21,6 +21,7 @@ export const icons = {
   moreGradient: Icons.MoreGradient,
   radioBlank: Icons.RadioBlank,
   radioChecked: Icons.RadioChecked,
+  route: Icons.Route,
   share: Icons.Share,
   shareGradient: Icons.ShareGradient,
   swiper: Icons.Swiper,

@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from "react";
-import {Image, Text, View} from "react-native";
+import {Image, Pressable, Text, View} from "react-native";
 import {Route} from "@/features/routes";
 import {Box, CardControlsButton, Chip, LoadingCard} from "@/shared/ui";
 import {cities, CityID} from "@/features/city-select";
@@ -11,10 +11,12 @@ import Icon from "@/shared/ui/Icons/Icon";
 
 interface RouteCardProps {
   route: Route;
+  onPress?: () => void;
 }
 
 export const RouteCard: React.FC<RouteCardProps> = ({
-  route
+  route,
+  onPress
 }) => {
   const [imageLoading, setImageLoading] = useState(true);
 
@@ -73,19 +75,24 @@ export const RouteCard: React.FC<RouteCardProps> = ({
             shadowRadius: 10,
           }}
         >
-          <BlurView
+          <Pressable
+            onPress={onPress}
             style={{
-              position: "absolute", top: -60, right: 0, padding: 10, paddingLeft: 20,
-              borderTopLeftRadius: 10,
-              borderBottomLeftRadius: 10, gap: 10, flexDirection: "row", alignItems: "center"
+              position: "absolute", top: -60, right: 0,
+              borderTopLeftRadius: 10, borderBottomLeftRadius: 10, overflow: "hidden"
             }}
           >
-            <Text style={{ fontFamily: "UnboundedMedium", fontSize: 14, color: "white"}}>
-              подробнее
-            </Text>
+            <BlurView
+              style={{ padding: 10, paddingLeft: 20, gap: 10, flexDirection: "row", alignItems: "center" }}
+            >
+              <Text style={{ fontFamily: "UnboundedMedium", fontSize: 14, color: "white"}}>
+                подробнее
+              </Text>
 
-            <Icon name={"moreGradient"} size={10} color={""}/>
-          </BlurView>
+              <Icon name={"moreGradient"} size={10} color={""}/>
+            </BlurView>
+          </Pressable>
+
 
           <Text style={{ fontFamily: "UnboundedMedium", fontSize: 16, textAlign: "center", color: "#393939"}}>
             {route.name.toUpperCase()}
@@ -102,7 +109,7 @@ export const RouteCard: React.FC<RouteCardProps> = ({
       >
         <Chip text={cities[route.city as CityID].name} icon={"location"} service={"trips"}/>
 
-        <Marquee spacing={8} speed={0.2} style={{ marginTop: 8 }}>
+        <Marquee spacing={8} speed={0.2} style={{ marginTop: 8, marginBottom: 16 }}>
           <View style={{ flexDirection: "row", gap: 8 }}>
             {renderTags()}
           </View>

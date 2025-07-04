@@ -18,6 +18,7 @@ export { default as Location } from "./svgs/Location";
 export { default as MoreGradient } from "./svgs/MoreGradient";
 export { default as RadioBlank } from "./svgs/RadioBlank";
 export { default as RadioChecked } from "./svgs/RadioChecked";
+export { default as Route } from "./svgs/Route";
 export { default as Share } from "./svgs/Share";
 export { default as ShareGradient } from "./svgs/ShareGradient";
 export { default as Swiper } from "./svgs/Swiper";
