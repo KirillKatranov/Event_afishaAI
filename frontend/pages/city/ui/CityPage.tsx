@@ -82,8 +82,8 @@ export const CityPage = () => {
       }}
     >
       <Box alignItems={"center"}>
-        <Text color={"white"} style={{ fontFamily: "MontserratBold", fontWeight: "800", fontSize: 24 }}>{"ВЫБЕРИ"}</Text>
-        <Text color={"lime"} style={{ fontFamily: "MontserratBold", fontWeight: "800", fontSize: 24 }}>{"НУЖНЫЙ ГОРОД"}</Text>
+        <Text color={"white"} style={{ fontFamily: "TDMars", fontWeight: "500", fontSize: 24 }}>{"ВЫБЕРИ"}</Text>
+        <Text color={"lime"} style={{ fontFamily: "TDMars", fontWeight: "500", fontSize: 24, textAlign: "center" }}>{"НУЖНЫЙ ГОРОД"}</Text>
       </Box>
 
       {(isLoading || !availableCities) && (
@@ -133,11 +133,11 @@ export const CityPage = () => {
             alignItems={"center"} justifyContent={"center"}
             padding={"s"}
             borderRadius={"l"}
-            backgroundColor={!citySelected ? "calendarAcceptButtonDisabled" : "calendarAcceptButton"}
+            style={{ backgroundColor: !citySelected ? "rgba(255,71,255,0.4)" : "#FF47FF"}}
           >
             <Text
-              variant={"calendarAcceptButton"}
-              color={"black"}
+              style={{ fontFamily: "MontserratBold", fontSize: 14 }}
+              color={"white"}
               textAlign={"center"}
               selectable={false}
             >
@@ -155,7 +155,7 @@ export const CityPage = () => {
               backgroundColor={"white"}
             >
               <Text
-                variant={"calendarAcceptButton"}
+                style={{ fontFamily: "MontserratBold", fontSize: 14 }}
                 color={"black"}
                 textAlign={"center"}
                 selectable={false}
