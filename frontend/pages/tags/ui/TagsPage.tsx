@@ -9,13 +9,14 @@ import Animated, {
   useAnimatedScrollHandler,
 } from "react-native-reanimated";
 import {useFocusEffect, useLocalSearchParams} from "expo-router";
-import {Services, ServicesColors} from "@/entities/service";
+import {Services, ServicesGradients} from "@/entities/service";
 import {BlurView} from "expo-blur";
 import {useTheme} from "@shopify/restyle";
 import {Theme} from "@/shared/providers/Theme";
 import {getTint} from "@/shared/constants";
 import {Dimensions} from "react-native";
 import {useConfig} from "@/shared/providers/TelegramConfig";
+import {LinearGradient} from "expo-linear-gradient";
 
 const window = Dimensions.get("window");
 
@@ -88,14 +89,20 @@ export const TagsPage = () => {
 
       <Animated.View
         style={[{
-          backgroundColor: ServicesColors[service], opacity: 0.75,
+          opacity: 0.6,
           position: "absolute", zIndex: -1,
           width: window.height * 0.1,
           height: window.height * 0.1,
           borderRadius: window.height * 0.1 / 2,
-          transform: [{ scaleX: window.width / (window.height * 0.1) }],
+          transform: [{ scaleX: window.width / (window.height * 0.1) }], overflow: "hidden"
         }, gradientStyle]}
-      />
+      >
+        <LinearGradient
+          colors={[ServicesGradients[service][0], ServicesGradients[service][1]]}
+          start={{ x: 0, y: 0}} end={{ x: 1, y: 0 }}
+          style={{ flex: 1 }}
+        />
+      </Animated.View>
     </Box>
   );
 };

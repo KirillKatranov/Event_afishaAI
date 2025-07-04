@@ -4,9 +4,16 @@ import {useOrganizersListStore, useUserOrganizersListStore} from "@/features/org
 import {OrganizerCard} from "@/entities/organizers";
 import {useRouter} from "expo-router";
 import {useConfig} from "@/shared/providers/TelegramConfig";
-import {Button} from "@/shared/ui";
+import {Button, LoadingCard} from "@/shared/ui";
+import {SharedValue} from "react-native-reanimated";
 
-export const OrganizersList = () => {
+interface OrganizersListProps {
+  scrollY: SharedValue<number>
+}
+
+export const OrganizersList: React.FC<OrganizersListProps> = ({
+  scrollY
+}) => {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -54,7 +61,10 @@ export const OrganizersList = () => {
             <Button
               theme={"organizers"} variant={"secondary"}
               text={"Мои мероприятия"}
-              onPress={() => {}}
+              onPress={() => router.replace({
+                pathname: "/tags/organizers/events",
+                params: { type: "user", id: user.username ? user.username : user.id.toString() }}
+              )}
             />
 
             <Button
@@ -68,16 +78,18 @@ export const OrganizersList = () => {
 
       <View style={styles.sectionContainer}>
         {(organizers === null || allLoading) && (
-          <OrganizerCard/>
+          <LoadingCard style={{ height: 186, borderRadius: 40 }}/>
         )}
 
-        {organizers !== null && organizers.map((organizer) => (
+        {organizers !== null && organizers.map((organizer, index) => (
           <OrganizerCard
+            index={index}
             organizer={organizer}
             onPress={() => router.push({
               pathname: "/tags/organizers/events",
               params: { type: "organization", id: organizer.id }
             })}
+           scrollY={scrollY}
           />
         ))}
 

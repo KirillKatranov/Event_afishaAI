@@ -3,7 +3,6 @@ import {GestureResponderEvent, Pressable} from "react-native";
 import {Box} from "@/shared/ui";
 import {Text} from "@/shared/ui";
 import {Tag} from "@/entities/tag";
-import {colors} from "@/entities/tag";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
@@ -12,6 +11,7 @@ import Animated, {
 import Icon from "@/shared/ui/Icons/Icon";
 import DropShadow from "react-native-drop-shadow";
 import {LinearGradient} from "expo-linear-gradient";
+import {ServicesGradients} from "@/entities/service";
 
 interface TagCardProps {
   index: number;
@@ -106,13 +106,11 @@ export const TagCard: React.FC<TagCardProps> = ({
             shadowRadius: 8, borderRadius: 40, height: "auto", marginBottom: -62,
           }}
         >
-          <Box
-            minHeight={186}
-            borderRadius={"xl"}
-            overflow={"hidden"}
+          <LinearGradient
+            colors={[ServicesGradients[service][0], ServicesGradients[service][1]]}
             style={{
+              minHeight: 186, borderRadius: 40, overflow: "hidden",
               padding: 20,
-              backgroundColor: colors[service],
               position: "relative"
             }}
           >
@@ -194,19 +192,7 @@ export const TagCard: React.FC<TagCardProps> = ({
                 </Text>
               )}
             </Box>
-
-            <LinearGradient
-              colors={['rgba(255,253,253,0.4)', 'rgba(255,254,250,0.5)', 'rgba(255,253,253,0.9)']}
-              locations={[0, 0.5, 1]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={{
-                position: "absolute",
-                width: "100%", height: "100%",
-                top: 0, left: 0, right: 0, bottom: 0,
-              }}
-            />
-          </Box>
+          </LinearGradient>
         </DropShadow>
       </Pressable>
     </Animated.View>
