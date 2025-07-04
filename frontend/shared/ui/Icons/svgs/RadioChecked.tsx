@@ -12,7 +12,7 @@ const RadioChecked: React.FC<IconComponentProps> =({ width = 24, height = 24, fi
     >
       <Path
         d="M12 20a8 8 0 110-16 8 8 0 010 16zm0-18a10 10 0 100 20 10 10 0 000-20zm0 5a5 5 0 100 10 5 5 0 000-10z"
-        fill={fill}
+        fill={fill as string}
       />
     </Svg>
   )
