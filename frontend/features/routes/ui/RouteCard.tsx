@@ -78,23 +78,31 @@ export const RouteCard: React.FC<RouteCardProps> = ({
           <Pressable
             onPress={onPress}
             style={{
-              position: "absolute", top: -60, right: 0,
-              borderTopLeftRadius: 10, borderBottomLeftRadius: 10, overflow: "hidden"
+              position: "absolute", top: -43, right: 12,
+              borderRadius: 10, overflow: "hidden",
+              shadowOffset: {width: 4, height: 4},
+              backgroundColor: "rgba(255,255,255,0.3)",
+              shadowRadius: 8,
+              shadowColor: "rgba(0,0,0,0.25)"
             }}
           >
             <BlurView
-              style={{ padding: 10, paddingLeft: 20, gap: 10, flexDirection: "row", alignItems: "center" }}
+              intensity={50} tint={"light"}
+              style={{
+                paddingHorizontal: 8, paddingVertical: 6, gap: 8,
+                flexDirection: "row", alignItems: "center",
+            }}
             >
-              <Text style={{ fontFamily: "UnboundedMedium", fontSize: 14, color: "white"}}>
+              <Text style={{ fontFamily: "UnboundedRegular", fontSize: 14, color: "#393939"}}>
                 подробнее
               </Text>
 
-              <Icon name={"moreGradient"} size={10} color={""}/>
+              <Icon name={"moreGradient"} size={10} color={"black"}/>
             </BlurView>
           </Pressable>
 
 
-          <Text style={{ fontFamily: "UnboundedMedium", fontSize: 16, textAlign: "center", color: "#393939"}}>
+          <Text style={{ fontFamily: "UnboundedRegular", fontSize: 16, textAlign: "center", color: "#393939"}}>
             {route.name.toUpperCase()}
           </Text>
         </DropShadow>

@@ -1,15 +1,16 @@
 import React from "react";
 import Icon, {icons} from "@/shared/ui/Icons/Icon";
 import {StyleSheet, Text} from "react-native";
-import {THEME_COLORS} from "@/shared/constants";
 import {LinearGradient} from "expo-linear-gradient";
 import {BlurView} from "expo-blur";
+import {ServicesGradients} from "@/entities/service";
 
 interface ChipProps {
   text: string;
-  service: "events" | "places" | "organizers" | "trips";
+  service?: "events" | "places" | "organizers" | "trips";
   icon?: keyof typeof icons
   size?: "S" | "M";
+  transparent?: boolean;
 }
 
 export const Chip: React.FC<ChipProps> = ({
@@ -17,18 +18,20 @@ export const Chip: React.FC<ChipProps> = ({
   service,
   icon,
   size= "S",
+  transparent
 }) => {
-  const colors = THEME_COLORS[service];
-
   return (
     <BlurView tint={"default"} intensity={10} style={{ borderRadius: 8 }}>
       <LinearGradient
-        colors={["rgba(255,0,255,0.5)", "rgba(90,13,152,0.6)"]}
+        colors={[
+          `${service ? ServicesGradients[service][0] : "rgba(0,0,0,0.5)"}` + (transparent ? "99" : ""),
+          `${service ? ServicesGradients[service][1] : "rgba(0,0,0,0.5)"}` + (transparent ? "99" : "")
+        ]}
         style={styles.container}
       >
-        {icon && <Icon name={icon} size={size === "S" ? 16 : 20} color={colors.text}/>}
+        {icon && <Icon name={icon} size={size === "S" ? 16 : 20} color={"white"}/>}
 
-        <Text style={[styles.text, { color: colors.text, fontSize: size === "S" ? 14 : 24 }]}>
+        <Text style={[styles.text, { color: "white", fontSize: size === "S" ? 14 : 24 }]}>
           {text}
         </Text>
       </LinearGradient>

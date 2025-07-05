@@ -17,6 +17,7 @@ export const CityCard: React.FC<CityCardProps> = (
   props
 ) => {
   const theme = useTheme<Theme>();
+  const [startX, setStartX] = React.useState(0);
 
   if (!props.city || props.isLoading) {
     return (
@@ -28,7 +29,20 @@ export const CityCard: React.FC<CityCardProps> = (
   }
 
   return (
-    <Pressable onPress={props.onPress} style={{ flex: 1 }}>
+    <Pressable
+      onPressIn={(event) => {
+        event.preventDefault()
+        setStartX(event.nativeEvent.pageX);
+      }}
+      onPressOut={(event) => {
+        event.preventDefault()
+        const endX = event.nativeEvent.pageX;
+        if (Math.abs(endX - startX) < 15) {
+          if (props.onPress) props.onPress();
+        }
+      }}
+      style={{ flex: 1 }}
+    >
       <DropShadow
         key={props.city.id}
         style={{

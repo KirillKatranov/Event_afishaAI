@@ -100,11 +100,11 @@ export const SelectedRouteCard: React.FC<SelectedRouteCardProps> = ({
           )}
 
           <View style={{ position: "absolute", bottom: 20, marginRight: 20, marginLeft: 20, flexDirection: "column", gap: 4 }}>
-            <Chip text={route.name} service={"trips"} size={"M"}/>
+            <Chip text={route.name} service={"trips"} size={"M"} transparent/>
 
             <View style={{ flexDirection: "row", gap: 8 }}>
-              <Chip text={cities[route.city as CityID].name} service={"trips"} icon={"location"}/>
-              <Chip text={`${route.duration_km} км`} service={"trips"} icon={"route"}/>
+              <Chip text={cities[route.city as CityID].name} service={"trips"} icon={"location"} transparent/>
+              <Chip text={`${route.duration_km} км`} service={"trips"} icon={"route"} transparent/>
             </View>
           </View>
         </View>

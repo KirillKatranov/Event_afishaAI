@@ -50,6 +50,21 @@ export const RoutesSwiper: React.FC<RoutesSwiperProps> = ({
     });
   }, []);
 
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (modalVisible) return;
+
+      if (e.deltaY > 0) {
+        ref.current?.next();
+      } else if (e.deltaY < 0) {
+        ref.current?.prev();
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel);
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, []);
+
   const handleLayoutChange = useCallback(() => {
     const newLayout = layoutState === "swiper" ? "catalog" : "swiper";
     setEventCardsLayout(newLayout).then(() => setLayoutState(newLayout));

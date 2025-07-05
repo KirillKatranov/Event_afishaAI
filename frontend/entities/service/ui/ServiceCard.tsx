@@ -1,5 +1,5 @@
 import React from "react";
-import {Service} from "@/entities/service/model/types/services.types";
+import {Service, ServicesGradients} from "@/entities/service/model/types/services.types";
 import {Box, Text, WebLottieView} from "@/shared/ui";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
 import {LayoutChangeEvent, Pressable} from "react-native";
@@ -13,7 +13,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   service,
   onPress
 }) => {
-  let startX = 0;
+  const [startX, setStartX] = React.useState(0);
   const [boxWidth, setBoxWidth] = React.useState(280);
   const [boxHeight, setBoxHeight] = React.useState(400);
 
@@ -26,42 +26,33 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     <Pressable
       onPressIn={(event) => {
         event.preventDefault()
-        startX = event.nativeEvent.pageX;
+        setStartX(event.nativeEvent.pageX);
       }}
       onPressOut={(event) => {
         event.preventDefault()
         const endX = event.nativeEvent.pageX;
-        if (Math.abs(endX - startX) < 10) {
+        if (Math.abs(endX - startX) < 15) {
           onPress();
         }
       }}
-      style={{
-        height: "100%"
-      }}
+      style={{ height: "100%" }}
     >
       <Box
         flex={1}
         alignContent={"center"} justifyContent={"center"}
-        borderWidth={3}
         gap={"m"}
         style={{
           height: "100%",
-          backgroundColor: "#F8F8F8",
-          borderRadius: 30, borderColor: "#DBDFFB",
+          backgroundColor: "#FFFFFF",
+          borderRadius: 30,
           paddingVertical: 100,
           paddingHorizontal: 32,
-          shadowColor: '#4C4C4C',
-          shadowOffset: {
-            width: 10,
-            height: 10,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 15,
+          shadowColor: `${ServicesGradients[service.id][1]}65`,
+          shadowOffset: { width: 2, height: 2, },
+          shadowRadius: 7,
         }}
       >
-        <Text
-          variant={"serviceName"} textAlign={"center"} color={"black"} selectable={false}
-        >
+        <Text style={{ fontFamily: "TDMars", fontSize: 18, fontWeight: "400", textAlign: "center", color: "#393939" }} selectable={false}>
           {service.name}
         </Text>
 
@@ -87,7 +78,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           </Box>
         )}
 
-        <Text variant={"serviceDescription"} textAlign={"center"} color={"black"} selectable={false}>
+        <Text style={{ fontFamily: 'MontserratSemiBold', fontSize: 16, textAlign: "center", color: "#393939" }} selectable={false}>
           {service.description}
         </Text>
       </Box>

@@ -55,13 +55,11 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
 
   const theme = useTheme<Theme>();
   const router = useRouter();
-  const config = useConfig();
   const username = useConfig().initDataUnsafe.user.username;
 
   const [layoutState, setLayoutState] = useState<string | null>(null);
 
   const ref = React.useRef<ICarouselInstance>(null);
-  const progress = useSharedValue<number>(0);
 
   const [selectedEvent, setEventSelected] = React.useState<Event | undefined>(undefined);
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -75,13 +73,19 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   }, []);
 
   useEffect(() => {
-    window.addEventListener("wheel", (e) => {
+    const handleWheel = (e: WheelEvent) => {
+      const modalVisible = !useEventCardStore.getState().swipeEnabled;
+      if (modalVisible) return;
+
       if (e.deltaY > 0) {
         ref.current?.next();
       } else if (e.deltaY < 0) {
         ref.current?.prev();
       }
-    });
+    };
+
+    window.addEventListener("wheel", handleWheel);
+    return () => window.removeEventListener("wheel", handleWheel);
   }, []);
 
   const { selectedDays } = useCalendarStore();
@@ -144,7 +148,6 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
               width={width}
               height={containerHeight}
               data={events}
-              onProgressChange={progress}
               vertical
               snapEnabled
               windowSize={3}
@@ -163,7 +166,19 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
                   </View>
                 );
               }}
+              containerStyle={{ zIndex: 2 }}
             />
+          )}
+
+          {!isLoading && (
+            <Text
+              style={{
+                fontFamily: "UnboundedMedium", fontSize: 12, textAlign: "center", zIndex: 1, color: "#393939",
+                position: "absolute", bottom: 16, alignSelf: "center"
+              }}
+            >
+              Контент закончился
+            </Text>
           )}
 
           {isLoading && <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>}
@@ -242,7 +257,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
         width={"100%"}
         gap={"m"}
         justifyContent={"flex-start"}
-        position={"absolute"} zIndex={1}
+        position={"absolute"} zIndex={3}
         alignSelf={"flex-start"}
         style={{
           paddingTop: 20,
@@ -310,34 +325,6 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
               gradientStop={{ x: 0, y: 1 }}
             />
           </View>
-        )}
-
-        {layoutState !== "catalog" && (
-          <Pressable
-            onPress={ () => {
-              const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${events[currentIndex].id}`;
-              const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
-
-              console.log("Sharing event with link:", link);
-
-              config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
-            }}
-          >
-            <Box
-              backgroundColor={"cardBGColor"}
-              height={40}
-              width={40}
-              alignItems={"center"}
-              justifyContent={"center"}
-              borderRadius={"xl"}
-            >
-              <Icon
-                name={"share"}
-                color={theme.colors.white}
-                size={24}
-              />
-            </Box>
-          </Pressable>
         )}
       </Box>
 
