@@ -277,7 +277,6 @@ export const EventCard: React.FC<EventCardProps> = ({
                 shadowRadius: 7,
                 shadowColor: "rgba(132,132,132,0.2)",
                 paddingVertical: 18, paddingHorizontal: 8,
-                marginBottom: 16
               }}
             >
               <Text style={{ fontFamily: "UnboundedRegular", fontSize: 16, color: "#393939", textAlign: "center" }}>
@@ -285,12 +284,12 @@ export const EventCard: React.FC<EventCardProps> = ({
               </Text>
             </View>
 
-            {renderSubInfo()}
-
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ width: "100%", flexGrow: 1, paddingHorizontal: 20, paddingBottom: 20, gap: 16, justifyContent: "space-between" }}
+              contentContainerStyle={{ width: "100%", flexGrow: 1, padding: 20, gap: 16, justifyContent: "space-between" }}
             >
+              {renderSubInfo()}
+
               <Text style={{ fontFamily: "UnboundedLight", fontSize: 12, color: "black" }}>
                 {event.description}
               </Text>
