@@ -1,6 +1,7 @@
 import {Event} from "@/entities/event";
 
 export type SearchParams = {
+  username: string;
   q?: string;
   city?: string;
   event_type?: "online" | "offline";

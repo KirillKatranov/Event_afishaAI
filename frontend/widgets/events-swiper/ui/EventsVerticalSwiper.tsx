@@ -242,7 +242,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
 
             {selectedEvent && (
               <EventCard
-                event={selectedEvent} expanded
+                event={selectedEvent}
                 onLike={() => handleEventAction("like", selectedEvent).then(() => setModalVisible(false))}
                 onDislike={() => handleEventAction("dislike", selectedEvent).then(() => setModalVisible(false))}
               />

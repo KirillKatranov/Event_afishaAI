@@ -132,7 +132,8 @@ export const EventCard: React.FC<EventCardProps> = ({
           onLoadEnd={() => setImageLoading(false)}
           style={{
             flex: 1, maxHeight: 390,
-            display: imageLoading ? "none" : "flex"
+            display: imageLoading ? "none" : "flex",
+            backgroundColor: "#ECEBE8",
           }}
         />
 
