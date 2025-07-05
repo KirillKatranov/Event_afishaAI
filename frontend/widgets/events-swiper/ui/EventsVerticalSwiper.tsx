@@ -170,7 +170,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
             />
           )}
 
-          {!isLoading && (
+          {!isLoading && currentIndex >= events.length - 2 && (
             <Text
               style={{
                 fontFamily: "UnboundedMedium", fontSize: 12, textAlign: "center", zIndex: 1, color: "#393939",

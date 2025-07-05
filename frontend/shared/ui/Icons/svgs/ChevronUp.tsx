@@ -11,7 +11,7 @@ const ChevronUp: React.FC<IconComponentProps> = ({width = 24, height = 24, fill 
   >
     <Path
       d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"
-      fill={fill}
+      fill={fill as string}
     />
   </Svg>
 );
