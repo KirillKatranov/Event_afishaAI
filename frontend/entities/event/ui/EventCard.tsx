@@ -295,38 +295,41 @@ export const EventCard: React.FC<EventCardProps> = ({
                 {event.description}
               </Text>
 
-              { event.contact && event.contact.length > 0 && !event.contact.every(obj => Object.keys(obj).length === 0) &&
-                !event.contact.every(obj => Object.values(obj).length === 0) && (
-                event.contact.map((con, index) => (
-                  <LinearGradient
-                    colors={[
-                      event.macro_category ? ServicesGradients[event.macro_category][0] : "rgba(0,0,0,0.5)",
-                      event.macro_category ? ServicesGradients[event.macro_category][1] : "rgba(0,0,0,0.5)",
-                    ]}
-                    style={{
-                      padding: 12, gap: 16, borderRadius: 10,
-                      flexDirection: "row", alignItems: "center", justifyContent: "center",
-                    }}
-                  >
-                    <Hyperlink
-                      key={index}
-                      linkDefault={true}
-                      linkStyle={{ color: "white" }}
-                      onPress={ () => openLink(Object.values(con)[0], { try_instant_view: true }) }
-                      linkText={(url) => {
-                        const contact = event.contact!.find((c) => Object.values(c)[0] === url);
-                        return contact ? Object.keys(contact)[0] : url;
-                      }}
-                    >
-                      <Text style={{ fontFamily: "UnboundedRegular", fontSize: 14, color: "white" }}>
-                        {Object.values(con)[0]}
-                      </Text>
-                    </Hyperlink>
+              <View style={{ width: "100%", gap: 16 }}>
+                { event.contact && event.contact.length > 0 && !event.contact.every(obj => Object.keys(obj).length === 0) &&
+                  !event.contact.every(obj => Object.values(obj).length === 0) && (
+                    event.contact.map((con, index) => (
+                      <Pressable onPress={ () => openLink(Object.values(con)[0], { try_instant_view: true }) }>
+                        <LinearGradient
+                          colors={[
+                            event.macro_category ? ServicesGradients[event.macro_category][0] : "rgba(0,0,0,0.5)",
+                            event.macro_category ? ServicesGradients[event.macro_category][1] : "rgba(0,0,0,0.5)",
+                          ]}
+                          style={{
+                            padding: 12, gap: 16, borderRadius: 10,
+                            flexDirection: "row", alignItems: "center", justifyContent: "center",
+                          }}
+                        >
+                          <Hyperlink
+                            key={index}
+                            linkDefault={true}
+                            linkStyle={{ color: "white" }}
+                            linkText={(url) => {
+                              const contact = event.contact!.find((c) => Object.values(c)[0] === url);
+                              return contact ? Object.keys(contact)[0] : url;
+                            }}
+                          >
+                            <Text style={{ fontFamily: "UnboundedRegular", fontSize: 14, color: "white", textDecorationLine: "underline"}}>
+                              {Object.values(con)[0]}
+                            </Text>
+                          </Hyperlink>
 
-                    <Icon name={"moreGradient"} color={"white"} size={14}/>
-                  </LinearGradient>
-                ))
-              )}
+                          <Icon name={"moreGradient"} color={"white"} size={14}/>
+                        </LinearGradient>
+                      </Pressable>
+                    ))
+                  )}
+              </View>
             </ScrollView>
           </View>
         </BlurView>
