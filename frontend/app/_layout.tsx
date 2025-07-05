@@ -12,8 +12,10 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
+    TDMars: require("@/shared/assets/fonts/TD-Mars.otf"),
     UnboundedExtraBold: require('@/shared/assets/fonts/Unbounded-ExtraBold.ttf'),
     UnboundedSemiBold: require('@/shared/assets/fonts/Unbounded-SemiBold.ttf'),
+    UnboundedMedium: require('@/shared/assets/fonts/Unbounded-Medium.ttf'),
     MontserratLight: require('@/shared/assets/fonts/Montserrat-Light.ttf'),
     MontserratRegular: require('@/shared/assets/fonts/Montserrat-Regular.ttf'),
     MontserratMedium: require('@/shared/assets/fonts/Montserrat-Medium.ttf'),
