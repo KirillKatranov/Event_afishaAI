@@ -73,8 +73,8 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         )}
 
         {(service.id == "trips") && (
-          <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure}>
-            <Illustration name={service.illustration} width={"100%"} height={"100%"}/>
+          <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure} alignItems={"center"}>
+            <Illustration name={service.illustration} width={"80%"} height={"80%"}/>
           </Box>
         )}
 

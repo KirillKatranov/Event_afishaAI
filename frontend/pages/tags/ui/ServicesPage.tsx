@@ -80,7 +80,7 @@ export const ServicesPage = () => {
           }}
           onProgressChange={swipeProgress}
           renderItem={({item}) => <ServiceCard service={item} onPress={() => {
-            router.push({
+            router.replace({
               pathname: '/tags/[service]',
               params: { service: item.id }
             })
