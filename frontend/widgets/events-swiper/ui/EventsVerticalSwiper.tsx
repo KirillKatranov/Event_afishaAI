@@ -117,6 +117,10 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
     });
   }, [username]);
 
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [events]);
+
   const handleLayoutChange = useCallback(() => {
     const newLayout = layoutState === "swiper" ? "catalog" : "swiper";
     setEventCardsLayout(newLayout).then(() => setLayoutState(newLayout));
