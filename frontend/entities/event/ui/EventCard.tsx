@@ -9,7 +9,6 @@ import {BlurView} from "expo-blur";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {LinearGradient} from "expo-linear-gradient";
-import {Hyperlink} from "react-native-hyperlink";
 import {ServicesGradients} from "@/entities/service";
 import {LikeGradient} from "@/shared/ui/Icons";
 
@@ -161,7 +160,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             onPressOut={(e) => {
               e.preventDefault()
               const endX = e.nativeEvent.pageX;
-              if (Math.abs(endX - startX) < 15) {
+              if (Math.abs(endX - startX) < 25) {
                 setModalVisible(true)
               }
             }}
@@ -297,8 +296,8 @@ export const EventCard: React.FC<EventCardProps> = ({
               <View style={{ width: "100%", gap: 16 }}>
                 { event.contact && event.contact.length > 0 && !event.contact.every(obj => Object.keys(obj).length === 0) &&
                   !event.contact.every(obj => Object.values(obj).length === 0) && (
-                    event.contact.map((con, index) => (
-                      <Pressable onPress={ () => openLink(Object.values(con)[0], { try_instant_view: true }) }>
+                    event.contact.map((con, _index) => (
+                      <Pressable onPress={ Object.values(con)[0].includes("http") ? () => openLink(Object.values(con)[0], { try_instant_view: true }) : () => {} }>
                         <LinearGradient
                           colors={[
                             event.macro_category ? ServicesGradients[event.macro_category][0] : "rgba(0,0,0,0.5)",
@@ -309,19 +308,9 @@ export const EventCard: React.FC<EventCardProps> = ({
                             flexDirection: "row", alignItems: "center", justifyContent: "center",
                           }}
                         >
-                          <Hyperlink
-                            key={index}
-                            linkDefault={true}
-                            linkStyle={{ color: "white" }}
-                            linkText={(url) => {
-                              const contact = event.contact!.find((c) => Object.values(c)[0] === url);
-                              return contact ? Object.keys(contact)[0] : url;
-                            }}
-                          >
-                            <Text style={{ fontFamily: "UnboundedRegular", fontSize: 14, color: "white", textDecorationLine: "underline"}}>
-                              {Object.values(con)[0]}
-                            </Text>
-                          </Hyperlink>
+                          <Text style={{ fontFamily: "UnboundedRegular", fontSize: 14, color: "white", textDecorationLine: "underline", textAlign: "center"}}>
+                            {Object.keys(con)[0].length > 0 && Object.values(con)[0].includes("http") ? Object.keys(con)[0] : Object.values(con)[0] }
+                          </Text>
 
                           <Icon name={"moreGradient"} color={"white"} size={14}/>
                         </LinearGradient>
