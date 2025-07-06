@@ -1,28 +1,17 @@
-import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
-import {Image, ImageBackground, Platform, Pressable, Modal, FlatList} from "react-native";
-import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
-import {useTheme} from "@shopify/restyle";
-import {Hyperlink} from "react-native-hyperlink";
-import {Event} from "@/entities/event/model/types/events";
-import {Box} from "@/shared/ui/Base/Box";
-import {Text} from "@/shared/ui/Base/Text";
-import {formatDate} from "@/shared/scripts/date";
-import {Theme} from "@/shared/providers/Theme";
+import React, {useCallback, useEffect, useState} from "react";
+import {Image, Modal, Pressable, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Event, useEventCardStore} from "@/entities/event";
+import {Box, CardControlsButton, Chip, LoadingCard} from "@/shared/ui";
+import DropShadow from "react-native-drop-shadow";
+import Illustration from "@/shared/ui/Illustrations/Illustration";
+import {Marquee} from "@animatereactnative/marquee";
+import {BlurView} from "expo-blur";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
-import {ActionButton, LoadingCard, TagChip} from "@/shared/ui";
-import {ScrollView} from "react-native-gesture-handler";
-import {ServicesColors} from "@/entities/service";
-import Illustration from "@/shared/ui/Illustrations/Illustration";
-import {router} from "expo-router";
-import ParticipantsService from "@/features/participants/api/ParticipantsService";
-import {User} from "@/entities/user";
-import {userEmoji} from "@/features/participants";
-
-const DraggableScrollView = Platform.select({
-  web: () => require('@/shared/providers/DraggableScroll').DraggableScrollView,
-  default: () => ScrollView,
-})();
+import {LinearGradient} from "expo-linear-gradient";
+import {Hyperlink} from "react-native-hyperlink";
+import {ServicesGradients} from "@/entities/service";
+import {LikeGradient} from "@/shared/ui/Icons";
 
 interface EventCardProps {
   event: Event;
@@ -32,396 +21,318 @@ interface EventCardProps {
   owned?: boolean;
 }
 
-export const EventCard: React.FC<EventCardProps> = memo(({
+export const EventCard: React.FC<EventCardProps> = ({
   event,
   onLike,
   onDislike,
   expanded,
   owned
 }) => {
-  const theme = useTheme<Theme>();
-  const config = useConfig();
-  const heightValue = useSharedValue(0);
+  const [startX, setStartX] = useState(0);
 
-  const [cardHeight, setCardHeight] = useState(0);
-  const [titleHeight, setTitleHeight] = useState(0);
-  const [descriptionHeight, setDescriptionHeight] = useState(0);
-  const [contactsHeight, setContactsHeight] = useState(0);
-  const [additionalInfoHeight, setAdditionalInfoHeight] = useState(0);
-
-  const [descriptionExpanded, setDescriptionExpanded] = useState(expanded ? expanded : false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(expanded ? expanded : false);
+
+  const { setSwipeEnabled } = useEventCardStore();
+
+  const openLink = useConfig().openLink;
+  const openTgLink = useConfig().openTelegramLink;
+
+  const onSharePress = () => {
+    const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${event.id}`;
+    const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
+
+    console.log("Sharing event with link:", link);
+
+    openTgLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
+  }
 
   useEffect(() => {
-    heightValue.value = withTiming(
-      descriptionExpanded ? Math.min((cardHeight - titleHeight), descriptionHeight + contactsHeight + 42 + 32 + additionalInfoHeight) : 0,
-      { duration: 250 },
-    );
-  }, [descriptionExpanded, cardHeight]);
-
-  const animatedInfoStyle = useAnimatedStyle(() => ({
-    height: heightValue.value,
-  }));
-
-  const toggleDescription = useCallback(() => {
-    setDescriptionExpanded(!descriptionExpanded);
-  }, [descriptionExpanded]);
+    if (modalVisible) setSwipeEnabled(false);
+    else setSwipeEnabled(true);
+  }, [modalVisible]);
 
   const renderTags = useCallback(
     () =>
       event.tags!.map((tag) => (
-        <TagChip key={tag.name} text={tag.name} color={event.macro_category ? ServicesColors[event.macro_category] : theme.colors.white} />
+        <Chip key={tag.name} text={tag.name}  service={event.macro_category}/>
       )),
     [event.tags]
   );
 
+  const renderSubInfo = () => (
+    <View style={{ width: "100%", flexDirection: "column", alignItems: "center", gap: 8, padding: 20 }}>
+      {event.location && (
+        <Pressable
+          onPressIn={(event) => {
+            event.preventDefault()
+            setStartX(event.nativeEvent.pageX);
+          }}
+          onPressOut={(e) => {
+            e.preventDefault()
+            const endX = e.nativeEvent.pageX;
+            if (Math.abs(endX - startX) < 15) {
+              openLink(`https://yandex.ru/maps/?text=${event.location}`, { try_instant_view: true })
+            }
+          }}
+        >
+          <Chip text={event.location} icon={"location"} service={event.macro_category}/>
+        </Pressable>
+      )}
 
-  const [participants, setParticipants] = useState<User[]>([]);
-  const [loadingParticipants, setLoadingParticipants] = useState(true);
-  const [participantsModalVisible, setParticipantsModalVisible] = useState(false);
+      <View style={{ flexWrap: "wrap", flexDirection: "row", gap: 8 }}>
+        {event.cost !== null && event.cost !== undefined && (
+          <Chip
+            text={event.cost == '0' ? "Бесплатно" : event.cost}
+            icon={"cost"}
+            service={event.macro_category}
+          />
+        )}
 
-  useEffect(() => {
-    const loadParticipants = async () => {
-      try {
-        return await ParticipantsService.getParticipants({content_id: event.id.toString()});
-      } catch (error) {
-        console.error('Error fetching participants:', error);
-      } finally {
-        setLoadingParticipants(false);
-      }
-    };
+        {event.tags && event.tags.length == 1 && (
+          <Chip text={event.tags[0].name}  service={event.macro_category}/>
+        )}
+      </View>
 
-    loadParticipants().then((response) => {
-      if (response && response.data) setParticipants(response.data);
-    });
-  }, [event.id]);
 
-  const participantsWithEmojis = useMemo(() => {
-    return participants.map(participant => ({
-      ...participant,
-      emoji: userEmoji[participant.id % userEmoji.length]
-    }));
-  }, [participants]);
-
-  const renderParticipantItem = useCallback(({ item }: { item: User & { emoji: string } }) => (
-    <Pressable
-      onPress={() => config.openTelegramLink(`https://t.me/${item.username}`)}
-      style={{ flexDirection: "row", alignItems: "center", paddingVertical: 4, paddingHorizontal: 8, gap: 8 }}
-    >
-      <Box
-        width={40} height={40}
-        borderRadius={"eventCard"}
-        backgroundColor="gray"
-        justifyContent="center" alignItems="center"
-      >
-        <Text fontSize={20} selectable={false}>{item.emoji}</Text>
-      </Box>
-      <Text variant="cardText" color="cardMainTextColor">
-        {item.username}
-      </Text>
-    </Pressable>
-  ), []);
-
-  const renderParticipantsPreview = useCallback(() => {
-    if (participantsWithEmojis.length === 0) return null;
-
-    const previewParticipants = participantsWithEmojis.slice(0, 3);
-    const remainingCount = participantsWithEmojis.length - 3;
-
-    return (
-      <Pressable onPress={() => setParticipantsModalVisible(true)}>
-        <Box flexDirection="row" alignItems="center" paddingHorizontal="eventCardPadding" style={{ marginBottom : 16 }}>
-          <Text variant="cardSubInfo" color="cardMainTextColor" marginRight="s">
-            Понравилось:
-          </Text>
-          {previewParticipants.map((participant, index) => (
-            <Box
-              key={participant.id}
-              width={24} height={24}
-              borderRadius={"eventCard"} borderWidth={1} borderColor={"gray"}
-              backgroundColor="white"
-              justifyContent="center" alignItems="center"
-              style={{ marginLeft: index > 0 ? -8 : 0 }}
-            >
-              <Text fontSize={12}>{participant.emoji}</Text>
-            </Box>
-          ))}
-          {remainingCount > 0 && (
-            <Box
-              width={24} height={24}
-              borderRadius={"eventCard"}
-              justifyContent="center" alignItems="center"
-              style={{ marginRight: 8 }}
-            >
-              <Text variant="cardSubInfo" color="white">
-                +{remainingCount}
-              </Text>
-            </Box>
-          )}
-        </Box>
-      </Pressable>
-    );
-  }, [participantsWithEmojis]);
+      {event.tags && event.tags.length > 1 && (
+        <Marquee spacing={8} speed={0.2}>
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            {renderTags()}
+          </View>
+        </Marquee>
+      )}
+    </View>
+  )
 
   return (
-    <ImageBackground
-      source={{ uri: event.image || undefined }}
-      resizeMode="cover"
-      blurRadius={25}
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        overflow: "hidden",
-        backgroundColor: theme.colors.secondary_bg_color,
-        width: "100%"
-      }}
-    >
+    <View style={{ flex: 1, width: "100%", flexDirection: "column", overflow: "hidden", backgroundColor: "white" }}>
       <Image
-        source={{ uri: event.image || undefined }}
-        resizeMode="contain"
-        onLoadEnd={() => setImageLoading(false)}
+        source={require("@/shared/assets/images/BlurredCircles.png")}
+        resizeMode="stretch"
         style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-          display: imageLoading ? "none" : "flex"
+          position: "absolute", alignSelf: "center",
+          zIndex: -1,
+          width: "100%", height: 120,
+          top: 0,
+          opacity: 0.75, transform: [{ scaleX: -1 }]
         }}
       />
 
-      {imageLoading && (
-        <Box position={"absolute"} width={"100%"} height={"100%"} alignItems={"center"} justifyContent={"center"}>
-          <LoadingCard style={{ width: "100%", height: "100%", position: "absolute", zIndex: -1, borderRadius: 8 }}/>
-          <Illustration name={"strelka"} width={64} height={64}/>
-        </Box>
-      )}
-
-      <Box
-        flex={1}
-        justifyContent="flex-end"
-        onLayout={(e) => setCardHeight(e.nativeEvent.layout.height)}
+      {/* Image */}
+      <View
+        style={{
+          flex: 1, flexDirection: "column", justifyContent: "flex-end",
+          paddingTop: 80
+        }}
       >
-        <Box
-          backgroundColor={"cardBGColor"}
-          borderTopRightRadius={"xl"} borderTopLeftRadius={"xl"}
-          gap={"s"}
-          paddingHorizontal={"eventCardPadding"} paddingVertical={"m"}
-          onLayout={(event) => {
-            const { height } = event.nativeEvent.layout;
-            setTitleHeight(height + 72);
+        <Image
+          source={{ uri: event.image || undefined }}
+          resizeMode="cover"
+          onLoadEnd={() => setImageLoading(false)}
+          style={{
+            flex: 1, maxHeight: 390,
+            display: imageLoading ? "none" : "flex",
+            backgroundColor: "#ECEBE8",
+          }}
+        />
+
+        {imageLoading && (
+          <Box flex={1} maxHeight={390} alignItems={"center"} justifyContent={"center"}>
+            <LoadingCard style={{ width: "100%", height: "100%", position: "absolute", zIndex: -1, borderRadius: 8 }}/>
+            <Illustration name={"strelka"} width={64} height={64} opacity={0.5}/>
+          </Box>
+        )}
+
+        <DropShadow
+          style={{
+            width: "100%",
+            padding: 10,
+            shadowOffset: {width: 0, height: 7},
+            shadowColor: "rgba(0,0,0,0.25)",
+            shadowRadius: 10,
           }}
         >
-          {/* Event Title */}
-          <Pressable onPress={toggleDescription}>
-            <Text
-              variant={"cardHeader"}
-              color={"cardMainTextColor"}
-              textAlign={"center"}
+          <Pressable
+            onPressIn={(event) => {
+              event.preventDefault()
+              setStartX(event.nativeEvent.pageX);
+            }}
+            onPressOut={(e) => {
+              e.preventDefault()
+              const endX = e.nativeEvent.pageX;
+              if (Math.abs(endX - startX) < 15) {
+                setModalVisible(true)
+              }
+            }}
+            style={{
+              position: "absolute", top: -43, right: 12,
+              borderRadius: 10, overflow: "hidden",
+              shadowOffset: {width: 4, height: 4},
+              backgroundColor: "rgba(255,255,255,0.3)",
+              shadowRadius: 8,
+              shadowColor: "rgba(0,0,0,0.25)"
+            }}
+          >
+            <BlurView
+              intensity={50} tint={"light"}
+              style={{
+                paddingHorizontal: 8, paddingVertical: 6, gap: 8,
+                flexDirection: "row", alignItems: "center",
+              }}
             >
-              { event.name }
-            </Text>
+              <Text style={{ fontFamily: "UnboundedRegular", fontSize: 14, color: "#393939"}}>
+                подробнее
+              </Text>
+
+              <Icon name={"moreGradient"} size={10} color={"black"}/>
+            </BlurView>
           </Pressable>
 
-          {/* Event Categories */}
-          {
-            event.tags && event.tags.length > 0 && (
-              <DraggableScrollView
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                scrollEnabled={true}
-                contentContainerStyle={{ gap: 4, flexGrow: 1, justifyContent: "center", alignItems: "center" }}
-              >
-                {renderTags()}
-              </DraggableScrollView>
-            )
-          }
 
-          {/* Reaction buttons */}
-          <Box
-            flexDirection="row"
-            width="100%"
-            justifyContent="center"
-            gap="s"
-            paddingVertical="s"
-          >
-            <ActionButton type="dislike" onPress={onDislike} />
-            <ActionButton type="like" onPress={onLike} />
-          </Box>
-        </Box>
+          <Text style={{ fontFamily: "UnboundedRegular", fontSize: 16, textAlign: "center", color: "#393939"}}>
+            {event.name.toUpperCase()}
+          </Text>
+        </DropShadow>
+      </View>
 
-        <Animated.View
-          style={[
-            animatedInfoStyle,
-            { backgroundColor: theme.colors.cardBGColor, gap: theme.spacing.m }
-          ]}
-        >
-          {/* Location */}
-          <Box flexDirection="column" gap="s" paddingHorizontal="eventCardPadding"
-               onLayout={(e) => setAdditionalInfoHeight(e.nativeEvent.layout.height)}
-          >
-            {
-              event.location && (
-                <Box flexDirection="row" gap="xs" alignItems="center">
-                  <Icon name="location" color={theme.colors.white} size={16} />
+      {/* Controls */}
+      <View
+        style={{
+          flexDirection: "column", alignItems: "center",
+          gap: 8
+        }}
+      >
+        {renderSubInfo()}
 
-                  <Text
-                    variant={"cardSubInfo"} color={"cardMainTextColor"}
-                    onPress={() => config.openLink(`https://yandex.ru/maps/?text=${event.location}`, { try_instant_view: true })}>
-                    {event.location}
-                  </Text>
-                </Box>
-              )
-            }
+        <View style={{ flexDirection: "row", gap: 30, paddingBottom: 40, alignItems: "center" }}>
+          <CardControlsButton type={"dislike"} onPress={onDislike} service={event.macro_category}/>
+          <CardControlsButton type={"like"} onPress={onLike} service={event.macro_category}/>
+          <CardControlsButton type={"share"} onPress={onSharePress} service={event.macro_category}/>
+        </View>
+      </View>
 
-            {/* Cost */}
-            {
-              event.cost != undefined && event.cost != "0" && (
-                <Box flexDirection="row" gap="xs" alignItems="center">
-                  <Icon name="cost" color={theme.colors.gray} size={16} />
+      <Image
+        source={require("@/shared/assets/images/BlurredCircles.png")}
+        resizeMode="stretch"
+        style={{
+          position: "absolute", alignSelf: "center",
+          zIndex: -1,
+          width: "100%", height: 120,
+          bottom: -25,
+          opacity: 0.75, transform: [{ scaleX: -1 }, { scaleY: -1 }]
+        }}
+      />
 
-                  <Text variant="cardSubInfo" color="cardMainTextColor">
-                    { `${event.cost} руб.`}
-                  </Text>
-                </Box>
-              )
-            }
-
-            {/* Date */}
-            {
-              event.date_start && (
-                <Box flexDirection="row" gap="xs" alignItems="center">
-                  <Icon name="calendar" color={theme.colors.gray} size={16} />
-
-                  <Text variant={"cardSubInfo"} color={"cardMainTextColor"}>
-                    { `${formatDate(event.date_start)} ${ event.date_end && event.date_start != event.date_end ? '- ' + formatDate(event.date_end): ""}` }
-                  </Text>
-
-                  {
-                    event.time && event.time !== "00:00" && (
-                      <Text variant={"cardSubInfo"} color={"cardMainTextColor"}>
-                        {`В ${event.time}`}
-                      </Text>
-                    )
-                  }
-                </Box>
-              )
-            }
-          </Box>
-
-          {(event.description || event.contact) && (
-            <Box
-              flex={1}
-              overflow="hidden"
-              marginHorizontal="l"
-              borderRadius="l"
-              padding={"m"}
-              style={{ backgroundColor: "#ECEBE8", marginBottom: participants.length > 0 ? 0 : 16 }}
-              maxHeight={descriptionHeight + contactsHeight + 42}
+      <Modal
+        id={"modalEventDescription"}
+        animationType={"fade"}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(true)}
+        transparent
+      >
+        <BlurView style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 25 }}>
+          <View style={{ width: "100%", height: "100%", backgroundColor: "white", borderRadius: 20, overflow: "hidden" }}>
+            <View
+              style={{
+                width: "100%", padding: 12,
+                justifyContent: "space-between", alignItems:"center", flexDirection: "row"
+              }}
             >
-              <ScrollView
-                overScrollMode="never"
-                style={{ flex: 1 }}
-                contentContainerStyle={{ gap: 10 }}
+              <Pressable
+                onPress={() => setModalVisible(false)}
+                style={{ width: 50, height: 50, alignItems: "center", justifyContent: "center" }}
               >
-                {
-                  event.description && (
-                    <Text
-                      variant={"cardText"}
-                      color={"cardDescriptionTextColor"}
-                      onLayout={(e) => setDescriptionHeight(e.nativeEvent.layout.height + 42)}
-                    >
-                      {event.description}
-                    </Text>
-                  )
-                }
+                <Icon name={"chevronLeft"} color={"#393939"} size={24}/>
+              </Pressable>
 
-                {
-                  event.contact && event.contact.length > 0 && !event.contact.every(obj => Object.keys(obj).length === 0) && (
-                    <Box
-                      gap={"s"}
-                      onLayout={(e) => setContactsHeight(e.nativeEvent.layout.height)}
-                    >
-                      {event.contact.map((con, index) => {
-                        return (
+              <TouchableOpacity onPress={onLike} activeOpacity={0.7}>
+                <DropShadow
+                  style={{
+                    shadowOffset: {width: 2, height: 3},
+                    shadowColor: event.macro_category ? ServicesGradients[event.macro_category][1] : "rgba(0,0,0,0.25)",
+                    shadowRadius: 5, borderRadius: 15,
+                    height: 48, width: 48,
+                    backgroundColor: "white",
+                    alignItems: "center", justifyContent: "center"
+                  }}
+                >
+                  <LikeGradient
+                    width={28} height={28}
+                    fill={{
+                      id: event.id.toString(),
+                      startColor: event.macro_category ? ServicesGradients[event.macro_category][0] : "black",
+                      endColor: event.macro_category ? ServicesGradients[event.macro_category][1] : "black",
+                      start: { x: 0, y: 0 },
+                      end: { x: 0, y: 1 }
+                    }}
+                  />
+                </DropShadow>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                shadowOffset: {width: 1, height: 4},
+                shadowRadius: 7,
+                shadowColor: "rgba(132,132,132,0.2)",
+                paddingVertical: 18, paddingHorizontal: 8,
+              }}
+            >
+              <Text style={{ fontFamily: "UnboundedRegular", fontSize: 16, color: "#393939", textAlign: "center" }}>
+                {event.name}
+              </Text>
+            </View>
+
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ width: "100%", flexGrow: 1, padding: 20, gap: 16, justifyContent: "space-between" }}
+            >
+              {renderSubInfo()}
+
+              <Text style={{ fontFamily: "UnboundedLight", fontSize: 12, color: "black" }}>
+                {event.description}
+              </Text>
+
+              <View style={{ width: "100%", gap: 16 }}>
+                { event.contact && event.contact.length > 0 && !event.contact.every(obj => Object.keys(obj).length === 0) &&
+                  !event.contact.every(obj => Object.values(obj).length === 0) && (
+                    event.contact.map((con, index) => (
+                      <Pressable onPress={ () => openLink(Object.values(con)[0], { try_instant_view: true }) }>
+                        <LinearGradient
+                          colors={[
+                            event.macro_category ? ServicesGradients[event.macro_category][0] : "rgba(0,0,0,0.5)",
+                            event.macro_category ? ServicesGradients[event.macro_category][1] : "rgba(0,0,0,0.5)",
+                          ]}
+                          style={{
+                            padding: 12, gap: 16, borderRadius: 10,
+                            flexDirection: "row", alignItems: "center", justifyContent: "center",
+                          }}
+                        >
                           <Hyperlink
                             key={index}
                             linkDefault={true}
-                            linkStyle={{ color: theme.colors.link_color }}
-                            onPress={ () => config.openLink(Object.values(con)[0], { try_instant_view: true }) }
+                            linkStyle={{ color: "white" }}
                             linkText={(url) => {
                               const contact = event.contact!.find((c) => Object.values(c)[0] === url);
                               return contact ? Object.keys(contact)[0] : url;
                             }}
                           >
-                            <Text
-                              variant={"cardText"}
-                            >
+                            <Text style={{ fontFamily: "UnboundedRegular", fontSize: 14, color: "white", textDecorationLine: "underline"}}>
                               {Object.values(con)[0]}
                             </Text>
                           </Hyperlink>
-                        );
-                      })}
-                    </Box>
-                  )
-                }
-              </ScrollView>
-            </Box>
-          )}
 
-          {!loadingParticipants && renderParticipantsPreview()}
-        </Animated.View>
-      </Box>
-
-      {/* Participants Modal */}
-      <Modal
-        visible={participantsModalVisible}
-        animationType="slide"
-        transparent={false}
-        onRequestClose={() => setParticipantsModalVisible(false)}
-      >
-        <Box flex={1} backgroundColor="cardBGColor" padding="m">
-          <Box flexDirection="row" justifyContent="space-between" alignItems="center" marginBottom="m">
-            <Text variant="cardHeader" color="cardMainTextColor">
-              Участники
-            </Text>
-            <Pressable onPress={() => setParticipantsModalVisible(false)}>
-              <Icon name="dislike" color={theme.colors.cardMainTextColor} size={24} />
-            </Pressable>
-          </Box>
-
-          {loadingParticipants ? (
-            <Box flex={1} justifyContent="center" alignItems="center">
-              <LoadingCard />
-            </Box>
-          ) : (
-            <FlatList
-              data={participantsWithEmojis}
-              renderItem={renderParticipantItem}
-              keyExtractor={(item) => item.id.toString()}
-              ListEmptyComponent={
-                <Box flex={1} justifyContent="center" alignItems="center">
-                  <Text variant="cardText" color="cardMainTextColor">
-                    Пока нет участников
-                  </Text>
-                </Box>
-              }
-            />
-          )}
-        </Box>
+                          <Icon name={"moreGradient"} color={"white"} size={14}/>
+                        </LinearGradient>
+                      </Pressable>
+                    ))
+                  )}
+              </View>
+            </ScrollView>
+          </View>
+        </BlurView>
       </Modal>
-
-      {owned && (
-        <Pressable
-          style={{ width: "100%", backgroundColor: "#ECEBE8", padding: 12, alignItems: "center", justifyContent: "center" }}
-          onPress={() => router.push({
-            pathname: "/tags/organizers/manage",
-            params: { id: event.id }
-          })}
-        >
-          <Text style={{ fontFamily: "MontserratRegular", fontSize: 14 }} selectable={false}>
-            Управление мероприятием
-          </Text>
-        </Pressable>
-      )}
-    </ImageBackground>
-  );
-});
+    </View>
+  )
+}

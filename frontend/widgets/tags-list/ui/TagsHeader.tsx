@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Text } from "@/shared/ui";
-import {Pressable} from "react-native";
+import {Pressable, View} from "react-native";
 import Icon from "@/shared/ui/Icons/Icon";
 import {useRouter} from "expo-router";
 import {useTheme} from "@shopify/restyle";
@@ -18,9 +18,7 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
   const theme = useTheme<Theme>();
 
   return (
-    <Box
-      style={{ paddingBottom: 16, paddingTop: 108 }}
-    >
+    <View style={{ paddingBottom: 12, paddingTop: 98 }} >
       <Pressable
         onPress={() => {
           router.replace("/tags");
@@ -36,9 +34,9 @@ export const TagsHeader: React.FC<TagsHeaderProps> = (
         </Box>
       </Pressable>
 
-      <Text variant={"tagsHeader"} color={"text_color"} textAlign={"center"}>
-        {props.title}
+      <Text style={{ fontFamily: "TDMars", fontWeight: "500", fontSize: 22, textAlign: "center", color: theme.colors.black }}>
+        {props.title.toUpperCase()}
       </Text>
-    </Box>
+    </View>
   );
 };

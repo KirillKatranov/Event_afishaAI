@@ -147,7 +147,10 @@ export const CityPage = () => {
         </Pressable>
 
         {userParam !== NEW_USER && (
-          <Pressable onPress={() => router.replace('/feed')}>
+          <Pressable onPress={() => {
+            if (router.canGoBack()) router.back()
+            else router.replace("/feed")
+          }}>
             <Box
               width={254} height={30}
               alignItems={"center"} justifyContent={"center"}

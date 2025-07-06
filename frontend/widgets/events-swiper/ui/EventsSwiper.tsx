@@ -53,12 +53,10 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
 
   const { selectedDays} = useCalendarStore();
   const {
-    addLikedEvent, addDislikedEvent,
-    removeLikedEvent, removeDislikedEvent,
     saveAction
   } = useReactionsStore();
   const { swipeEnabled } = useEventCardStore();
-  const { likedIDs, addLikeID, resetLikesID, removeLikeID } = useCatalogLikesStore()
+  const { likedIDs, resetLikesID } = useCatalogLikesStore()
 
   const swipedAllInfoOpacity = useSharedValue(0);
 
@@ -154,10 +152,6 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                   action: "like",
                   contentId: events[cardIndex].id,
                   username: username
-                }).then(() => {
-                  addLikeID(events[cardIndex].id);
-                  addLikedEvent(events[cardIndex]);
-                  removeDislikedEvent(events[cardIndex].id);
                 })
               }}
               onSwipedLeft={(cardIndex) => {
@@ -165,10 +159,6 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                   action: "dislike",
                   contentId: events[cardIndex].id,
                   username: username
-                }).then(() => {
-                  removeLikeID(events[cardIndex].id)
-                  addDislikedEvent(events[cardIndex])
-                  removeLikedEvent(events[cardIndex].id);
                 })
               }}
               onSwiping={(x) => {
@@ -229,20 +219,12 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                         action: "delete_mark",
                         contentId: item.id,
                         username: username
-                      }).then(() => {
-                        removeLikeID(item.id);
-                        removeLikedEvent(item.id);
-                        removeDislikedEvent(item.id);
                       })
                     } else {
                       saveAction({
                         action: "like",
                         contentId: item.id,
                         username: username
-                      }).then(() => {
-                        addLikeID(item.id);
-                        addLikedEvent(item);
-                        removeDislikedEvent(item.id);
                       })
                     }
                   }}
@@ -289,22 +271,12 @@ export const EventsSwiper: React.FC<EventsSwiperProps> = ({
                     action: "like",
                     contentId: selectedEvent.id,
                     username: username
-                  }).then(() => {
-                    addLikeID(selectedEvent.id);
-                    addLikedEvent(selectedEvent);
-                    removeDislikedEvent(selectedEvent.id);
-                    setModalVisible(false);
                   })}
                   onDislike={() => {
                     saveAction({
                       action: "dislike",
                       contentId: selectedEvent.id,
                       username: username
-                    }).then(() => {
-                      removeLikeID(selectedEvent.id);
-                      addDislikedEvent(selectedEvent);
-                      removeLikedEvent(selectedEvent.id);
-                      setModalVisible(false);
                     })
                   }}
                 />

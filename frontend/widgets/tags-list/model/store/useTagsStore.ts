@@ -14,6 +14,7 @@ interface TagsState {
   isLoading: boolean;
   hasError: boolean;
   fetchTags: (params: TagsRequest) => void;
+  clearTags: () => void;
 }
 
 export const useTagsStore = create<TagsState>((set,get) => ({
@@ -75,6 +76,8 @@ export const useTagsStore = create<TagsState>((set,get) => ({
         set({ hasError: true, isLoading: false });
       });
   },
+
+  clearTags: () => set({ tags: [], isLoading: true, lastService: undefined })
 }));
 
 const sortTagsByPreferences = (tags: Tag[], preferences: number[]): Tag[] => {

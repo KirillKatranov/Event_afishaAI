@@ -9,7 +9,7 @@ import {Dimensions} from "react-native";
 import {useSafeAreaInsets} from "@/shared/providers/SafeAreaWrapper";
 
 export const FeedPage = () => {
-  const username = useConfig().initDataUnsafe.user.username;
+  const user = useConfig().initDataUnsafe.user;
   const onEvent = useConfig().onEvent;
   const {
     feed,
@@ -36,7 +36,7 @@ export const FeedPage = () => {
   useEffect(() => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
     fetchFeed({
-      username: username,
+      username: user.username ? user.username : user.id.toString(),
       date_start: borders.date_start,
       date_end: borders.date_end
     });
@@ -46,12 +46,13 @@ export const FeedPage = () => {
     const borders = getPeriodBorders(Object.keys(selectedDays));
     if (query === "") {
       fetchFeed({
-        username: username,
+        username: user.username ? user.username : user.id.toString(),
         date_start: borders.date_start,
         date_end: borders.date_end
       });
     } else {
       fetchSearch({
+        username: user.username ? user.username : user.id.toString(),
         q: query,
         date_from: borders.date_start,
         date_to: borders.date_end

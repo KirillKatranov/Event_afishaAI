@@ -22,7 +22,7 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
   const theme = useTheme<Theme>();
 
   const {
-    saveAction, removeLikedEvent, removeDislikedEvent, addLikedEvent
+    saveAction,
   } = useReactionsStore();
 
   useEffect(() => {
@@ -211,11 +211,6 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
                     contentId: props.selectedEvent!.id,
                     username: config.initDataUnsafe.user.username
                   })
-                    .then(() => {
-                      addLikedEvent(props.selectedEvent!);
-                      removeDislikedEvent(props.selectedEvent!.id);
-                      props.setEventSelected(undefined);
-                    });
                 }}
               >
                 <Box
@@ -244,10 +239,6 @@ export const SelectedEvent: React.FC<SelectedEventProps> = (props) => {
                 contentId: props.selectedEvent!.id,
                 username: config.initDataUnsafe.user.username
               })
-                .then(() => {
-                  props.type == "liked" ? removeLikedEvent(props.selectedEvent!.id) : removeDislikedEvent(props.selectedEvent!.id);
-                  props.setEventSelected(undefined);
-                });
             }}
           >
             <Box
