@@ -35,7 +35,7 @@ interface EventsSwiperProps {
   searchUtils?: {
     query: string, setQuery: (query: string) => void;
     onSearch: (query: string) => void;
-    fetchSuggestions: (query: string) => Promise<string[]>;
+    fetchSuggestions: (query: string, username: string) => Promise<string[]>;
   };
 }
 
@@ -55,7 +55,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
 
   const theme = useTheme<Theme>();
   const router = useRouter();
-  const username = useConfig().initDataUnsafe.user.username;
+  const user = useConfig().initDataUnsafe.user;
 
   const [layoutState, setLayoutState] = useState<string | null>(null);
 
@@ -106,16 +106,16 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
     saveAction({
       action,
       contentId: event.id,
-      username,
+      username: user.username ? user.username : user.id.toString(),
     }, () => {
       const borders = getPeriodBorders(Object.keys(selectedDays));
       fetchReactions({
-        username: username,
+        username: user.username ? user.username : user.id.toString(),
         date_start: borders.date_start, date_end: borders.date_end
       });
       if (action === "like") triggerLikeAnimation();
     });
-  }, [username]);
+  }, [user]);
 
   useEffect(() => {
     setCurrentIndex(0);
@@ -307,6 +307,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
           <SearchBar
             query={searchUtils.query} setQuery={searchUtils.setQuery}
             onSearch={searchUtils.onSearch}
+            username={user.username ? user.username : user.id.toString()}
             fetchSuggestions={searchUtils.fetchSuggestions}
           />
         )}
