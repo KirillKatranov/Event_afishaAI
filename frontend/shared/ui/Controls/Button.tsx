@@ -1,6 +1,6 @@
 import React from "react";
 import { Text } from "@/shared/ui";
-import { Pressable } from "react-native";
+import {ActivityIndicator, Pressable} from "react-native";
 import { THEME_COLORS } from "@/shared/constants"
 
 interface ButtonProps {
@@ -8,6 +8,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary";
   text: string;
   onPress: () => void;
+  isLoading?: boolean;
   disabled?: boolean;
 }
 
@@ -16,6 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
   text,
   onPress,
   variant = "primary",
+  isLoading= false,
   disabled = false
 }) => {
   const colors = THEME_COLORS[theme];
@@ -42,15 +44,21 @@ export const Button: React.FC<ButtonProps> = ({
           },
       ]}
     >
-      <Text
-        selectable={false}
-        style={[
-          { fontFamily: "MontserratMedium", fontSize: 16 },
-          { color: variant === "primary" ? (disabled ? "#999999" : colors.text) : (disabled ? "#CCCCCC" : "#000000") }
-        ]}
-      >
-        {text}
-      </Text>
+      {isLoading && (
+        <ActivityIndicator size="small" color={colors.normal}/>
+      )}
+
+      {!isLoading && (
+        <Text
+          selectable={false}
+          style={[
+            { fontFamily: "MontserratMedium", fontSize: 16 },
+            { color: variant === "primary" ? (disabled ? "#999999" : colors.text) : (disabled ? "#CCCCCC" : "#000000") }
+          ]}
+        >
+          {text}
+        </Text>
+      )}
     </Pressable>
   );
 };

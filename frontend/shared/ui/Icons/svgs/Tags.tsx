@@ -11,7 +11,7 @@ const Tags: React.FC<IconComponentProps> = ({width = 24, height = 24, fill = 'bl
   >
     <Path
       d="M5.844 7h14M5.844 12h10M5.844 17h6"
-      stroke={fill}
+      stroke={fill as string}
       strokeLinecap="round"
     />
   </Svg>

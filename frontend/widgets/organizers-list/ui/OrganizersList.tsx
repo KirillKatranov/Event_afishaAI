@@ -1,19 +1,26 @@
-import React, {useEffect} from 'react'
-import {StyleSheet, Text, View} from "react-native";
+import React, {useEffect, useState} from 'react'
+import {Pressable, StyleSheet, Text, View, Modal} from "react-native";
 import {useOrganizersListStore, useUserOrganizersListStore} from "@/features/organizers-list";
 import {OrganizerCard} from "@/entities/organizers";
-import {Button} from "@/shared/ui";
 import {useRouter} from "expo-router";
 import {useConfig} from "@/shared/providers/TelegramConfig";
+import {Button, LoadingCard} from "@/shared/ui";
+import {SharedValue} from "react-native-reanimated";
 
-export const OrganizersList = () => {
+interface OrganizersListProps {
+  scrollY: SharedValue<number>
+}
+
+export const OrganizersList: React.FC<OrganizersListProps> = ({
+  scrollY
+}) => {
   const router = useRouter();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const {organizers, getOrganizers } = useOrganizersListStore();
   const allLoading = useOrganizersListStore((state) => state.isLoading);
 
-  const {userOrganizers, getUserOrganizers, deleteOrganizer } = useUserOrganizersListStore();
-  const userLoading = useUserOrganizersListStore((state) => state.isLoading);
+  const {userOrganizers, getUserOrganizers } = useUserOrganizersListStore();
 
   const user = useConfig().initDataUnsafe.user;
 
@@ -26,76 +33,63 @@ export const OrganizersList = () => {
   }, [userOrganizers, getUserOrganizers]);
 
   return (
-    <View style={{ width: "100%", flexDirection: "column", gap: 16, paddingTop: 62 }}>
-      <Button
-        theme={"organizers"} text={`Мероприятия от ${user.username ? user.username : user.id.toString()}`}
-        onPress={() => router.push({
-          pathname: "/tags/organizers/events",
-          params: {
-            type: "user",
-            id: user.username ? user.username : user.id.toString(),
-            owned: 1,
-          }
-        })}
-      />
+    <View style={{ width: "100%", flexDirection: "column", gap: 16, paddingHorizontal: 16, paddingBottom: 16 }}>
+      <Pressable
+        onPress={() => setModalVisible(true)}
+        style={{
+          width: "100%", height: 40, justifyContent: "center",
+          borderRadius: 20, borderWidth: 2, borderColor: "#6361DD"
+        }}
+      >
+        <Text style={{ fontFamily: "UnboundedSemiBold", fontSize: 14, textAlign: "center" }} selectable={false}>
+          Я – ОРГАНИЗАТОР
+        </Text>
+      </Pressable>
 
-      <Button
-        theme={"organizers"} text={"Создать мероприятие"}
-        variant={"secondary"} onPress={() => router.push("/tags/organizers/create")}
-      />
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <Pressable style={styles.modalOverlay} onPress={() => setModalVisible(false)}/>
+
+          <View style={styles.modalContent}>
+            <Button
+              theme={"organizers"} variant={"secondary"}
+              text={"Мои мероприятия"}
+              onPress={() => router.replace({
+                pathname: "/tags/organizers/events",
+                params: { type: "user", id: user.username ? user.username : user.id.toString() }}
+              )}
+            />
+
+            <Button
+              theme={"organizers"}
+              text={"Создать мероприятие"}
+              onPress={() => router.replace("/tags/organizers/create")}
+            />
+          </View>
+        </View>
+      </Modal>
 
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>
-          Ваши ораганизации
-        </Text>
-
-        {(userOrganizers === null || userLoading) && (
-          <OrganizerCard/>
-        )}
-
-        {userOrganizers !== null && userOrganizers.map((organizer) => (
-          <OrganizerCard
-            organizer={organizer}
-            onPress={() => router.push({
-              pathname: "/tags/organizers/events",
-              params: { type: "organization", id: organizer.id, owned: 1 },
-            })}
-            owned={true}
-            onDelete={() => deleteOrganizer(organizer.id, user.username ? user.username : user.id.toString(), () => {
-              getUserOrganizers(user.username ? user.username : user.id.toString());
-              getOrganizers();
-            })}
-          />
-        ))}
-
-        {userOrganizers !== null && userOrganizers.length == 0 && (
-          <Text style={{ fontFamily: "MontserratRegular", fontSize: 16, textAlign: "center" }}>
-            У вас нет организаций
-          </Text>
-        )}
-
-        <Button
-          theme={"organizers"} text={"Создать организацию"}
-          variant={"secondary"} onPress={() => router.push("/tags/organizers/register")}
-        />
-      </View>
-
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>
-          Все организации
-        </Text>
-
         {(organizers === null || allLoading) && (
-          <OrganizerCard/>
+          <LoadingCard style={{ height: 186, borderRadius: 40 }}/>
         )}
 
-        {organizers !== null && organizers.map((organizer) => (
+        {organizers !== null && organizers.map((organizer, index) => (
           <OrganizerCard
+            index={index}
             organizer={organizer}
             onPress={() => router.push({
               pathname: "/tags/organizers/events",
               params: { type: "organization", id: organizer.id }
             })}
+           scrollY={scrollY}
           />
         ))}
 
@@ -104,7 +98,6 @@ export const OrganizersList = () => {
             Организации отвутвуют
           </Text>
         )}
-
       </View>
     </View>
   )
@@ -112,5 +105,22 @@ export const OrganizersList = () => {
 
 const styles = StyleSheet.create({
   sectionContainer: { width: "100%", flexDirection: "column", gap: 16 },
-  sectionTitle: { fontFamily: "MontserratMedium", fontSize: 16 }
+  sectionTitle: { fontFamily: "MontserratMedium", fontSize: 16 },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0, bottom: 0, left: 0, right: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20, gap: 16,
+    width: '80%',
+    alignItems: 'center',
+  },
 })

@@ -1,17 +1,15 @@
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect} from "react";
 import {Box, ErrorCard, LoadingCard, Text} from "@/shared/ui";
-import {FlatList, Modal} from "react-native";
-import {useTheme} from "@shopify/restyle";
+import {FlatList, Modal, Pressable} from "react-native";
 import {useCalendarStore} from "@/features/dates";
 import {useReactionsStore} from "@/features/likes-dislikes";
-import {Event, LikedEventCard} from "@/entities/event";
-import {Theme} from "@/shared/providers/Theme";
+import {Event, EventCard} from "@/entities/event";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {getPeriodBorders} from "@/shared/scripts/date";
-import {SelectedEvent} from "@/widgets/liked-events-list/ui/SelectedEvent";
+import {CatalogEventCard} from "@/entities/event/ui/CatalogEventCard";
+import Icon from "@/shared/ui/Icons/Icon";
 
 export const LikesList = React.memo(() => {
-  const theme = useTheme<Theme>();
   const username = useConfig().initDataUnsafe.user.username;
 
   const [selectedEvent, setEventSelected] = React.useState<Event | undefined>(undefined);
@@ -20,7 +18,7 @@ export const LikesList = React.memo(() => {
   const {
     likes,
     isLikesLoading, hasLikesError,
-    fetchReactions,
+    fetchReactions, saveAction
   } = useReactionsStore();
 
   const { selectedDays } = useCalendarStore();
@@ -33,6 +31,32 @@ export const LikesList = React.memo(() => {
     });
   }, [selectedDays]);
 
+  const handleEventAction = useCallback(async (action: "like" | "dislike" | "delete_mark", event: Event) => {
+    saveAction({
+      action,
+      contentId: event.id,
+      username,
+    }, () => {
+      const borders = getPeriodBorders(Object.keys(selectedDays));
+      fetchReactions({
+        username: username,
+        date_start: borders.date_start, date_end: borders.date_end
+      });
+    });
+  }, [username]);
+
+  const renderCatalogItem = useCallback(({ item }: { item: Event }) => (
+    <CatalogEventCard
+      event={item}
+      liked={!!likes?.some((event) => event.id === item.id)}
+      onLike={() => handleEventAction(!!likes?.some((event) => event.id === item.id) ? "dislike" : "like", item)}
+      onPress={() => {
+        setEventSelected(item);
+        setModalVisible(true);
+      }}
+    />
+  ), [likes]);
+
   if (isLikesLoading) {
     return (
       <Box flex={1}>
@@ -43,10 +67,12 @@ export const LikesList = React.memo(() => {
           renderItem={({ index }) => (
             <LoadingCard key={index} style={{ minHeight: 120, flex: 1, borderRadius: 16 }}/>
           )}
-          style={{ width: "100%" }}
-          contentContainerStyle={{
-            padding: theme.spacing.m,
-            gap: 12
+          numColumns={2}
+          columnWrapperStyle={{ gap: 16, marginBottom: 16 }}
+          style={{
+            flex: 1,
+            gap: 16,
+            paddingHorizontal: 16,
           }}
         />
       </Box>
@@ -61,7 +87,7 @@ export const LikesList = React.memo(() => {
     );
   }
 
-  if (likes.length === 0) {
+  if (likes !== undefined && likes.length === 0) {
     return (
       <Box flex={1} backgroundColor="bg_color" justifyContent="center" alignItems="center">
         <Text variant="body" color="text_color">
@@ -76,26 +102,17 @@ export const LikesList = React.memo(() => {
       flex={1}
     >
       <FlatList
-        data={ likes }
-        renderItem={({ item }) => (
-          <LikedEventCard
-            event={item}
-            onPress={() => {
-              setEventSelected(item);
-              setModalVisible(true);
-            }}
-          />
-        )}
-        keyExtractor={item => item.id.toString()}
-        style={{
-          width: "100%"
-        }}
-        contentContainerStyle={{
-          padding: theme.spacing.m,
-          gap: 12
-        }}
+        data={likes}
+        renderItem={renderCatalogItem}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
         showsVerticalScrollIndicator={false}
-        overScrollMode="never"
+        columnWrapperStyle={{ gap: 16, marginBottom: 16 }}
+        style={{
+          flex: 1,
+          gap: 16,
+          paddingHorizontal: 16,
+        }}
       />
 
       <Modal
@@ -104,11 +121,29 @@ export const LikesList = React.memo(() => {
         onDismiss={ () => setEventSelected(undefined) }
         transparent
       >
-        <SelectedEvent
-          type={"liked"}
-          selectedEvent={selectedEvent}
-          setEventSelected={setEventSelected} setModalVisible={setModalVisible}
-        />
+        {selectedEvent && (
+          <Pressable
+            onPress={ () => setModalVisible(false) }
+            style={{ position: "absolute", zIndex: 10, right: 20, top: 20 }}
+          >
+            <Box
+              backgroundColor={"cardBGColor"}
+              width={40} height={40}
+              borderRadius={"eventCard"}
+              alignItems={"center"} justifyContent={"center"}
+            >
+              <Icon name={"chevronDown"} color={"#ECEBE8"} size={24}/>
+            </Box>
+          </Pressable>
+        )}
+
+        {selectedEvent && (
+          <EventCard
+            event={selectedEvent}
+            onLike={() => handleEventAction("like", selectedEvent).then(() => setModalVisible(false))}
+            onDislike={() => handleEventAction("dislike", selectedEvent).then(() => setModalVisible(false))}
+          />
+        )}
       </Modal>
     </Box>
   )

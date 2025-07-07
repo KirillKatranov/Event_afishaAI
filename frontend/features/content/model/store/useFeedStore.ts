@@ -11,7 +11,7 @@ interface FeedState {
   swipedAll: boolean;
   fetchFeed: (params: FeedParams) => void;
   fetchSearch: (params: SearchParams) => void;
-  fetchSuggestions: (query: string) => Promise<string[]>;
+  fetchSuggestions: (query: string, username: string) => Promise<string[]>;
   addEvent: (event: Event) => void;
   setSwipedAll: (state: boolean) => void;
   setSearchQuery: (searchQuery: string) => void;
@@ -50,8 +50,11 @@ export const useFeedStore = create<FeedState>((set) => ({
       .finally(() => set({ isLoading: false }));
   },
 
-  fetchSuggestions: async (query) => {
-    const response = await ContentService.searchSuggestions({ q: query })
+  fetchSuggestions: async (query, username) => {
+    const response = await ContentService.searchSuggestions({
+      q: query,
+      username: username
+    })
 
     if (response && response.data) {
       return response.data.suggestions;

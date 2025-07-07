@@ -1,4 +1,5 @@
 export {TagsList} from "./ui/TagsList";
+export {TagsHeader} from "./ui/TagsHeader";
 
 export {useTagsStore} from "./model/store/useTagsStore";
 export {TagsResponse, TagsData} from "./model/types/TagsResponse";

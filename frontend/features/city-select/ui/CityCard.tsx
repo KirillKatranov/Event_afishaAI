@@ -17,6 +17,7 @@ export const CityCard: React.FC<CityCardProps> = (
   props
 ) => {
   const theme = useTheme<Theme>();
+  const [startX, setStartX] = React.useState(0);
 
   if (!props.city || props.isLoading) {
     return (
@@ -28,13 +29,27 @@ export const CityCard: React.FC<CityCardProps> = (
   }
 
   return (
-    <Pressable onPress={props.onPress} style={{ flex: 1 }}>
+    <Pressable
+      onPressIn={(event) => {
+        event.preventDefault()
+        setStartX(event.nativeEvent.pageX);
+      }}
+      onPressOut={(event) => {
+        event.preventDefault()
+        const endX = event.nativeEvent.pageX;
+        if (Math.abs(endX - startX) < 15) {
+          if (props.onPress) props.onPress();
+        }
+      }}
+      style={{ flex: 1 }}
+    >
       <DropShadow
         key={props.city.id}
         style={{
           flex: 1, backgroundColor: props.selected ? theme.colors.secondary_bg_color : theme.colors.bg_color,
           shadowOffset: {width: -1, height: 4}, shadowColor: "rgba(169,169,169,0.37)", shadowRadius: 2,
-          gap: 10, paddingHorizontal: 15, paddingTop: 15, paddingBottom: 10, borderRadius: 25
+          gap: 10, paddingHorizontal: 15, paddingTop: 15, paddingBottom: 10, borderRadius: 25,
+          borderWidth: props.selected ? 2 : 0, borderColor: theme.colors.black
         }}
       >
         <Image
@@ -44,10 +59,10 @@ export const CityCard: React.FC<CityCardProps> = (
         />
 
         <Text
-          color={"text_color"} textAlign={"center"} textTransform={"uppercase"}
-          style={{ fontFamily: "MontserratBold", fontSize: 20 }}
+          color={"black"} textAlign={"center"}
+          style={{ fontFamily: "TDMars", fontWeight: "500", fontSize: 20 }}
         >
-          {props.city.name}
+          {props.city.name.toUpperCase()}
         </Text>
       </DropShadow>
     </Pressable>

@@ -15,6 +15,7 @@ export const CreateEventForm = () => {
 
   useEffect(() => {
     state.getAvailableTags(user.username ? user.username : user.id.toString());
+    state.getAvailableCities();
   }, []);
 
   const pickImage = async () => {
@@ -169,9 +170,11 @@ export const CreateEventForm = () => {
           Город
         </Text>
 
-        <TextInput
-          placeholder={"Город"}
-          value={state.city} onChange={state.setCity}
+        <Dropdown
+          items={state.citiesOptions}
+          onSelect={(value) => state.setCity(value[0])}
+          selectedValues={[state.city]}
+          placeholder="Выберите город"
         />
       </View>
 
@@ -315,6 +318,8 @@ export const CreateEventForm = () => {
       <Button
         theme={"organizers"}
         text={"Создать мероприятие"}
+        isLoading={state.isLoading}
+        disabled={state.isLoading || !state.isFormValid}
         onPress={() => state.submitForm(user.username ? user.username : user.id.toString(), () => router.back() )}
       />
 

@@ -5,7 +5,7 @@ import likesService from "@/features/likes-dislikes/api/LikesService";
 import {Event} from "@/entities/event";
 
 interface ReactionsState {
-  likes: Event[];
+  likes?: Event[];
   dislikes: Event[];
   isLikesLoading: boolean;
   hasLikesError: boolean;
@@ -16,11 +16,11 @@ interface ReactionsState {
   removeLikedEvent: (eventId: number) => void;
   removeDislikedEvent: (eventId: number) => void;
   fetchReactions: (params: ReactionsParams) => void;
-  saveAction: (actionData: ActionData) => Promise<void>;
+  saveAction: (actionData: ActionData, callback?: () => void) => void;
 }
 
 export const useReactionsStore = create<ReactionsState>((set, get) => ({
-  likes: [],
+  likes: undefined,
   dislikes: [],
   isLikesLoading: true,
   hasLikesError: false,
@@ -28,11 +28,11 @@ export const useReactionsStore = create<ReactionsState>((set, get) => ({
   hasDislikesError: false,
 
   addLikedEvent: (event: Event) => {
-    const eventExists = get().likes.some((likedEvent) => likedEvent.id === event.id);
+    const eventExists = get().likes?.some((likedEvent) => likedEvent.id === event.id);
     if (eventExists) return
 
     set((state) => {
-      return { likes: [event, ...state.likes] };
+      return { likes: [event, ...state.likes!] };
     })
   },
 
@@ -47,7 +47,7 @@ export const useReactionsStore = create<ReactionsState>((set, get) => ({
 
   removeLikedEvent: (eventId: number) =>
     set((state) => ({
-      likes: state.likes.filter((event) => event.id !== eventId),
+      likes: state.likes?.filter((event) => event.id !== eventId),
     })),
 
   removeDislikedEvent: (eventId: number) =>
@@ -59,7 +59,7 @@ export const useReactionsStore = create<ReactionsState>((set, get) => ({
   fetchReactions: async (params: ReactionsParams) => {
     if (params.value) {
       set({ isDislikesLoading: true, hasDislikesError: false });
-    } else {
+    } else if (get().likes === undefined) {
       set({ isLikesLoading: true, hasLikesError: false });
     }
 
@@ -97,14 +97,12 @@ export const useReactionsStore = create<ReactionsState>((set, get) => ({
       });
   },
 
-  saveAction: async (
-    actionData: ActionData
-  ) => {
-
-    await likesService.postAction(actionData)
+  saveAction: (actionData: ActionData, callback) => {
+    likesService.postAction(actionData)
       .then((response) => {
         if (response.status === 200) {
           console.log(`Successfully post ${actionData.action}`);
+          if (callback) callback();
         } else {
           console.log(`Error in posting ${actionData.action} with code: ${response.status}`);
         }

@@ -7,7 +7,7 @@ from fastapi import (
     UploadFile,
     Form,
 )
-from sqlalchemy.orm import Session, selectinload, joinedload
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import and_, exists
 from datetime import date, datetime
 from sqlalchemy.sql import select
@@ -94,7 +94,7 @@ def get_content_for_feed(
         .filter(and_(*q_filter))
         .filter(Content.city == current_user.city)
         .filter(~Content.id.in_(select(excluded_content_subquery)))
-        .options(selectinload(Content.tags))
+        .options(joinedload(Content.tags).joinedload(Tags.macro_category))
     )
 
     if db.query(preferred_tags_subquery).count() > 0:
@@ -103,6 +103,13 @@ def get_content_for_feed(
         )
 
     contents = content_query.all()
+
+    # Добавляем macro_category для каждого контента
+    for content in contents:
+        if content.tags and content.tags[0].macro_category:
+            content.macro_category = content.tags[0].macro_category.name
+        else:
+            content.macro_category = None
 
     logger.info(f"Returning {len(contents)} contents for feed for user: {username}")
 
@@ -135,10 +142,17 @@ def get_content(
         db.query(Content)
         .filter(and_(*q_filter))
         .filter(~Content.id.in_(select(excluded_content_subquery)))
-        .options(selectinload(Content.tags))
+        .options(joinedload(Content.tags).joinedload(Tags.macro_category))
     )
 
     contents = content_query.all()
+
+    # Добавляем macro_category для каждого контента
+    for content in contents:
+        if content.tags and content.tags[0].macro_category:
+            content.macro_category = content.tags[0].macro_category.name
+        else:
+            content.macro_category = None
 
     logger.info(
         f"Returning {len(contents)} contents for user: {username} with tag: {tag}"
@@ -423,7 +437,7 @@ def get_user_contents(
     # Базовый запрос для контента
     query = (
         db.query(Content)
-        .options(selectinload(Content.tags))
+        .options(joinedload(Content.tags).joinedload(Tags.macro_category))
         .filter(
             Content.publisher_type == "user",
             Content.publisher_id == user.id,
@@ -575,11 +589,23 @@ def get_users_who_liked_content(content_id: int, db: Session = Depends(get_db)):
 def get_content_by_id(content_id: int, db: Session = Depends(get_db)) -> ContentSchema:
     logger.info(f"Получение события с ID {content_id}")
 
-    content = db.query(Content).filter(Content.id == content_id).first()
+    content = (
+        db.query(Content)
+        .options(joinedload(Content.tags).joinedload(Tags.macro_category))
+        .filter(Content.id == content_id)
+        .first()
+    )
     if not content:
         logger.warning(f"Событие с ID {content_id} не найдено")
         raise HTTPException(
             status_code=404, detail=f"Событие с ID {content_id} не найдено"
         )
+
+    # Добавляем macro_category
+    if content.tags and content.tags[0].macro_category:
+        content.macro_category = content.tags[0].macro_category.name
+    else:
+        content.macro_category = None
+
     logger.info(f"Событие с ID {content_id} успешно получено")
     return content

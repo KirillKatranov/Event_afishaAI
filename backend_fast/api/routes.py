@@ -11,7 +11,7 @@ from schemas import (
     RouteUpdateSchema,
 )
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1", tags=["routes"])
 
 
 @router.get("/routes", response_model=RouteListResponseSchema)
