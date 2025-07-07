@@ -52,7 +52,7 @@ class ContentService {
     }
   }
 
-  async searchSuggestions(params: { q: string }) {
+  async searchSuggestions(params: { q: string, username: string }) {
     try {
       console.log("Send GET search suggestions with params: ", params);
 
