@@ -14,3 +14,36 @@
 2025-06-26 20:54:16.306 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa6fad330>]
 2025-06-26 20:55:04.496 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa89bc940>]
 2025-06-26 20:55:05.179 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa89bcb20>]
+2025-06-27 17:57:20.026 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-27 17:57:20.027 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-27 17:57:20.039 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-27 17:57:20.039 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-27 17:57:20.106 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-06-27 17:57:20.134 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-06-27 17:57:20.159 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-27 17:57:20.183 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-27 17:57:20.203 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-06-27 17:57:20.224 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-06-27 17:57:20.227 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-06-27 14:58:00.531 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-27 14:58:00.532 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-27 14:58:00.562 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-27 14:58:00.562 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-27 14:58:00.714 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-06-27 14:58:00.787 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-06-27 14:58:00.848 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-27 14:58:00.912 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-27 14:58:00.962 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-06-27 14:58:01.014 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-06-27 14:58:01.019 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-06-29 14:45:49.933 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-29 14:45:49.934 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-29 14:45:49.973 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-29 14:45:49.973 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-29 14:45:50.149 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-06-29 14:45:50.234 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-06-29 14:45:50.301 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-29 14:45:50.369 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-29 14:45:50.420 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-06-29 14:45:50.476 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-06-29 14:45:50.482 | WARNING  | api.users:register_user:32 - User existing already exists

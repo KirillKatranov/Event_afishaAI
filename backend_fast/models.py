@@ -330,8 +330,6 @@ Content.ratings = relationship("Rating", back_populates="content")
 Content.removed_favorites = relationship("RemovedFavorite", back_populates="content")
 
 
-# Создание всех таблиц
-Base.metadata.create_all(bind=engine)
 
 
 def get_db():

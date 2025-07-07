@@ -7,6 +7,7 @@ class TestLikes:
             "/api/v1/like", json={"username": "TestUser", "content_id": 1}
         )
         data = response.json()
+
         assert response.status_code == 200
         assert data == {"user": "TestUser", "content": 1, "value": True}
 
@@ -16,6 +17,7 @@ class TestLikes:
             "/api/v1/dislike", json={"username": "TestUser", "content_id": 1}
         )
         data = response.json()
+
         assert response.status_code == 200
         assert data == {"user": "TestUser", "content": 1, "value": False}
 
@@ -25,6 +27,7 @@ class TestLikes:
             "/api/v1/like", json={"username": "TestUser", "content_id": 2}
         )
         data = response.json()
+
         assert response.status_code == 404
         assert data["detail"] == "Content not found"
 
@@ -33,5 +36,6 @@ class TestLikes:
             "/api/v1/like", json={"username": "TestUser", "content_id": 2}
         )
         data = response.json()
+        
         assert response.status_code == 404
         assert data["detail"] == "Content not found"

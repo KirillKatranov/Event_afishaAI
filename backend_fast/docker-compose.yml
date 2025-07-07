@@ -11,7 +11,7 @@ services:
     image: fastapi_backend
     restart: unless-stopped
     command: >
-     sh -c "pytest -s -v && uvicorn fast:app --host 0.0.0.0 --port 8000"
+     sh -c "uvicorn fast:app --host 0.0.0.0 --port 8000"
 
 volumes:
   pg_data:

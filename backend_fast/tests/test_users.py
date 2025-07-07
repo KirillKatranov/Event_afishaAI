@@ -18,8 +18,9 @@ class TestRegisterUser:
         response = client.post(
             "/api/v1/register", json={"username": "testuser", "city": "nn"}
         )
-        assert response.status_code == 201
         data = response.json()
+
+        assert response.status_code == 201
         assert data["message"] == "Пользователь успешно зарегистрирован"
         assert "user_id" in data
         with TestingSessionLocal() as db:
@@ -31,6 +32,7 @@ class TestRegisterUser:
     def test_register_existing_user(self, client):
         client.post("/api/v1/register", json={"username": "existing", "city": "spb"})
         response = client.post("/api/v1/register", json={"username": "existing", "city": "spb"})
+        
         assert response.status_code == 400
         assert response.json() == {"detail": "Пользователь уже существует"}
         with TestingSessionLocal() as db:
