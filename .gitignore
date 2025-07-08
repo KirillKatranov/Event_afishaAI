@@ -4,3 +4,4 @@ __pycache__/
 logs
 backend_fast/test.db
 .vscode/
+backend_fast/logs/
