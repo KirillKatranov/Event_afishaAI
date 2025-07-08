@@ -140,21 +140,63 @@ class TestRatings:
 
 
 
-    def test_get_user_ratings(self,
-                              client,
-                              create_test_user1,
-                              create_test_user2,
-                              create_test_content1,
-                              create_test_content2, 
-                              create_test_rating_for_one_content_rait3,
-                              create_test_rating_for_second_content_rait3
-
-):
-        """
-        Состояние базы перед тестом: создано 2 контента,  первому оценка 3 от 
-        пользователя второму оценка 3
-        """
-        response = client.get("api/v1/users/TestUser/ratings?limit=10&skip=1")
+    def test_get_user_ratings_default_pagination(
+        self,
+        client,
+        create_test_user1,
+        create_test_content1,
+        create_test_content2,
+        create_test_rating_for_one_content_rait3,
+        create_test_rating_for_second_content_rait3,
+    ):
+        """Возвращается полный список оценок пользователя без ограничений."""
+        response = client.get("api/v1/users/TestUser/ratings")
         data = response.json()
 
         assert response.status_code == 200
+        assert data["total_count"] == 2
+        assert len(data["ratings"]) == 2
+        assert all(r["username"] == "TestUser" for r in data["ratings"])
+
+    def test_get_user_ratings_with_limit_and_skip(
+        self,
+        client,
+        create_test_user1,
+        create_test_content1,
+        create_test_content2,
+        create_test_rating_for_one_content_rait3,
+        create_test_rating_for_second_content_rait3,
+    ):
+        """Проверяем работу параметров limit и skip."""
+        response = client.get("api/v1/users/TestUser/ratings?limit=1&skip=1")
+        data = response.json()
+
+        assert response.status_code == 200
+        assert data["total_count"] == 2
+        assert len(data["ratings"]) == 1
+        # после skip=1 должна вернуться вторая оценка
+        assert data["ratings"][0]["content_id"] == 1
+
+    def test_get_user_ratings_skip_beyond(
+        self,
+        client,
+        create_test_user1,
+        create_test_content1,
+        create_test_content2,
+        create_test_rating_for_one_content_rait3,
+        create_test_rating_for_second_content_rait3,
+    ):
+        """Если skip больше количества записей, список пустой."""
+        response = client.get("api/v1/users/TestUser/ratings?skip=5")
+        data = response.json()
+
+        assert response.status_code == 200
+        assert data["total_count"] == 2
+        assert data["ratings"] == []
+
+    def test_get_user_ratings_user_not_found(self, client):
+        response = client.get("api/v1/users/Unknown/ratings")
+        data = response.json()
+
+        assert response.status_code == 404
+        assert data["detail"] == "Пользователь не найден"
