@@ -15,7 +15,8 @@ interface SearchBarProps {
   query: string;
   setQuery: (query: string) => void;
   onSearch: (query: string) => void;
-  fetchSuggestions: (query: string) => Promise<string[]>;
+  fetchSuggestions: (query: string, username: string) => Promise<string[]>;
+  username: string;
   minCharsForSuggestions?: number;
 }
 
@@ -24,6 +25,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   setQuery,
   onSearch,
   fetchSuggestions,
+  username,
   minCharsForSuggestions = 2,
 }) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -34,7 +36,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const debouncedFetchSuggestions = (searchQuery: string) => {
     if (searchQuery.length >= minCharsForSuggestions) {
       setIsLoading(true);
-      fetchSuggestions(searchQuery)
+      fetchSuggestions(searchQuery, username)
         .then((data) => {
           setSuggestions(data);
           setShowSuggestions(true);
