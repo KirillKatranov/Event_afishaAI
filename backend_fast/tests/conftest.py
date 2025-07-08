@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from fastapi.testclient import TestClient
 from fast import app
-from models import Base, Content, get_db, User
+from models import Base, Content, Rating, get_db, User
 from tests.config import test_settings
 
 # Тестовая база SQLite
@@ -47,17 +47,67 @@ def client():
     app.dependency_overrides.clear()
 
 @pytest.fixture()
-def create_test_user(client):
+def create_test_user1(client):
     with TestingSessionLocal() as db:
         user = User(username="TestUser")
         db.add(user)
         db.commit()
 
 @pytest.fixture()
-def create_test_content():
+def create_test_user2(client):
+    with TestingSessionLocal() as db:
+        user = User(username="TestUser2")
+        db.add(user)
+        db.commit()
+
+
+
+
+
+@pytest.fixture()
+def create_test_content1():
     with TestingSessionLocal() as db:
         content = Content(name="TestContent", description="TestDescription")
         db.add(content)
+        db.commit()
+
+@pytest.fixture()
+def create_test_content2():
+    with TestingSessionLocal() as db:
+        content = Content(name="TestContent2", description="TestDescription")
+        db.add(content)
+        db.commit()
+
+@pytest.fixture()
+def create_test_rating_for_one_content_rait3():
+    """Создаёт запись в Rating(user_id=1, content_id=1, rating=3)"""
+    with TestingSessionLocal() as db:
+        rating = Rating(user_id=1, content_id=1, rating=3)
+        db.add(rating)
+        db.commit()
+
+@pytest.fixture()
+def create_test_rating_for_one_content_rait5():
+    """Создаёт запись в Rating(user_id=2, content_id=1, rating=5)"""
+    with TestingSessionLocal() as db:
+        rating = Rating(user_id=2, content_id=1, rating=5)
+        db.add(rating)
+        db.commit()
+
+@pytest.fixture()
+def create_test_rating_for_second_content_rait3():
+    """Создаёт запись в Rating(user_id=1, content_id=1, rating=3)"""
+    with TestingSessionLocal() as db:
+        rating = Rating(user_id=1, content_id=2, rating=3)
+        db.add(rating)
+        db.commit()
+
+@pytest.fixture()
+def create_test_rating_for_second_content_rait5():
+    """Создаёт запись в Rating(user_id=2, content_id=1, rating=5)"""
+    with TestingSessionLocal() as db:
+        rating = Rating(user_id=2, content_id=2, rating=5)
+        db.add(rating)
         db.commit()
 
 @pytest.fixture(autouse=True)
