@@ -5,7 +5,9 @@ from fastapi import (
 )
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func, case
-
+from sqlalchemy import and_
+from datetime import date
+from typing import Optional
 
 from models import (
     User,
@@ -29,8 +31,45 @@ from loguru import logger
 router_tags = APIRouter(prefix="/api/v1", tags=["tags"])
 
 
+def create_date_filter(date_start: Optional[date], date_end: Optional[date]):
+    """
+    Create date filters for content queries
+    """
+    q_filter = []
+
+    if date_start and date_end:
+        q_filter.append(Content.date_start <= date_end)
+        q_filter.append(Content.date_end >= date_start)
+    elif date_start:
+        q_filter.append(Content.date_start == date_start)
+    elif date_end:
+        q_filter.append(Content.date_end <= date_end)
+
+    return q_filter
+
+
+def create_date_condition(date_start: Optional[date], date_end: Optional[date]):
+    """
+    Create date condition for case statements
+    """
+    if date_start and date_end:
+        return and_(Content.date_start <= date_end, Content.date_end >= date_start)
+    elif date_start:
+        return Content.date_start == date_start
+    elif date_end:
+        return Content.date_end <= date_end
+    else:
+        return True  # No date filter
+
+
 @router_tags.get("/tags", response_model=TagsResponseSchema)
-def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
+def get_tags(
+    username: str,
+    macro_category: str,
+    date_start: Optional[date] = None,
+    date_end: Optional[date] = None,
+    db: Session = Depends(get_db),
+):
     user = db.query(User).filter(User.username == username).first()
 
     if not user:
@@ -56,16 +95,37 @@ def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
         .subquery()
     )
 
-    logger.info("Getting tags for user")
+    logger.info("Getting tags for user with date filters")
+
+    # Создаем условие для проверки дат
+    date_condition = create_date_condition(date_start, date_end)
+
+    # Создаем базовый запрос с учетом дат в каждом case
     tags_query = (
         db.query(
             Tags.id,
             Tags.name,
             Tags.description,
             func.coalesce(
-                func.count(case((Content.city == user.city, Content.id)))
-                - func.count(case((Content.id.in_(liked_content_ids), Content.id)))
-                - func.count(case((Content.id.in_(removed_content_ids), Content.id))),
+                func.count(
+                    case((and_(Content.city == user.city, date_condition), Content.id))
+                )
+                - func.count(
+                    case(
+                        (
+                            and_(Content.id.in_(liked_content_ids), date_condition),
+                            Content.id,
+                        )
+                    )
+                )
+                - func.count(
+                    case(
+                        (
+                            and_(Content.id.in_(removed_content_ids), date_condition),
+                            Content.id,
+                        )
+                    )
+                ),
                 0,
             ).label("content_count"),
         )
@@ -74,6 +134,7 @@ def get_tags(username: str, macro_category: str, db: Session = Depends(get_db)):
         .filter(Content.city == user.city)
         .group_by(Tags.id, Tags.name, Tags.description)
     )
+
     tags = tags_query.all()
 
     logger.info("Getting preferences for user")
