@@ -8,12 +8,12 @@ from fastapi import (
     Form,
 )
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import and_, exists
+from sqlalchemy import and_, select, exists
 from datetime import date, datetime
-from sqlalchemy.sql import select
 from typing import Optional, List
 import json
 from io import BytesIO
+import random
 
 from models import (
     User,
@@ -24,14 +24,10 @@ from models import (
     UserCategoryPreference,
     get_db,
     Organisation,
-    EventType,
     PublisherType,
 )
 from utils.minio_utils import minio_client, bucket_name
-from schemas import (
-    ContentSchema,
-    UserSchema,
-)
+from schemas import ContentSchema, UserSchema, EventType
 from loguru import logger
 
 router_contents = APIRouter(prefix="/api/v1", tags=["contents"])
@@ -111,7 +107,12 @@ def get_content_for_feed(
         else:
             content.macro_category = None
 
-    logger.info(f"Returning {len(contents)} contents for feed for user: {username}")
+    # Перемешиваем контент для разнообразия
+    random.shuffle(contents)
+
+    logger.info(
+        f"Returning {len(contents)} shuffled contents for feed for user: {username}"
+    )
 
     return contents
 
