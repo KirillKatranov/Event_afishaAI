@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from fastapi.testclient import TestClient
 from fast import app
-from models import Base, Content, Rating, get_db, User
+from models import Base, Content, Rating, Review, get_db, User
 from tests.config import test_settings
 
 # Тестовая база SQLite
@@ -109,6 +109,39 @@ def create_test_rating_for_second_content_rait5():
         rating = Rating(user_id=2, content_id=2, rating=5)
         db.add(rating)
         db.commit()
+
+@pytest.fixture()
+def create_test_review():
+    """Создаёт запись в Review(user_id=1, content_id=1, text="TestTextReview")"""
+    with TestingSessionLocal() as db:
+        review = Review(user_id=1, content_id=1, text="TestTextReview")
+        db.add(review)
+        db.commit()
+
+@pytest.fixture()
+def create_test_review_for_one_content_by_user1():
+    """Создаёт запись в Review(user_id=1, content_id=1, text="TestTextReview")"""
+    with TestingSessionLocal() as db:
+        review = Review(user_id=1, content_id=1, text="TestTextReview")
+        db.add(review)
+        db.commit()
+
+@pytest.fixture()
+def create_test_review_for_one_content_by_user2():
+    """Создаёт запись в Review(user_id=2, content_id=1, text="TestTextReview2")"""
+    with TestingSessionLocal() as db:
+        review = Review(user_id=2, content_id=1, text="TestTextReview2")
+        db.add(review)
+        db.commit()
+
+@pytest.fixture()
+def create_test_review_for_second_content_by_user1():
+    """Создаёт запись в Review(user_id=1, content_id=2, text="TestTextReview2")"""
+    with TestingSessionLocal() as db:
+        review = Review(user_id=1, content_id=2, text="TestTextReview2")
+        db.add(review)
+        db.commit()
+
 
 @pytest.fixture(autouse=True)
 def clear_db():
