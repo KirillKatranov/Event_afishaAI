@@ -10,12 +10,13 @@ import Icon from "@/shared/ui/Icons/Icon";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {LinearGradient} from "expo-linear-gradient";
 import {ServicesGradients} from "@/entities/service";
-import {LikeGradient} from "@/shared/ui/Icons";
+import {LikeFilled, LikeGradient} from "@/shared/ui/Icons";
 
 interface EventCardProps {
   event: Event;
   onLike: () => void;
   onDislike: () => void;
+  liked?: boolean;
   expanded?: boolean;
   owned?: boolean;
 }
@@ -24,6 +25,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   event,
   onLike,
   onDislike,
+  liked,
   expanded,
   owned
 }) => {
@@ -206,7 +208,7 @@ export const EventCard: React.FC<EventCardProps> = ({
 
         <View style={{ flexDirection: "row", gap: 30, paddingBottom: 40, alignItems: "center" }}>
           <CardControlsButton type={"dislike"} onPress={onDislike} service={event.macro_category}/>
-          <CardControlsButton type={"like"} onPress={onLike} service={event.macro_category}/>
+          <CardControlsButton type={"like"} liked={liked} onPress={onLike} service={event.macro_category}/>
           <CardControlsButton type={"share"} onPress={onSharePress} service={event.macro_category}/>
         </View>
       </View>
@@ -256,16 +258,31 @@ export const EventCard: React.FC<EventCardProps> = ({
                     alignItems: "center", justifyContent: "center"
                   }}
                 >
-                  <LikeGradient
-                    width={28} height={28}
-                    fill={{
-                      id: event.id.toString(),
-                      startColor: event.macro_category ? ServicesGradients[event.macro_category][0] : "black",
-                      endColor: event.macro_category ? ServicesGradients[event.macro_category][1] : "black",
-                      start: { x: 0, y: 0 },
-                      end: { x: 0, y: 1 }
-                    }}
-                  />
+                  {liked && (
+                    <LikeFilled
+                      width={28} height={28}
+                      fill={{
+                        id: event.id.toString(),
+                        startColor: event.macro_category ? ServicesGradients[event.macro_category][0] : "black",
+                        endColor: event.macro_category ? ServicesGradients[event.macro_category][1] : "black",
+                        start: { x: 0, y: 0 },
+                        end: { x: 0, y: 1 }
+                      }}
+                    />
+                  )}
+
+                  {!liked && (
+                    <LikeGradient
+                      width={28} height={28}
+                      fill={{
+                        id: event.id.toString(),
+                        startColor: event.macro_category ? ServicesGradients[event.macro_category][0] : "black",
+                        endColor: event.macro_category ? ServicesGradients[event.macro_category][1] : "black",
+                        start: { x: 0, y: 0 },
+                        end: { x: 0, y: 1 }
+                      }}
+                    />
+                  )}
                 </DropShadow>
               </TouchableOpacity>
             </View>
