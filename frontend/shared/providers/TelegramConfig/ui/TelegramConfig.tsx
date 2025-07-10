@@ -74,7 +74,6 @@ const getTelegramConfig = (): TelegramWebapp => {
     TelegramWebappConfig.disableVerticalSwipes();
 
     console.log("Start param:", TelegramWebappConfig.initDataUnsafe.start_param);
-    console.log(TelegramWebappConfig)
 
     return TelegramWebappConfig;
   } else {

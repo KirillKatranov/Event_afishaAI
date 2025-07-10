@@ -7,13 +7,13 @@ from fastapi import (
     UploadFile,
     Form,
 )
-from sqlalchemy.orm import Session, selectinload, joinedload
-from sqlalchemy import and_, exists
+from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import and_, select, exists
 from datetime import date, datetime
-from sqlalchemy.sql import select
 from typing import Optional, List
 import json
 from io import BytesIO
+import random
 
 from models import (
     User,
@@ -24,14 +24,10 @@ from models import (
     UserCategoryPreference,
     get_db,
     Organisation,
-    EventType,
     PublisherType,
 )
 from utils.minio_utils import minio_client, bucket_name
-from schemas import (
-    ContentSchema,
-    UserSchema,
-)
+from schemas import ContentSchema, UserSchema, EventType
 from loguru import logger
 
 router_contents = APIRouter(prefix="/api/v1", tags=["contents"])
@@ -94,7 +90,7 @@ def get_content_for_feed(
         .filter(and_(*q_filter))
         .filter(Content.city == current_user.city)
         .filter(~Content.id.in_(select(excluded_content_subquery)))
-        .options(selectinload(Content.tags))
+        .options(joinedload(Content.tags).joinedload(Tags.macro_category))
     )
 
     if db.query(preferred_tags_subquery).count() > 0:
@@ -104,7 +100,19 @@ def get_content_for_feed(
 
     contents = content_query.all()
 
-    logger.info(f"Returning {len(contents)} contents for feed for user: {username}")
+    # Добавляем macro_category для каждого контента
+    for content in contents:
+        if content.tags and content.tags[0].macro_category:
+            content.macro_category = content.tags[0].macro_category.name
+        else:
+            content.macro_category = None
+
+    # Перемешиваем контент для разнообразия
+    random.shuffle(contents)
+
+    logger.info(
+        f"Returning {len(contents)} shuffled contents for feed for user: {username}"
+    )
 
     return contents
 
@@ -117,7 +125,6 @@ def get_content(
     date_end: Optional[date] = None,
     db: Session = Depends(get_db),
 ) -> List[ContentSchema]:
-
     logger.info(f"Fetching content for user: {username} with tag: {tag}")
 
     q_filter = create_date_filter(date_start, date_end)
@@ -136,12 +143,21 @@ def get_content(
         db.query(Content)
         .filter(and_(*q_filter))
         .filter(~Content.id.in_(select(excluded_content_subquery)))
-        .options(selectinload(Content.tags))
+        .options(joinedload(Content.tags).joinedload(Tags.macro_category))
     )
 
     contents = content_query.all()
 
-    logger.info(f"Returning {len(contents)} contents for user: {username} with tag: {tag}")
+    # Добавляем macro_category для каждого контента
+    for content in contents:
+        if content.tags and content.tags[0].macro_category:
+            content.macro_category = content.tags[0].macro_category.name
+        else:
+            content.macro_category = None
+
+    logger.info(
+        f"Returning {len(contents)} contents for user: {username} with tag: {tag}"
+    )
 
     return contents
 
@@ -154,7 +170,6 @@ def get_liked_content(
     value: bool = True,
     db: Session = Depends(get_db),
 ) -> list[ContentSchema]:
-
     logger.info(f"Fetching liked content for user: {username}")
 
     user_id = db.query(User.id).filter(User.username == username).scalar()
@@ -299,7 +314,9 @@ async def create_content(
             )
 
         # Проверяем существование пользователя и его права на организацию
-        logger.info(f"Checking user {username} and his organisation {organisation_id} permissions")
+        logger.info(
+            f"Checking user {username} and his organisation {organisation_id} permissions"
+        )
         user = db.query(User).filter(User.username == username).first()
         if not user:
             logger.warning(f"User {username} not found")
@@ -311,7 +328,9 @@ async def create_content(
             .first()
         )
         if not organisation:
-            logger.warning(f"User {username} doesn't have permission to publish content for organisation {organisation_id}")
+            logger.warning(
+                f"User {username} doesn't have permission to publish content for organisation {organisation_id}"
+            )
             raise HTTPException(
                 status_code=403,
                 detail="You don't have permission to publish content for this organisation",
@@ -419,7 +438,7 @@ def get_user_contents(
     # Базовый запрос для контента
     query = (
         db.query(Content)
-        .options(selectinload(Content.tags))
+        .options(joinedload(Content.tags).joinedload(Tags.macro_category))
         .filter(
             Content.publisher_type == "user",
             Content.publisher_id == user.id,
@@ -447,7 +466,7 @@ def get_user_contents(
     )
 
     # Добавляем macro_category для каждого контента
-    logger.info(f"Adding macro_category for each content")
+    logger.info("Adding macro_category for each content")
     for content in contents:
         if content.tags and content.tags[0].macro_category:
             content.macro_category = content.tags[0].macro_category.name
@@ -489,11 +508,15 @@ async def delete_content(content_id: int, username: str, db: Session = Depends(g
         raise HTTPException(status_code=404, detail="Content not found")
 
     # Проверяем права на удаление
-    logger.info(f"Checking permissions for user {username} to delete content {content_id}")
+    logger.info(
+        f"Checking permissions for user {username} to delete content {content_id}"
+    )
     if content.publisher_type == PublisherType.USER:
         # Для контента, опубликованного пользователем
         if content.publisher_id != user.id:
-            logger.warning(f"User {username} doesn't have permission to delete content {content_id}")
+            logger.warning(
+                f"User {username} doesn't have permission to delete content {content_id}"
+            )
             raise HTTPException(
                 status_code=403,
                 detail="You don't have permission to delete this content",
@@ -509,7 +532,9 @@ async def delete_content(content_id: int, username: str, db: Session = Depends(g
             .first()
         )
         if not organisation:
-            logger.warning(f"User {username} doesn't have permission to delete content {content_id}")
+            logger.warning(
+                f"User {username} doesn't have permission to delete content {content_id}"
+            )
             raise HTTPException(
                 status_code=403,
                 detail="You don't have permission to delete this content",
@@ -554,7 +579,7 @@ def get_users_who_liked_content(content_id: int, db: Session = Depends(get_db)):
     likes = (
         db.query(User)
         .join(Like, Like.user_id == User.id)
-        .filter(Like.content_id == content_id, Like.value is True)
+        .filter(Like.content_id == content_id, Like.value == True)  # noqa: E712
         .all()
     )
     logger.info(f"Users who liked content {content_id}: {likes}")
@@ -565,11 +590,23 @@ def get_users_who_liked_content(content_id: int, db: Session = Depends(get_db)):
 def get_content_by_id(content_id: int, db: Session = Depends(get_db)) -> ContentSchema:
     logger.info(f"Получение события с ID {content_id}")
 
-    content = db.query(Content).filter(Content.id == content_id).first()
+    content = (
+        db.query(Content)
+        .options(joinedload(Content.tags).joinedload(Tags.macro_category))
+        .filter(Content.id == content_id)
+        .first()
+    )
     if not content:
         logger.warning(f"Событие с ID {content_id} не найдено")
         raise HTTPException(
             status_code=404, detail=f"Событие с ID {content_id} не найдено"
         )
+
+    # Добавляем macro_category
+    if content.tags and content.tags[0].macro_category:
+        content.macro_category = content.tags[0].macro_category.name
+    else:
+        content.macro_category = None
+
     logger.info(f"Событие с ID {content_id} успешно получено")
     return content

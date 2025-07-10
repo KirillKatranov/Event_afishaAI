@@ -1,6 +1,7 @@
 import {Event} from "@/entities/event";
 
 export type SearchParams = {
+  username: string;
   q?: string;
   city?: string;
   event_type?: "online" | "offline";
@@ -27,6 +28,6 @@ export type SuggestionsResponse = {
   status: number,
   data: {
     suggestions: string[],
-    query: string
+    query: string,
   }
 }

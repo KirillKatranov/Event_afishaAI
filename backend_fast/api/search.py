@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_, func, case
 from typing import Optional, List
 from datetime import date
-from models import get_db, Content, Tags
+from models import get_db, Content, Tags, User
 from schemas import (
     ContentSchema,
     EventType,
@@ -89,6 +89,9 @@ def search_content(
     tags: Optional[List[int]] = Query(None, description="ID тегов"),
     skip: int = Query(0, ge=0, description="Пропустить записей"),
     limit: int = Query(20, ge=1, le=100, description="Количество записей"),
+    username: Optional[str] = Query(
+        None, description="Имя пользователя для фильтрации по городу"
+    ),
     db: Session = Depends(get_db),
 ):
     """
@@ -99,10 +102,23 @@ def search_content(
     - date_from/date_to: фильтр по датам
     - tags: фильтр по тегам
     - skip/limit: пагинация
+    - username: для фильтрации по городу пользователя
 
     Поиск работает по принципу "И" между словами:
     "джаз концерт" найдет события, где есть И "джаз" И "концерт"
     """
+
+    # Определяем город для фильтрации
+    filter_city = city
+
+    if username:
+        logger.info(f"Getting user city for username: {username}")
+        user = db.query(User).filter(User.username == username).first()
+        if user:
+            filter_city = user.city
+            logger.info(f"User {username} city: {filter_city}")
+        else:
+            logger.warning(f"User {username} not found")
 
     # Базовый запрос
     logger.info("Building base query")
@@ -115,10 +131,10 @@ def search_content(
         if text_filter is not None:
             query = query.filter(text_filter)
 
-    # Фильтр по городу
-    if city:
-        logger.info(f"Filtering by city: {city}")
-        query = query.filter(Content.city == city)
+    # Фильтр по городу (явно указанный или город пользователя)
+    if filter_city:
+        logger.info(f"Filtering by city: {filter_city}")
+        query = query.filter(Content.city == filter_city)
 
     # Фильтр по типу мероприятия
     if event_type:
@@ -208,11 +224,27 @@ def get_search_suggestions(
         ..., min_length=2, description="Поисковый запрос (минимум 2 символа)"
     ),
     limit: int = Query(10, ge=1, le=20, description="Количество подсказок"),
+    username: Optional[str] = Query(
+        None, description="Имя пользователя для фильтрации по городу"
+    ),
     db: Session = Depends(get_db),
 ):
     """
     Получить подсказки для поиска на основе названий мероприятий
+    с учетом города пользователя (если передан username)
     """
+
+    filter_city = None
+
+    if username:
+        logger.info(f"Getting user city for username: {username}")
+        user = db.query(User).filter(User.username == username).first()
+        if user:
+            filter_city = user.city
+            logger.info(f"User {username} city: {filter_city}")
+        else:
+            logger.warning(f"User {username} not found")
+
     # Берем последнее слово для подсказок (как в Google)
     logger.info("Getting last word for suggestions")
     words = q.strip().split()
@@ -225,13 +257,16 @@ def get_search_suggestions(
 
     # Ищем совпадения в названиях
     logger.info("Searching for suggestions")
-    suggestions = (
-        db.query(Content.name)
-        .filter(func.lower(Content.name).like(search_term))
-        .distinct()
-        .limit(limit)
-        .all()
+    suggestions_query = db.query(Content.name).filter(
+        func.lower(Content.name).like(search_term)
     )
+
+    # Фильтруем по городу пользователя, если он определен
+    if filter_city:
+        logger.info(f"Filtering suggestions by city: {filter_city}")
+        suggestions_query = suggestions_query.filter(Content.city == filter_city)
+
+    suggestions = suggestions_query.distinct().limit(limit).all()
 
     return SearchSuggestionsSchema(
         suggestions=[suggestion[0] for suggestion in suggestions], query=q

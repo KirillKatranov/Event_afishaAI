@@ -7,10 +7,12 @@ export {Button} from "./Controls/Button";
 export {Checkbox} from "./Controls/Checkbox";
 export {Radio} from "./Controls/Radio";
 export {Switch} from "./Controls/Switch";
+export {CardControlsButton} from "./Controls/CardControlsButton";
 
 export {WebLottieView} from "./Containers/WebLottieView";
 export {TagChip} from "./Containers/TagChip";
 export {GradientText} from "./Containers/GradientText";
+export {Chip} from "./Containers/Chip";
 
 export {TextInput} from "./Input/TextInput";
 export {Dropdown} from "./Input/Dropdown";
@@ -21,4 +23,4 @@ export {LoadingCard} from "./MessageCards/LoadingCard";
 export {ErrorCard} from "./MessageCards/ErrorCard";
 
 export {Topbar} from "./Navigation/Topbar";
-export {Stepper} from "./Navigation/Stepper"
+export {Stepper} from "./Navigation/Stepper";

@@ -17,7 +17,7 @@ export const SharedEventCard: React.FC = () => {
   } = useSharedEventStore();
 
   const {
-    saveAction, addLikedEvent, removeLikedEvent
+    saveAction,
   } = useReactionsStore();
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export const SharedEventCard: React.FC = () => {
             action: "like",
             contentId: event.id,
             username: username
-          }).then(() => addLikedEvent(event))
+          })
         }}
         onDislike={() => {
           router.replace("/feed");
@@ -50,7 +50,7 @@ export const SharedEventCard: React.FC = () => {
             action: "dislike",
             contentId: event.id,
             username: username
-          }).then(() => removeLikedEvent(event.id))
+          })
         }}
       />
     </Box>

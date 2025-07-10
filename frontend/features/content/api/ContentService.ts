@@ -52,14 +52,14 @@ class ContentService {
     }
   }
 
-  async searchSuggestions(params: { q: string }) {
+  async searchSuggestions(params: { q: string, username: string }) {
     try {
       console.log("Send GET search suggestions with params: ", params);
 
       const response: SuggestionsResponse = await axiosInstance.get(
         '/search/suggestions',
         {
-          params: params
+          params: params,
         });
 
       return { data: response.data };

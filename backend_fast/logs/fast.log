@@ -1,0 +1,16 @@
+2025-06-26 20:43:02.341 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 46: []
+2025-06-26 20:43:37.745 | INFO     | api.likes:set_like:53 - Like saved from artem for content 46
+2025-06-26 20:43:46.470 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 46: []
+2025-06-26 20:43:47.371 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 46: []
+2025-06-26 20:43:48.028 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 46: []
+2025-06-26 20:44:08.198 | INFO     | api.likes:set_like:53 - Like saved from artem for content 40
+2025-06-26 20:44:35.197 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 46: []
+2025-06-26 20:44:35.805 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 46: []
+2025-06-26 20:44:36.009 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 46: []
+2025-06-26 20:44:38.068 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: []
+2025-06-26 20:49:43.817 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: []
+2025-06-26 20:53:59.239 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa6fac910>]
+2025-06-26 20:54:01.109 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa6facaf0>]
+2025-06-26 20:54:16.306 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa6fad330>]
+2025-06-26 20:55:04.496 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa89bc940>]
+2025-06-26 20:55:05.179 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa89bcb20>]

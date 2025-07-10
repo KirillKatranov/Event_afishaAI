@@ -5,6 +5,7 @@ export type UserRequest = {
 export type UserResponse = {
   status: number;
   data: {
+    id: number,
     city: string,
     username: string
   }

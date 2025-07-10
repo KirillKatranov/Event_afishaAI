@@ -11,7 +11,7 @@ const Dislike: React.FC<IconComponentProps> = ({width = 24, height = 24, fill = 
   >
     <Path
       d="M18.58 6.14l-12 12M6.58 6.14l12 12"
-      stroke={fill}
+      stroke={fill as string}
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
