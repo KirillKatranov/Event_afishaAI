@@ -8,10 +8,10 @@ def test_create_feedback(client, create_test_user1):
     )
     data = response.json()
 
-    assert response.status_code == 200 
+    assert response.status_code == 200
     assert data == {"status": "ok"}
     with TestingSessionLocal() as db:
-        feedback = db.query(Feedback).filter(Feedback.user_id==1).one()
+        feedback = db.query(Feedback).filter(Feedback.user_id == 1).one()
 
 
 def test_create_feedback_without_user(client):
@@ -20,8 +20,8 @@ def test_create_feedback_without_user(client):
     )
     data = response.json()
 
-    assert response.status_code == 200 
+    assert response.status_code == 200
     assert data == {"status": "ok"}
     with TestingSessionLocal() as db:
-        feedback = db.query(Feedback).filter(Feedback.user_id==1).one()
+        feedback = db.query(Feedback).filter(Feedback.user_id == 1).one()
         user = db.query(User).filter(User.username == "TestUser").one()

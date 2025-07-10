@@ -1,6 +1,3 @@
-
- 
-
 from models import Like
 from tests.conftest import TestingSessionLocal
 
@@ -18,7 +15,6 @@ class TestLikes:
             like = db.query(Like).filter_by(user_id=1).one()
             assert like.value == True
 
-
     def test_set_dislike(self, client, create_test_user1, create_test_content1):
         response = client.post(
             "/api/v1/dislike", json={"username": "TestUser", "content_id": 1}
@@ -31,8 +27,9 @@ class TestLikes:
             like = db.query(Like).filter_by(user_id=1).one()
             assert like.value == False
 
-
-    def test_set_like_without_content(self, client, create_test_user1, create_test_content1):
+    def test_set_like_without_content(
+        self, client, create_test_user1, create_test_content1
+    ):
         response = client.post(
             "/api/v1/like", json={"username": "TestUser", "content_id": 2}
         )
@@ -41,11 +38,13 @@ class TestLikes:
         assert response.status_code == 404
         assert data["detail"] == "Content not found"
 
-    def test_set_dislike_without_content(self, client, create_test_user1, create_test_content1):
+    def test_set_dislike_without_content(
+        self, client, create_test_user1, create_test_content1
+    ):
         response = client.post(
             "/api/v1/like", json={"username": "TestUser", "content_id": 2}
         )
         data = response.json()
-        
+
         assert response.status_code == 404
         assert data["detail"] == "Content not found"

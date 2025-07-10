@@ -80,13 +80,12 @@ class TestReviews:
     ):
         response = client.get("/api/v1/reviews?content_id=1")
         data = response.json()
-        
+
         assert response.status_code == 200
         assert data["total_count"] == 2
         assert len(data["reviews"]) == 2
         assert all(r["content_id"] == 1 for r in data["reviews"])
 
-    
     def test_get_reviews_for_content_with_limit_and_skip(
         self,
         client,
@@ -98,7 +97,7 @@ class TestReviews:
     ):
         response = client.get("/api/v1/reviews?content_id=1&limit=1&skip=1")
         data = response.json()
-        
+
         assert response.status_code == 200
         assert data["total_count"] == 2
         assert len(data["reviews"]) == 1
@@ -116,7 +115,7 @@ class TestReviews:
         """Если skip больше количества записей, список пустой."""
         response = client.get("/api/v1/reviews?content_id=1&skip=5")
         data = response.json()
-        
+
         assert response.status_code == 200
         assert data["total_count"] == 2
         assert data["reviews"] == []
@@ -128,57 +127,61 @@ class TestReviews:
         assert response.status_code == 404
         assert data["detail"] == "Content not found"
 
-
-    def test_get_user_reviews_default_pagination(self, client, 
-                                      create_test_user1,
-                                      create_test_content1,
-                                      create_test_content2,
-                                      create_test_review_for_one_content_by_user1,
-                                      create_test_review_for_second_content_by_user1
-                                      ):
+    def test_get_user_reviews_default_pagination(
+        self,
+        client,
+        create_test_user1,
+        create_test_content1,
+        create_test_content2,
+        create_test_review_for_one_content_by_user1,
+        create_test_review_for_second_content_by_user1,
+    ):
         response = client.get("/api/v1/users/TestUser/reviews")
         data = response.json()
 
         assert response.status_code == 200
-        assert data['total_count'] == 2
+        assert data["total_count"] == 2
         assert len(data["reviews"]) == 2
         assert all([r["username"] == "TestUser" for r in data["reviews"]])
 
-
     def test_get_user_reviews_default_pagination_without_user(self, client):
         response = client.get("/api/v1/users/TestUser/reviews")
-        data = response.json() 
+        data = response.json()
 
         assert response.status_code == 404
         assert data["detail"] == "User not found"
 
-    def test_get_user_reviews_wirh_skip_limit(self, client,
-                                      create_test_user1,
-                                      create_test_content1,
-                                      create_test_content2,
-                                      create_test_review_for_one_content_by_user1,
-                                      create_test_review_for_second_content_by_user1):
+    def test_get_user_reviews_wirh_skip_limit(
+        self,
+        client,
+        create_test_user1,
+        create_test_content1,
+        create_test_content2,
+        create_test_review_for_one_content_by_user1,
+        create_test_review_for_second_content_by_user1,
+    ):
         response = client.get("/api/v1/users/TestUser/reviews?skip=1&limit=1")
         data = response.json()
 
         assert response.status_code == 200
-        assert data['total_count'] == 2
+        assert data["total_count"] == 2
         assert len(data["reviews"]) == 1
         assert data["reviews"][0]["username"] == "TestUser"
         assert data["reviews"][0]["text"] == "TestTextReview"
 
-    def test_get_user_reviews_with_skip_beyond(self, client,
-                                      create_test_user1,
-                                      create_test_content1,
-                                      create_test_content2,
-                                      create_test_review_for_one_content_by_user1,
-                                      create_test_review_for_second_content_by_user1):
+    def test_get_user_reviews_with_skip_beyond(
+        self,
+        client,
+        create_test_user1,
+        create_test_content1,
+        create_test_content2,
+        create_test_review_for_one_content_by_user1,
+        create_test_review_for_second_content_by_user1,
+    ):
         response = client.get("/api/v1/users/TestUser/reviews?skip=5")
         data = response.json()
 
         assert response.status_code == 200
-        assert data['total_count'] == 2
+        assert data["total_count"] == 2
         assert len(data["reviews"]) == 0
         assert data["reviews"] == []
-
-

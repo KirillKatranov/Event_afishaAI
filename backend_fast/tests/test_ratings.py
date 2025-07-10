@@ -83,7 +83,7 @@ class TestRatings:
         assert data["content_id"] == 1
         assert data["average_rating"] == 4.00
         assert data["total_ratings"] == 2
-        assert data["ratings_distribution"] == {"3":1, "5":1}
+        assert data["ratings_distribution"] == {"3": 1, "5": 1}
 
     def test_get_content_ratings_stats_without_rating(
         self,
@@ -112,12 +112,13 @@ class TestRatings:
         assert response.status_code == 404
         assert data["detail"] == "Мероприятие не найдено"
 
-
-    def test_delete_ratings(self, 
-                            client,
-                            create_test_user1,
-                            create_test_content1,
-                            create_test_rating_for_one_content_rait3 ):
+    def test_delete_ratings(
+        self,
+        client,
+        create_test_user1,
+        create_test_content1,
+        create_test_rating_for_one_content_rait3,
+    ):
         response = client.delete("api/v1/ratings/1?username=TestUser")
         data = response.json()
 
@@ -127,18 +128,18 @@ class TestRatings:
             rating = db.query(Rating).filter_by(user_id=1).first()
             assert rating is None
 
-    def test_delete_ratings_without_user(self, 
-                            client,
-                            create_test_user1,
-                            create_test_content1,
-                            create_test_rating_for_one_content_rait3 ):
+    def test_delete_ratings_without_user(
+        self,
+        client,
+        create_test_user1,
+        create_test_content1,
+        create_test_rating_for_one_content_rait3,
+    ):
         response = client.delete("api/v1/ratings/1?username=TestUser2")
         data = response.json()
 
         assert response.status_code == 404
         assert data["detail"] == "Пользователь не найден"
-
-
 
     def test_get_user_ratings_default_pagination(
         self,

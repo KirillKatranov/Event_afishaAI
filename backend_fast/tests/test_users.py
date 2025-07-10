@@ -31,8 +31,10 @@ class TestRegisterUser:
 
     def test_register_existing_user(self, client):
         client.post("/api/v1/register", json={"username": "existing", "city": "spb"})
-        response = client.post("/api/v1/register", json={"username": "existing", "city": "spb"})
-        
+        response = client.post(
+            "/api/v1/register", json={"username": "existing", "city": "spb"}
+        )
+
         assert response.status_code == 400
         assert response.json() == {"detail": "Пользователь уже существует"}
         with TestingSessionLocal() as db:

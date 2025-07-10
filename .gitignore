@@ -5,3 +5,5 @@ logs
 backend_fast/test.db
 .vscode/
 backend_fast/logs/
+backend_fast/.vscode/
+backend_fast/logs/fast.log

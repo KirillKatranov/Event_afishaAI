@@ -20,7 +20,6 @@ engine = create_engine(
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_db():
     """Создание таблиц в тестовой БД перед всеми тестами"""
@@ -46,12 +45,14 @@ def client():
         yield c
     app.dependency_overrides.clear()
 
+
 @pytest.fixture()
 def create_test_user1(client):
     with TestingSessionLocal() as db:
         user = User(username="TestUser")
         db.add(user)
         db.commit()
+
 
 @pytest.fixture()
 def create_test_user2(client):
@@ -61,9 +62,6 @@ def create_test_user2(client):
         db.commit()
 
 
-
-
-
 @pytest.fixture()
 def create_test_content1():
     with TestingSessionLocal() as db:
@@ -71,12 +69,14 @@ def create_test_content1():
         db.add(content)
         db.commit()
 
+
 @pytest.fixture()
 def create_test_content2():
     with TestingSessionLocal() as db:
         content = Content(name="TestContent2", description="TestDescription")
         db.add(content)
         db.commit()
+
 
 @pytest.fixture()
 def create_test_rating_for_one_content_rait3():
@@ -86,6 +86,7 @@ def create_test_rating_for_one_content_rait3():
         db.add(rating)
         db.commit()
 
+
 @pytest.fixture()
 def create_test_rating_for_one_content_rait5():
     """Создаёт запись в Rating(user_id=2, content_id=1, rating=5)"""
@@ -93,6 +94,7 @@ def create_test_rating_for_one_content_rait5():
         rating = Rating(user_id=2, content_id=1, rating=5)
         db.add(rating)
         db.commit()
+
 
 @pytest.fixture()
 def create_test_rating_for_second_content_rait3():
@@ -102,6 +104,7 @@ def create_test_rating_for_second_content_rait3():
         db.add(rating)
         db.commit()
 
+
 @pytest.fixture()
 def create_test_rating_for_second_content_rait5():
     """Создаёт запись в Rating(user_id=2, content_id=1, rating=5)"""
@@ -109,6 +112,7 @@ def create_test_rating_for_second_content_rait5():
         rating = Rating(user_id=2, content_id=2, rating=5)
         db.add(rating)
         db.commit()
+
 
 @pytest.fixture()
 def create_test_review():
@@ -118,6 +122,7 @@ def create_test_review():
         db.add(review)
         db.commit()
 
+
 @pytest.fixture()
 def create_test_review_for_one_content_by_user1():
     """Создаёт запись в Review(user_id=1, content_id=1, text="TestTextReview")"""
@@ -126,6 +131,7 @@ def create_test_review_for_one_content_by_user1():
         db.add(review)
         db.commit()
 
+
 @pytest.fixture()
 def create_test_review_for_one_content_by_user2():
     """Создаёт запись в Review(user_id=2, content_id=1, text="TestTextReview2")"""
@@ -133,6 +139,7 @@ def create_test_review_for_one_content_by_user2():
         review = Review(user_id=2, content_id=1, text="TestTextReview2")
         db.add(review)
         db.commit()
+
 
 @pytest.fixture()
 def create_test_review_for_second_content_by_user1():
