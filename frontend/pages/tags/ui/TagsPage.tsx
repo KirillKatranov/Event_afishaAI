@@ -17,6 +17,8 @@ import {getTint} from "@/shared/constants";
 import {Dimensions} from "react-native";
 import {useConfig} from "@/shared/providers/TelegramConfig";
 import {LinearGradient} from "expo-linear-gradient";
+import {useCalendarStore} from "@/features/dates";
+import {getPeriodBorders} from "@/shared/scripts/date";
 
 const window = Dimensions.get("window");
 
@@ -26,10 +28,18 @@ export const TagsPage = () => {
 
   const username = useConfig().initDataUnsafe.user.username;
   const { isLoading, fetchTags } = useTagsStore();
+  const { selectedDays } = useCalendarStore();
+
   useFocusEffect(
     useCallback(() => {
-      fetchTags({ username: username, macro_category: service });
-    }, [])
+      const borders = getPeriodBorders(Object.keys(selectedDays));
+      fetchTags({
+        username: username,
+        macro_category: service,
+        date_start: service !== "places" ? borders.date_start : undefined,
+        date_end: service !== "places" ? borders.date_end : undefined
+      });
+    }, [selectedDays])
   )
 
   const scrollY = useSharedValue(0);
