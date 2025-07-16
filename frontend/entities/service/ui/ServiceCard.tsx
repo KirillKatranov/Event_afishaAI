@@ -1,7 +1,6 @@
 import React from "react";
 import {Service, ServicesGradients} from "@/entities/service/model/types/services.types";
 import {Box, Text, WebLottieView} from "@/shared/ui";
-import Illustration from "@/shared/ui/Illustrations/Illustration";
 import {LayoutChangeEvent, Pressable} from "react-native";
 
 interface ServiceCardProps {
@@ -56,27 +55,20 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           {service.name}
         </Text>
 
-        {service.id == "events" && (
-            <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure}>
-              <WebLottieView src={require("@/shared/assets/lottie/events.json")} maxHeight={boxHeight} maxWidth={boxWidth} />
-            </Box>
+        <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure}>
+          {service.id == "events" && (
+            <WebLottieView src={require("@/shared/assets/lottie/events.json")} maxHeight={boxHeight} maxWidth={boxWidth} />
           )}
-        {service.id == "places" && (
-          <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure}>
+          {service.id == "places" && (
             <WebLottieView src={require("@/shared/assets/lottie/places.json")} maxHeight={boxHeight} maxWidth={boxWidth}/>
-          </Box>
-        )}
-        {service.id == "organizers" && (
-          <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure}>
+          )}
+          {service.id == "organizers" && (
             <WebLottieView src={require("@/shared/assets/lottie/organizers.json")} maxHeight={boxHeight} maxWidth={boxWidth}/>
-          </Box>
-        )}
-
-        {(service.id == "trips") && (
-          <Box flex={1} justifyContent={"center"} onLayout={layoutMeasure} alignItems={"center"}>
-            <Illustration name={service.illustration} width={"80%"} height={"80%"}/>
-          </Box>
-        )}
+          )}
+          {(service.id == "trips") && (
+            <WebLottieView src={require("@/shared/assets/lottie/trips.json")} maxHeight={boxHeight} maxWidth={boxWidth}/>
+          )}
+        </Box>
 
         <Text style={{ fontFamily: 'MontserratSemiBold', fontSize: 16, textAlign: "center", color: "#393939" }} selectable={false}>
           {service.description}

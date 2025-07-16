@@ -163,6 +163,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
                   <View style={{ height: containerHeight, width: '100%' }}>
                     <EventCard
                       event={item}
+                      liked={!!likes?.some((event) => event.id === item.id)}
                       onLike={() => handleEventAction("like", item)}
                       onDislike={() => handleEventAction("dislike", item)}
                       owned={!!owned}
@@ -313,7 +314,7 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
         )}
 
 
-        {layoutState === "catalog" && !allowSearch && tag && (
+        {layoutState === "catalog" && !allowSearch && !swipedAll && tag && (
           <View
             style={{
               flex: 1, height: 30,

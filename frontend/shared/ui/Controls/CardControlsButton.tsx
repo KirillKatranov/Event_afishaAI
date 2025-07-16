@@ -1,20 +1,40 @@
-import React from "react";
+import React, {useEffect} from "react";
 import DropShadow from "react-native-drop-shadow";
 import {TouchableOpacity} from "react-native";
 import { ServicesGradients } from "@/entities/service";
-import {DislikeGradient, LikeGradient, ShareGradient} from "@/shared/ui/Icons";
+import {DislikeGradient, LikeFilled, LikeGradient, ShareGradient} from "@/shared/ui/Icons";
+import Animated, {useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming} from "react-native-reanimated";
 
 interface CardControlsButtonProps {
   type: "like" | "dislike" | "share",
   service?: "events" | "places" | "organizers" | "trips";
+  liked?: boolean;
   onPress?: () => void;
 }
 
 export const CardControlsButton: React.FC<CardControlsButtonProps> = ({
   type,
   service,
+  liked,
   onPress
 }) => {
+  const likeScale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: likeScale.value },
+    ],
+  }));
+
+  useEffect(() => {
+    if (liked) {
+      likeScale.value = withSequence(
+        withTiming(1.4, { duration: 150 }),
+        withSpring(1, { damping: 5, stiffness: 100 })
+      )
+    }
+  }, [liked]);
+
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <DropShadow
@@ -28,7 +48,7 @@ export const CardControlsButton: React.FC<CardControlsButtonProps> = ({
           alignItems: "center", justifyContent: "center"
         }}
       >
-        {type === "like" && (
+        {type === "like" && !liked && (
           <LikeGradient
             width={40}
             height={40}
@@ -40,6 +60,22 @@ export const CardControlsButton: React.FC<CardControlsButtonProps> = ({
               end: { x: 0, y: 1 }
             }}
           />
+        )}
+
+        {type === "like" && liked && (
+          <Animated.View style={[animatedStyle, { alignItems: "center", justifyContent: "center"}]}>
+            <LikeFilled
+              width={40}
+              height={40}
+              fill={{
+                id: type+service,
+                startColor: service ? ServicesGradients[service][0] : "black",
+                endColor: service ? ServicesGradients[service][1] : "black",
+                start: { x: 0, y: 0 },
+                end: { x: 0, y: 1 }
+              }}
+            />
+          </Animated.View>
         )}
 
         {type === "dislike" && (
