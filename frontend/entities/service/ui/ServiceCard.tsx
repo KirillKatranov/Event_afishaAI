@@ -30,7 +30,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       onPressOut={(event) => {
         event.preventDefault()
         const endX = event.nativeEvent.pageX;
-        if (Math.abs(endX - startX) < 15) {
+        if (Math.abs(endX - startX) < 25) {
           onPress();
         }
       }}
