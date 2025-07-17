@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
   Animated, Dimensions,
   FlatList,
@@ -57,6 +57,9 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   const router = useRouter();
   const user = useConfig().initDataUnsafe.user;
 
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const scrollViewRef = useRef<FlatList>(null);
+
   const [layoutState, setLayoutState] = useState<string | null>(null);
 
   const ref = React.useRef<ICarouselInstance>(null);
@@ -101,6 +104,10 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
   }, [swipedAll]);
 
   const {triggerLikeAnimation} = useEventCardStore();
+
+  const scrollToTop = () => {
+    scrollViewRef.current?.scrollToOffset({ offset: 0, animated: true });
+  };
 
   const handleEventAction = useCallback(async (action: "like" | "dislike" | "delete_mark", event: Event) => {
     saveAction({
@@ -209,12 +216,14 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
           {isLoading && <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>}
           {!isLoading && (
             <FlatList
+              ref={scrollViewRef}
               data={events}
               renderItem={renderCatalogItem}
               keyExtractor={(item) => item.id.toString()}
               numColumns={2}
               showsVerticalScrollIndicator={false}
               columnWrapperStyle={{ gap: 16, marginBottom: 16 }}
+              onScroll={(event) => setShowScrollToTop(event.nativeEvent.contentOffset.y > 300)}
               style={{
                 flex: 1,
                 gap: 16,
@@ -407,6 +416,33 @@ export const EventsVerticalSwiper: React.FC<EventsSwiperProps> = ({
           </Box>
         )
       }
+
+      {showScrollToTop && layoutState === "catalog" && (
+        <Pressable
+          style={{
+            position: 'absolute',
+            bottom: 30, right: 20,
+            width: 40, height: 40,
+            borderRadius: 25, borderWidth: 1, borderColor: "#8D8D8D", backgroundColor: "white",
+            justifyContent: 'center', alignItems: 'center',
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2,},
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+          }}
+          onPress={scrollToTop}
+        >
+          <View
+            style={{
+              width: '100%', height: '100%', borderRadius: 25,
+              justifyContent: 'center', alignItems: 'center',
+            }}
+          >
+            <Icon name="chevronUp" color={"#8D8D8D"} size={24} />
+          </View>
+        </Pressable>
+      )}
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {
   Dimensions,
   FlatList,
@@ -16,6 +16,8 @@ import {getEventCardsLayout, setEventCardsLayout} from "@/shared/utils/storage/l
 import Carousel, {ICarouselInstance} from "react-native-reanimated-carousel";
 import {CatalogRouteCard, Route, RouteCard, SelectedRouteCard} from "@/features/routes";
 import {BlurView} from "expo-blur";
+import {LinearGradient} from "expo-linear-gradient";
+import {ServicesGradients} from "@/entities/service";
 
 interface RoutesSwiperProps {
   routes: Route[] | undefined;
@@ -33,6 +35,9 @@ export const RoutesSwiper: React.FC<RoutesSwiperProps> = ({
 }) => {
   const theme = useTheme<Theme>();
   const router = useRouter();
+
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const scrollViewRef = useRef<FlatList>(null);
 
   const [layoutState, setLayoutState] = useState<string | null>(null);
 
@@ -64,6 +69,10 @@ export const RoutesSwiper: React.FC<RoutesSwiperProps> = ({
     window.addEventListener("wheel", handleWheel);
     return () => window.removeEventListener("wheel", handleWheel);
   }, []);
+
+  const scrollToTop = () => {
+    scrollViewRef.current?.scrollToOffset({ offset: 0, animated: true });
+  };
 
   const handleLayoutChange = useCallback(() => {
     const newLayout = layoutState === "swiper" ? "catalog" : "swiper";
@@ -123,11 +132,13 @@ export const RoutesSwiper: React.FC<RoutesSwiperProps> = ({
             {isLoading && <LoadingCard style={{ flex: 1, height: "100%", width: "100%" }}/>}
             {!isLoading && (
               <FlatList
+                ref={scrollViewRef}
                 data={routes}
                 renderItem={renderCatalogItem}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
+                onScroll={(event) => setShowScrollToTop(event.nativeEvent.contentOffset.y > 300)}
                 columnWrapperStyle={{ gap: 16, marginBottom: 16 }}
                 style={{
                   flex: 1,
@@ -138,9 +149,11 @@ export const RoutesSwiper: React.FC<RoutesSwiperProps> = ({
             )}
           </BlurView>
 
-          <View
+          <LinearGradient
+            colors={[ServicesGradients["trips"][0], ServicesGradients["trips"][1]]}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 1 }}
             style={{
-              backgroundColor: "#6800ca",
               position: "absolute", zIndex: -1, opacity: 0.6,
               width: height * 0.1, top: -20,
               height: height * 0.1,
@@ -225,10 +238,37 @@ export const RoutesSwiper: React.FC<RoutesSwiperProps> = ({
               flex: 1, maxHeight: 38, backgroundColor: "rgba(255,254,247,0.4)",
               alignItems: "center", justifyContent: "center", borderRadius: 16
             }}>
-            <Text style={{ fontFamily: "UnboundedMedium", fontSize: 18, color: "white" }}>
+            <Text style={{ fontFamily: "UnboundedMedium", fontSize: 18, color: "#393939" }}>
               МАРШРУТЫ
             </Text>
           </View>
+        )}
+
+        {showScrollToTop && layoutState === "catalog" && (
+          <Pressable
+            style={{
+              position: 'absolute',
+              bottom: 30, right: 20,
+              width: 40, height: 40,
+              borderRadius: 25, borderWidth: 1, borderColor: "#8D8D8D", backgroundColor: "white",
+              justifyContent: 'center', alignItems: 'center',
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2,},
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5,
+            }}
+            onPress={scrollToTop}
+          >
+            <View
+              style={{
+                width: '100%', height: '100%', borderRadius: 25,
+                justifyContent: 'center', alignItems: 'center',
+              }}
+            >
+              <Icon name="chevronUp" color={"#8D8D8D"} size={24} />
+            </View>
+          </Pressable>
         )}
       </Box>
     </Box>

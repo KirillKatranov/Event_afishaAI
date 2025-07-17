@@ -5,7 +5,7 @@ import {
 } from "react-native-reanimated";
 import {ServiceCard, Services, ServicesGradients} from "@/entities/service";
 import {useFocusEffect, useRouter} from "expo-router";
-import Carousel from "react-native-reanimated-carousel/src/components/Carousel";
+import Carousel from "react-native-reanimated-carousel";
 import {Dimensions} from "react-native";
 import {BlurView} from "expo-blur";
 import {Box} from "@/shared/ui";
@@ -78,7 +78,7 @@ export const ServicesPage = () => {
             parallaxScrollingOffset: window.width * 0.1,
             parallaxAdjacentItemScale: 0.8
           }}
-          onProgressChange={swipeProgress}
+          onProgressChange={(_offsetProgress, absoluteProgress) => swipeProgress.value = absoluteProgress}
           renderItem={({item}) => <ServiceCard service={item} onPress={() => {
             router.replace({
               pathname: '/tags/[service]',
