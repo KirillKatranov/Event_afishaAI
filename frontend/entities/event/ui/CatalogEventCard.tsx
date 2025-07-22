@@ -2,11 +2,12 @@ import React, {useEffect, useState} from "react";
 import {Box, Text, LoadingCard} from "@/shared/ui";
 import {Image, Pressable} from "react-native";
 import {Event} from "@/entities/event";
-import DropShadow from "react-native-drop-shadow";
 import Icon from "@/shared/ui/Icons/Icon";
-import {useConfig} from "@/shared/providers/TelegramConfig";
 import Animated, {useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming} from "react-native-reanimated";
 import Illustration from "@/shared/ui/Illustrations/Illustration";
+import {BlurView} from "expo-blur";
+import {LikeFilled} from "@/shared/ui/Icons";
+import {ServicesGradients} from "@/entities/service";
 
 interface CatalogEventCardProps {
   event: Event
@@ -22,7 +23,6 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = ({
   onPress
 }) => {
   const [imageLoading, setImageLoading] = useState(true);
-  const config = useConfig();
 
   const likeScale = useSharedValue(1);
 
@@ -62,43 +62,23 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = ({
         )}
 
         {event.cost != undefined && (
-          <DropShadow
+          <BlurView
+            tint={"extraLight"} intensity={70}
             style={{
-              shadowColor: "rgba(64,63,63,0.25)",
-              shadowRadius: 2,
-              shadowOffset: { width: 2, height: 2 },
-              position: "absolute", left: 4, top: 153,
-              borderRadius: 12, borderWidth: 1, borderColor: "#E9E9E9", padding: 4, backgroundColor: "white",
+              position: "absolute", left: 8, top: 141,
+              borderRadius: 12, padding: 4, backgroundColor: "rgba(255,255,255,0.04)",
               alignItems: "center", justifyContent: "center"
             }}
           >
-            <Text style={{fontFamily: "InterRegular", fontSize: 12, color: "#A22CFF"}}>
+            <Text style={{fontFamily: "MontserratRegular", fontSize: 12, color: "white"}}>
               {event.cost != "0" ? `${event.cost} ₽` : "Бесплатно"}
             </Text>
-          </DropShadow>
+          </BlurView>
         )}
 
         <Text style={{ fontFamily: "MontserratSemiBold", fontSize: 14 }} numberOfLines={2} color={"text_color"}>
           {event.name}
         </Text>
-
-        <Pressable
-          onPress={() => {
-            const link = `${process.env.EXPO_PUBLIC_WEB_APP_URL}?startapp=${event.id}`;
-            const encodedMessage = encodeURIComponent(`Привет! Посмотри это мероприятие`);
-
-            console.log("Sharing event with link:", link);
-
-            config.openTelegramLink(`https://t.me/share/url?text=${encodedMessage}&url=${link}`);
-          }}
-          style={{
-            position: "absolute", left: 8, top: 8,
-          }}
-        >
-          <Box alignItems={"center"} justifyContent={"center"}>
-            <Icon name={"share"} color={"#393939"} size={20}/>
-          </Box>
-        </Pressable>
 
         <Pressable
           onPress={onLike}
@@ -107,11 +87,21 @@ export const CatalogEventCard: React.FC<CatalogEventCardProps> = ({
           }}
         >
           <Animated.View style={[animatedStyle, { alignItems: "center", justifyContent: "center"}]}>
-            <Box style={{ zIndex: 2 }}><Icon name={"like"} color={"#ffffff"} size={20}/></Box>
+            <Box style={{ position: "absolute", zIndex: 2 }}>
+              <Icon name={"like"} color={event.macro_category ? ServicesGradients[event.macro_category][1] : "#c8c8c8"} size={20}/>
+            </Box>
+
+            <Box style={{ zIndex: 1 }}><Icon name={"likeFilled"} color={"rgba(255,255,255,0.5)"} size={20}/></Box>
 
             {liked && (
-              <Box style={{ position: "absolute", zIndex: 1 }}>
-                <Icon name={"likeFilled"} color={"#ff0000"} size={20}/>
+              <Box style={{ position: "absolute", zIndex: 3 }}>
+                <LikeFilled width={"20"} height={"20"} fill={{
+                  id: event.id.toString(),
+                  startColor: event.macro_category ? ServicesGradients[event.macro_category][0] : "red",
+                  endColor: event.macro_category ? ServicesGradients[event.macro_category][1] : "red",
+                  start: {x: 0, y: 0},
+                  end: {x: 0, y: 1}
+                }}/>
               </Box>
             )}
           </Animated.View>
