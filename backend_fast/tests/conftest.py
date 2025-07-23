@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from fastapi.testclient import TestClient
 from fast import app
-from models import Base, Content, Rating, Review, get_db, User
+from models import Base, Content, Rating, Review, Tags, get_db, User
 from tests.config import test_settings
 
 # Тестовая база SQLite
@@ -149,6 +149,33 @@ def create_test_review_for_second_content_by_user1():
         db.add(review)
         db.commit()
 
+
+@pytest.fixture()
+def create_test_event_tags1():
+    with TestingSessionLocal() as db:
+        tag = Tags(id=1, name="TestTagName1")
+        db.add(tag)
+        db.commit()
+
+@pytest.fixture()
+def create_test_event_tags2():
+    with TestingSessionLocal() as db:
+        tag = Tags(id=2, name="TestTagName2")
+        db.add(tag)
+        db.commit()
+
+
+
+# @pytest.fixture()
+# def create_test_content_tags():
+#     """
+#     Создаёт тестовое отношение (Many-to-many) 
+#     между Content.id = 1 и Tags.id = 1 
+#     """
+#     with TestingSessionLocal() as db:
+#         review = (user_id=1, content_id=2, text="TestTextReview2")
+#         db.add(review)
+#         db.commit()
 
 @pytest.fixture(autouse=True)
 def clear_db():
