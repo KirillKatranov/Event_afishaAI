@@ -1,5 +1,6 @@
 import datetime
 import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import (
     create_engine,
     Column,
@@ -16,6 +17,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship, sessionmaker, declarative_base
 import enum
+print(os.environ)
 
 
 # Определение перечислений
@@ -28,6 +30,7 @@ class PublisherType(str, enum.Enum):
     USER = "user"
     ORGANISATION = "organisation"
 
+
 # Настройка движка SQLAlchemy (engine)
 TEST_MODE = os.getenv("TEST_MODE", "False").lower() == "true"
 if TEST_MODE:
@@ -38,6 +41,10 @@ if TEST_MODE:
 else:
     SQLALCHEMY_DATABASE_URL = "postgresql://afisha:password@db/afisha"
     engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
+
+
+
+
 
 # Создаем фабрику сессий (SessionLocal)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -323,8 +330,6 @@ Content.ratings = relationship("Rating", back_populates="content")
 Content.removed_favorites = relationship("RemovedFavorite", back_populates="content")
 
 
-# Создание всех таблиц
-Base.metadata.create_all(bind=engine)
 
 
 def get_db():

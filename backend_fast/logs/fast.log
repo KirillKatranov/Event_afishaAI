@@ -14,3 +14,1436 @@
 2025-06-26 20:54:16.306 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa6fad330>]
 2025-06-26 20:55:04.496 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa89bc940>]
 2025-06-26 20:55:05.179 | INFO     | api.contents:get_users_who_liked_content:560 - Users who liked content 40: [<models.User object at 0xffffa89bcb20>]
+2025-06-27 17:57:20.026 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-27 17:57:20.027 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-27 17:57:20.039 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-27 17:57:20.039 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-27 17:57:20.106 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-06-27 17:57:20.134 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-06-27 17:57:20.159 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-27 17:57:20.183 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-27 17:57:20.203 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-06-27 17:57:20.224 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-06-27 17:57:20.227 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-06-27 14:58:00.531 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-27 14:58:00.532 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-27 14:58:00.562 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-27 14:58:00.562 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-27 14:58:00.714 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-06-27 14:58:00.787 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-06-27 14:58:00.848 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-27 14:58:00.912 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-27 14:58:00.962 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-06-27 14:58:01.014 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-06-27 14:58:01.019 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-06-29 14:45:49.933 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-29 14:45:49.934 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-29 14:45:49.973 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-06-29 14:45:49.973 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-06-29 14:45:50.149 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-06-29 14:45:50.234 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-06-29 14:45:50.301 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-29 14:45:50.369 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-06-29 14:45:50.420 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-06-29 14:45:50.476 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-06-29 14:45:50.482 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 14:15:50.492 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 14:15:50.492 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 14:15:50.504 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 14:15:50.504 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 14:15:50.573 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 14:15:50.608 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 14:15:50.632 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 14:15:50.655 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 14:15:50.676 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 14:15:50.679 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 14:15:50.679 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 14:15:50.680 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 14:15:50.686 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 14:15:50.714 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 14:15:50.716 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 14:15:50.717 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 14:15:50.718 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 14:15:50.723 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 14:15:50.742 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 14:15:50.744 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 14:15:50.760 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 14:15:50.763 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 14:15:50.763 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 14:15:50.798 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 14:15:50.800 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 14:15:50.800 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 14:15:50.803 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 14:15:50.805 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 14:15:50.828 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 14:15:50.830 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 14:15:50.830 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 14:15:50.831 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 14:15:50.853 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 14:15:50.855 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 14:15:50.880 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 14:15:50.882 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 14:15:50.883 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 14:15:50.914 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 14:15:50.916 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 14:15:50.951 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 14:15:50.953 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 14:15:50.956 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 14:15:50.991 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 14:15:50.993 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 14:15:50.994 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 14:15:51.028 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 14:15:51.030 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 14:15:51.031 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 14:15:51.044 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 14:15:51.046 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 14:15:51.064 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 14:15:51.084 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 14:15:51.087 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 16:15:25.384 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 16:15:25.385 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 16:15:25.397 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 16:15:25.397 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 16:15:25.451 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:15:25.458 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:15:25.677 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:15:25.689 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:15:25.726 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 16:15:25.757 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 16:15:25.782 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 16:15:25.806 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 16:15:25.828 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:15:25.831 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:15:25.831 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 16:15:25.832 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 16:15:25.838 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 16:15:25.866 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:15:25.868 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:15:25.868 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 16:15:25.869 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 16:15:25.874 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 16:15:25.892 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:15:25.894 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 16:15:25.910 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:15:25.912 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:15:25.912 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 16:15:25.945 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:15:25.947 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 16:15:25.948 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 16:15:25.951 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 16:15:25.951 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 16:15:25.975 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:15:25.977 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 16:15:25.977 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 16:15:25.977 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 16:15:25.998 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:15:26.000 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 16:15:26.025 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 16:15:26.027 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 16:15:26.027 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 16:15:26.057 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 16:15:26.059 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 16:15:26.092 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:15:26.094 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:15:26.096 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:15:26.131 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:15:26.132 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:15:26.133 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:15:26.176 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:15:26.178 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:15:26.179 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:15:26.191 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:15:26.193 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 16:15:26.211 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 16:15:26.232 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 16:15:26.235 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 16:17:16.580 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:17:16.592 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:18:22.493 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:18:22.506 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:20:27.479 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 16:20:27.479 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 16:20:27.491 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 16:20:27.492 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 16:20:27.543 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:20:27.550 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:20:27.564 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:20:27.575 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:20:27.612 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 16:20:27.643 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 16:20:27.668 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 16:20:27.692 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 16:20:27.713 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:20:27.715 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:20:27.715 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 16:20:27.716 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 16:20:27.722 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 16:20:27.750 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:20:27.752 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:20:27.753 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 16:20:27.753 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 16:20:27.758 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 16:20:27.777 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:20:27.779 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 16:20:27.796 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:20:27.798 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:20:27.798 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 16:20:27.840 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:20:27.843 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 16:20:27.843 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 16:20:27.846 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 16:20:27.847 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 16:20:27.868 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:20:27.871 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 16:20:27.871 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 16:20:27.872 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 16:20:27.894 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:20:27.896 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 16:20:27.921 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 16:20:27.923 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 16:20:27.923 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 16:20:27.955 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 16:20:27.957 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 16:20:27.990 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:20:27.993 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:20:27.995 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:20:28.029 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:20:28.030 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:20:28.031 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:20:28.066 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:20:28.068 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:20:28.068 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:20:28.081 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:20:28.083 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 16:20:28.102 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 16:20:28.122 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 16:20:28.124 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 16:39:23.178 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:39:23.186 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 16:40:08.759 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:40:08.766 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:40:08.769 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 16:40:08.777 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 16:41:01.739 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:41:01.747 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:41:01.750 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 16:41:01.757 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 16:43:18.974 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:43:18.982 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:43:18.985 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 16:43:18.993 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 16:46:00.751 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:46:00.758 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:46:00.761 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 16:46:00.771 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 16:47:38.202 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:47:38.212 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:47:38.215 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 16:47:38.224 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 16:51:46.980 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 16:51:46.980 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 16:51:46.992 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 16:51:46.992 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 16:51:47.044 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:51:47.051 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:51:47.066 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:51:47.076 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:51:47.112 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 16:51:47.144 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 16:51:47.169 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 16:51:47.196 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 16:51:47.220 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:51:47.223 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:51:47.224 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 16:51:47.225 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 16:51:47.231 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 16:51:47.267 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:51:47.270 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:51:47.271 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 16:51:47.272 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 16:51:47.278 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 16:51:47.301 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:51:47.303 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 16:51:47.321 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:51:47.323 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:51:47.324 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 16:51:47.365 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:51:47.367 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 16:51:47.367 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 16:51:47.371 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 16:51:47.372 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 16:51:47.393 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:51:47.396 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 16:51:47.396 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 16:51:47.397 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 16:51:47.418 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:51:47.420 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 16:51:47.445 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 16:51:47.448 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 16:51:47.448 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 16:51:47.478 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 16:51:47.481 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 16:51:47.514 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:51:47.516 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:51:47.519 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:51:47.553 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:51:47.555 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:51:47.556 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:51:47.589 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:51:47.591 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:51:47.592 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:51:47.604 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:51:47.606 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 16:51:47.627 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:51:47.629 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:51:47.630 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 16:51:47.636 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 16:51:47.653 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:51:47.656 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 16:51:47.673 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:51:47.675 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:51:47.676 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 16:51:47.695 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 16:51:47.716 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 16:51:47.719 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 16:53:00.957 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 16:53:00.958 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 16:53:00.969 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 16:53:00.970 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 16:53:01.021 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:53:01.027 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:53:01.041 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 16:53:01.051 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 16:53:01.085 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 16:53:01.116 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 16:53:01.141 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 16:53:01.164 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 16:53:01.185 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:53:01.187 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:53:01.187 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 16:53:01.188 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 16:53:01.194 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 16:53:01.221 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:53:01.223 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:53:01.224 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 16:53:01.224 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 16:53:01.230 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 16:53:01.248 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:53:01.250 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 16:53:01.266 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 16:53:01.268 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 16:53:01.269 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 16:53:01.302 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:53:01.304 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 16:53:01.305 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 16:53:01.307 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 16:53:01.309 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 16:53:01.330 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:53:01.332 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 16:53:01.332 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 16:53:01.333 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 16:53:01.354 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 16:53:01.355 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 16:53:01.381 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 16:53:01.383 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 16:53:01.383 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 16:53:01.412 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 16:53:01.414 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 16:53:01.449 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:53:01.451 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:53:01.453 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:53:01.487 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:53:01.488 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:53:01.489 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:53:01.523 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:53:01.525 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 16:53:01.526 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 16:53:01.538 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 16:53:01.540 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 16:53:01.559 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:53:01.561 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:53:01.562 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 16:53:01.567 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 16:53:01.586 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:53:01.588 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 16:53:01.605 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 16:53:01.607 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 16:53:01.607 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 16:53:01.626 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 16:53:01.647 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 16:53:01.650 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 17:03:25.054 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:03:25.062 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:03:25.064 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:04:35.934 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:04:35.934 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:04:35.947 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:04:35.947 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:04:36.003 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:04:36.011 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:04:36.026 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:04:36.036 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:04:36.071 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 17:04:36.103 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 17:04:36.127 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:04:36.153 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:04:36.174 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:04:36.176 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:04:36.176 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:04:36.177 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 17:04:36.183 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 17:04:36.210 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:04:36.211 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:04:36.212 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:04:36.212 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 17:04:36.218 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 17:04:36.236 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:04:36.238 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 17:04:36.254 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:04:36.256 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:04:36.257 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 17:04:36.290 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:04:36.292 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:04:36.292 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:04:36.295 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 17:04:36.297 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 17:04:36.317 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:04:36.319 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:04:36.319 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:04:36.320 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 17:04:36.341 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:04:36.343 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 17:04:36.370 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:04:36.372 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 17:04:36.373 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 17:04:36.404 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:04:36.406 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 17:04:36.440 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:04:36.442 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:04:36.445 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:04:36.480 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:04:36.481 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:04:36.482 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:04:36.517 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:04:36.519 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:04:36.520 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:04:36.532 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:04:36.534 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 17:04:36.555 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:04:36.557 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:04:36.558 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 17:04:36.563 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 17:04:36.581 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:04:36.583 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 17:04:36.600 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:04:36.602 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:04:36.602 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 17:04:36.623 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:04:36.626 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:04:36.627 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:04:36.882 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 17:04:36.901 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 17:04:36.904 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 17:06:06.179 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:06:06.179 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:06:06.193 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:06:06.193 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:06:06.247 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:06:06.254 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:06:06.270 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:06:06.280 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:06:06.315 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 17:06:06.345 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 17:06:06.368 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:06:06.390 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:06:06.410 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:06:06.412 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:06:06.412 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:06:06.413 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 17:06:06.419 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 17:06:06.444 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:06:06.446 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:06:06.446 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:06:06.447 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 17:06:06.452 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 17:06:06.469 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:06:06.471 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 17:06:06.486 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:06:06.488 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:06:06.488 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 17:06:06.521 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:06:06.523 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:06:06.523 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:06:06.526 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 17:06:06.527 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 17:06:06.548 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:06:06.549 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:06:06.550 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:06:06.550 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 17:06:06.570 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:06:06.572 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 17:06:06.596 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:06:06.597 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 17:06:06.598 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 17:06:06.627 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:06:06.629 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 17:06:06.661 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:06:06.663 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:06:06.665 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:06:06.698 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:06:06.699 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:06:06.700 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:06:06.733 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:06:06.735 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:06:06.736 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:06:06.747 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:06:06.749 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 17:06:06.768 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:06:06.770 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:06:06.770 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 17:06:06.776 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 17:06:06.793 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:06:06.794 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 17:06:06.811 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:06:06.813 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:06:06.814 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 17:06:06.835 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:06:06.837 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:06:06.838 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:06:07.091 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 17:06:07.110 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 17:06:07.113 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 17:06:44.555 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:06:44.563 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:06:44.565 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:12:15.249 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:12:15.257 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:12:15.260 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:13:45.074 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:13:45.082 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:13:45.085 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:19:37.641 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:19:37.741 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-08 17:21:27.429 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:21:27.429 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:21:27.441 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:21:27.441 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:21:27.491 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:21:27.498 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:21:27.512 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:21:27.521 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:21:27.558 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 17:21:27.588 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 17:21:27.613 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:21:27.635 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:21:27.655 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:21:27.657 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:21:27.658 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:21:27.659 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 17:21:27.665 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 17:21:27.691 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:21:27.693 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:21:27.693 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:21:27.694 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 17:21:27.699 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 17:21:27.717 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:21:27.719 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 17:21:27.735 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:21:27.737 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:21:27.738 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 17:21:27.770 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:21:27.772 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:21:27.772 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:21:27.775 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 17:21:27.777 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 17:21:27.798 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:21:27.799 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:21:27.800 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:21:27.800 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 17:21:27.821 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:21:27.823 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 17:21:27.851 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:21:27.853 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 17:21:27.853 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 17:21:27.884 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:21:27.886 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 17:21:27.919 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:21:27.921 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:21:27.923 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:21:27.958 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:21:27.960 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:21:27.961 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:21:27.994 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:21:27.996 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:21:27.997 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:21:28.009 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:21:28.011 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 17:21:28.033 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:21:28.035 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:21:28.035 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 17:21:28.041 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 17:21:28.058 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:21:28.060 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 17:21:28.077 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:21:28.079 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:21:28.079 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 17:21:28.100 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:21:28.102 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:21:28.103 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:21:28.121 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:21:28.123 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-08 17:21:28.135 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:21:28.137 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-08 17:21:28.353 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 17:21:28.372 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 17:21:28.375 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 17:22:18.768 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:22:18.768 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:22:18.780 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:22:18.780 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:22:18.832 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:22:18.838 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:22:18.852 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:22:18.863 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:22:18.898 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 17:22:18.929 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 17:22:18.954 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:22:18.978 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:22:18.998 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:22:19.000 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:22:19.001 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:22:19.002 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 17:22:19.008 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 17:22:19.035 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:22:19.037 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:22:19.037 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:22:19.038 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 17:22:19.042 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 17:22:19.063 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:22:19.065 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 17:22:19.082 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:22:19.084 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:22:19.084 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 17:22:19.118 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:22:19.120 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:22:19.120 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:22:19.123 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 17:22:19.124 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 17:22:19.145 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:22:19.147 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:22:19.147 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:22:19.148 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 17:22:19.168 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:22:19.170 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 17:22:19.195 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:22:19.197 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 17:22:19.198 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 17:22:19.228 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:22:19.230 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 17:22:19.265 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:22:19.267 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:22:19.269 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:22:19.305 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:22:19.307 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:22:19.308 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:22:19.341 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:22:19.343 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:22:19.344 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:22:19.356 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:22:19.358 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 17:22:19.380 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:22:19.382 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:22:19.382 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 17:22:19.389 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 17:22:19.407 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:22:19.410 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 17:22:19.426 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:22:19.428 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:22:19.429 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 17:22:19.448 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:22:19.451 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:22:19.452 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:22:19.469 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:22:19.471 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-08 17:22:19.487 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:22:19.489 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:22:19.490 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-08 17:22:19.510 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 17:22:19.531 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 17:22:19.534 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 17:22:54.852 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:22:54.852 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:22:54.863 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:22:54.863 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:22:54.916 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:22:54.928 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:22:54.942 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:22:54.952 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:22:54.985 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 17:22:55.014 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 17:22:55.037 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:22:55.059 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:22:55.080 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:22:55.082 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:22:55.082 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:22:55.083 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 17:22:55.089 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 17:22:55.115 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:22:55.117 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:22:55.118 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:22:55.118 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 17:22:55.123 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 17:22:55.141 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:22:55.143 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 17:22:55.159 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:22:55.161 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:22:55.162 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 17:22:55.194 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:22:55.196 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:22:55.197 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:22:55.199 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 17:22:55.201 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 17:22:55.221 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:22:55.223 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:22:55.223 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:22:55.224 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 17:22:55.243 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:22:55.245 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 17:22:55.269 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:22:55.271 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 17:22:55.271 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 17:22:55.301 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:22:55.303 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 17:22:55.335 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:22:55.337 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:22:55.339 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:22:55.373 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:22:55.374 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:22:55.375 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:22:55.409 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:22:55.410 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:22:55.411 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:22:55.422 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:22:55.424 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 17:22:55.444 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:22:55.445 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:22:55.446 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 17:22:55.451 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 17:22:55.468 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:22:55.470 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 17:22:55.486 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:22:55.488 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:22:55.489 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 17:22:55.509 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:22:55.511 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:22:55.512 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:22:55.529 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:22:55.531 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-08 17:22:55.546 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:22:55.548 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:22:55.548 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-08 17:22:55.566 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 17:22:55.585 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 17:22:55.587 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 17:31:46.489 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:31:46.514 | INFO     | api.reviews:get_reviews_for_content:123 - Content not found
+2025-07-08 17:38:00.777 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:38:00.781 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:38:00.781 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:38:00.784 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:38:00.785 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:40:03.628 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:40:03.632 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:40:03.632 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:40:03.635 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:40:03.637 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:46:44.345 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:46:44.355 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:46:44.355 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:46:44.362 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:46:44.367 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:47:46.098 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:47:46.106 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:47:46.107 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:47:46.113 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:47:46.117 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:48:34.963 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:48:34.972 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:48:34.973 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:48:34.980 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:48:34.987 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:55:21.684 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:55:21.685 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:55:21.698 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:55:21.698 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:55:21.750 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:55:21.757 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:55:21.773 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:55:21.783 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:55:21.820 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 17:55:21.850 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 17:55:21.876 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:55:21.899 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:55:21.921 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:55:21.922 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:55:21.923 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:55:21.924 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 17:55:21.930 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 17:55:21.956 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:55:21.958 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:55:21.959 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:55:21.959 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 17:55:21.964 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 17:55:21.983 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:55:21.986 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 17:55:22.005 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:55:22.007 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:55:22.008 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 17:55:22.042 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:55:22.045 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:55:22.045 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:55:22.048 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 17:55:22.050 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 17:55:22.075 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:55:22.078 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:55:22.079 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:55:22.080 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 17:55:22.108 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:55:22.110 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 17:55:22.140 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:55:22.142 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 17:55:22.142 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 17:55:22.173 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:55:22.175 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 17:55:22.207 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:55:22.209 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:55:22.211 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:55:22.245 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:55:22.247 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:55:22.248 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:55:22.473 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:55:22.475 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:55:22.476 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:55:22.487 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:55:22.490 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 17:55:22.511 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:55:22.513 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:55:22.514 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 17:55:22.520 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 17:55:22.536 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:55:22.538 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 17:55:22.555 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:55:22.557 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:55:22.558 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 17:55:22.579 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:55:22.581 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:55:22.582 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:55:22.602 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:55:22.604 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-08 17:55:22.621 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:55:22.623 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:55:22.624 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-08 17:55:22.658 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:55:22.660 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:55:22.661 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:55:22.662 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:55:22.664 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:55:22.699 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:55:22.701 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:55:22.701 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:55:22.702 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:55:22.702 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:55:22.716 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:55:22.718 | INFO     | api.reviews:get_reviews_for_content:123 - Content not found
+2025-07-08 17:55:22.737 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 17:55:22.757 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 17:55:22.760 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 17:56:51.775 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:56:51.775 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:56:51.788 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:56:51.788 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:56:51.839 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:56:51.845 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:56:51.861 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:56:51.871 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:56:51.906 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 17:56:51.938 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 17:56:51.962 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:56:51.986 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:56:52.007 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:56:52.009 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:56:52.010 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:56:52.011 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 17:56:52.016 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 17:56:52.048 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:56:52.050 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:56:52.050 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:56:52.051 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 17:56:52.056 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 17:56:52.075 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:56:52.077 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 17:56:52.093 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:56:52.095 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:56:52.096 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 17:56:52.128 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:56:52.130 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:56:52.130 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:56:52.133 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 17:56:52.134 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 17:56:52.155 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:56:52.157 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:56:52.158 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:56:52.158 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 17:56:52.179 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:56:52.182 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 17:56:52.207 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:56:52.209 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 17:56:52.210 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 17:56:52.251 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:56:52.253 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 17:56:52.288 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:56:52.290 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:56:52.292 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:56:52.324 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:56:52.326 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:56:52.327 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:56:52.361 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:56:52.363 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:56:52.364 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:56:52.375 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:56:52.377 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 17:56:52.399 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:56:52.400 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:56:52.401 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 17:56:52.407 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 17:56:52.424 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:56:52.426 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 17:56:52.448 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:56:52.450 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:56:52.451 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 17:56:52.471 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:56:52.473 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:56:52.474 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:56:52.492 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:56:52.494 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-08 17:56:52.510 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:56:52.512 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:56:52.512 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-08 17:56:52.545 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:56:52.548 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:56:52.548 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:56:52.551 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:56:52.552 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:56:52.586 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:56:52.587 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:56:52.588 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:56:52.588 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:56:52.589 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:56:52.601 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:56:52.603 | INFO     | api.reviews:get_reviews_for_content:123 - Content not found
+2025-07-08 17:56:52.621 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 17:56:52.640 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 17:56:52.643 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-08 17:58:33.973 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:58:33.974 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:58:34.077 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-08 17:58:34.077 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-08 17:58:34.414 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:58:34.528 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:58:34.645 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-08 17:58:34.761 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-08 17:58:34.914 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-08 17:58:35.010 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-08 17:58:35.119 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:58:35.236 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-08 17:58:35.350 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:58:35.352 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:58:35.353 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:58:35.354 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-08 17:58:35.433 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-08 17:58:35.556 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:58:35.558 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:58:35.558 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-08 17:58:35.558 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-08 17:58:35.639 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-08 17:58:35.730 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:58:35.732 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-08 17:58:35.831 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-08 17:58:35.833 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-08 17:58:35.833 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-08 17:58:35.960 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:58:35.961 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:58:35.962 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:58:35.964 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-08 17:58:35.966 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-08 17:58:36.081 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:58:36.083 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-08 17:58:36.083 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-08 17:58:36.084 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-08 17:58:36.199 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-08 17:58:36.200 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-08 17:58:36.324 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:58:36.326 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-08 17:58:36.326 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-08 17:58:36.353 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-08 17:58:36.355 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-08 17:58:36.453 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:58:36.455 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:58:36.457 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:58:36.507 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:58:36.509 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:58:36.510 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:58:36.544 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:58:36.546 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-08 17:58:36.547 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-08 17:58:36.560 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-08 17:58:36.562 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-08 17:58:36.583 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:58:36.585 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:58:36.585 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-08 17:58:36.595 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-08 17:58:36.617 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:58:36.619 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-08 17:58:36.641 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-08 17:58:36.643 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-08 17:58:36.644 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-08 17:58:36.664 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:58:36.666 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:58:36.667 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-08 17:58:36.739 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:58:36.741 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-08 17:58:36.798 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-08 17:58:36.800 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-08 17:58:36.800 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-08 17:58:36.877 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:58:36.879 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:58:36.879 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:58:36.881 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:58:36.883 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:58:36.955 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:58:36.957 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:58:36.958 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:58:36.958 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:58:36.959 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:58:37.033 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:58:37.035 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-08 17:58:37.035 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-08 17:58:37.036 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-08 17:58:37.036 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-08 17:58:37.097 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-08 17:58:37.100 | INFO     | api.reviews:get_reviews_for_content:123 - Content not found
+2025-07-08 17:58:37.227 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-08 17:58:37.339 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-08 17:58:37.341 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-10 14:45:54.829 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-10 14:45:54.829 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-10 14:45:54.841 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-10 14:45:54.841 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-10 14:45:54.892 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-10 14:45:54.899 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-10 14:45:54.913 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-10 14:45:54.923 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-10 14:45:54.958 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-10 14:45:54.988 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-10 14:45:55.013 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-10 14:45:55.039 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-10 14:45:55.059 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 14:45:55.061 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 14:45:55.062 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-10 14:45:55.063 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-10 14:45:55.069 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-10 14:45:55.097 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 14:45:55.099 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 14:45:55.099 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-10 14:45:55.100 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-10 14:45:55.105 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-10 14:45:55.123 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 14:45:55.125 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-10 14:45:55.142 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 14:45:55.144 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 14:45:55.144 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-10 14:45:55.176 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 14:45:55.178 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-10 14:45:55.178 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-10 14:45:55.181 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-10 14:45:55.183 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-10 14:45:55.203 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 14:45:55.205 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-10 14:45:55.205 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-10 14:45:55.206 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-10 14:45:55.227 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 14:45:55.229 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-10 14:45:55.254 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-10 14:45:55.256 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-10 14:45:55.256 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-10 14:45:55.286 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-10 14:45:55.288 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-10 14:45:55.324 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 14:45:55.326 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 14:45:55.329 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 14:45:55.361 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 14:45:55.363 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 14:45:55.364 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 14:45:55.396 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 14:45:55.398 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 14:45:55.399 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 14:45:55.411 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 14:45:55.413 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-10 14:45:55.436 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 14:45:55.438 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-10 14:45:55.438 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-10 14:45:55.444 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-10 14:45:55.461 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 14:45:55.463 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-10 14:45:55.479 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 14:45:55.481 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-10 14:45:55.481 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-10 14:45:55.502 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 14:45:55.504 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-10 14:45:55.505 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-10 14:45:55.523 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 14:45:55.525 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-10 14:45:55.541 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 14:45:55.542 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-10 14:45:55.543 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-10 14:45:55.575 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 14:45:55.577 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 14:45:55.577 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 14:45:55.579 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 14:45:55.581 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 14:45:55.613 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 14:45:55.615 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 14:45:55.615 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 14:45:55.615 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 14:45:55.616 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 14:45:55.650 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 14:45:55.652 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 14:45:55.652 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 14:45:55.653 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 14:45:55.653 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 14:45:55.665 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 14:45:55.667 | INFO     | api.reviews:get_reviews_for_content:123 - Content not found
+2025-07-10 14:45:55.685 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-10 14:45:55.704 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-10 14:45:55.706 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-10 15:13:56.660 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:13:56.667 | INFO     | api.reviews:get_user_reviews:184 - Getting reviews for user
+2025-07-10 15:13:56.668 | INFO     | api.reviews:get_user_reviews:193 - Counting total count
+2025-07-10 15:13:56.675 | INFO     | api.reviews:get_user_reviews:197 - Applying pagination
+2025-07-10 15:13:56.681 | INFO     | api.reviews:get_user_reviews:201 - Forming response
+2025-07-10 15:19:05.218 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-10 15:19:05.218 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-10 15:19:05.233 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-10 15:19:05.233 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-10 15:19:05.291 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-10 15:19:05.299 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-10 15:19:05.314 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-10 15:19:05.325 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-10 15:19:05.364 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-10 15:19:05.396 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-10 15:19:05.422 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-10 15:19:05.447 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-10 15:19:05.469 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:19:05.471 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:19:05.472 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-10 15:19:05.473 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-10 15:19:05.478 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-10 15:19:05.506 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:19:05.508 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:19:05.509 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-10 15:19:05.509 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-10 15:19:05.515 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-10 15:19:05.534 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:19:05.536 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-10 15:19:05.554 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:19:05.556 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:19:05.556 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-10 15:19:05.592 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:19:05.594 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-10 15:19:05.594 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-10 15:19:05.598 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-10 15:19:05.599 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-10 15:19:05.622 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:19:05.624 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-10 15:19:05.624 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-10 15:19:05.625 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-10 15:19:05.650 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:19:05.652 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-10 15:19:05.682 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-10 15:19:05.684 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-10 15:19:05.685 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-10 15:19:05.719 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-10 15:19:05.721 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-10 15:19:05.757 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:19:05.759 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:19:05.762 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:19:05.798 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:19:05.800 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:19:05.801 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:19:05.835 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:19:05.838 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:19:05.839 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:19:05.852 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:19:05.854 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-10 15:19:05.878 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:19:05.880 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-10 15:19:05.881 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-10 15:19:05.894 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-10 15:19:05.914 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:19:05.916 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-10 15:19:05.935 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:19:05.937 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-10 15:19:05.937 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-10 15:19:05.959 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:19:05.961 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-10 15:19:05.963 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-10 15:19:05.980 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:19:05.983 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-10 15:19:06.000 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:19:06.002 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-10 15:19:06.002 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-10 15:19:06.036 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:19:06.038 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:19:06.038 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:19:06.040 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:19:06.042 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:19:06.077 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:19:06.079 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:19:06.080 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:19:06.080 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:19:06.081 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:19:06.115 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:19:06.117 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:19:06.117 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:19:06.118 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:19:06.118 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:19:06.132 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:19:06.135 | INFO     | api.reviews:get_reviews_for_content:123 - Content not found
+2025-07-10 15:19:06.172 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:19:06.175 | INFO     | api.reviews:get_user_reviews:184 - Getting reviews for user
+2025-07-10 15:19:06.175 | INFO     | api.reviews:get_user_reviews:193 - Counting total count
+2025-07-10 15:19:06.177 | INFO     | api.reviews:get_user_reviews:197 - Applying pagination
+2025-07-10 15:19:06.179 | INFO     | api.reviews:get_user_reviews:201 - Forming response
+2025-07-10 15:19:06.208 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-10 15:19:06.229 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-10 15:19:06.231 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-10 15:21:08.283 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:21:08.307 | WARNING  | api.reviews:get_user_reviews:180 - User not found
+2025-07-10 15:25:17.729 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:25:17.815 | WARNING  | api.reviews:get_user_reviews:180 - User not found
+2025-07-10 15:29:54.087 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-10 15:29:54.088 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-10 15:29:54.101 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-10 15:29:54.101 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-10 15:29:54.153 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-10 15:29:54.159 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-10 15:29:54.174 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-10 15:29:54.184 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-10 15:29:54.217 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-10 15:29:54.246 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-10 15:29:54.270 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-10 15:29:54.292 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-10 15:29:54.312 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:29:54.314 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:29:54.314 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-10 15:29:54.315 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-10 15:29:54.320 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-10 15:29:54.348 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:29:54.349 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:29:54.350 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-10 15:29:54.350 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-10 15:29:54.355 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-10 15:29:54.373 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:29:54.375 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-10 15:29:54.391 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:29:54.393 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:29:54.393 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-10 15:29:54.425 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:29:54.427 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-10 15:29:54.427 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-10 15:29:54.430 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-10 15:29:54.432 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-10 15:29:54.452 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:29:54.454 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-10 15:29:54.454 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-10 15:29:54.455 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-10 15:29:54.474 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:29:54.476 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-10 15:29:54.500 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-10 15:29:54.502 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-10 15:29:54.503 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-10 15:29:54.532 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-10 15:29:54.534 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-10 15:29:54.566 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:29:54.568 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:29:54.570 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:29:54.603 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:29:54.604 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:29:54.605 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:29:54.640 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:29:54.642 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:29:54.643 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:29:54.657 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:29:54.659 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-10 15:29:54.684 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:29:54.686 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-10 15:29:54.686 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-10 15:29:54.693 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-10 15:29:54.712 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:29:54.713 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-10 15:29:54.732 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:29:54.734 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-10 15:29:54.735 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-10 15:29:54.761 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:29:54.764 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-10 15:29:54.766 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-10 15:29:54.786 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:29:54.788 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-10 15:29:54.809 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:29:54.812 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-10 15:29:54.813 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-10 15:29:54.856 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:29:54.859 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:29:54.859 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:29:54.861 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:29:54.863 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:29:54.904 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:29:54.906 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:29:54.906 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:29:54.907 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:29:54.908 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:29:54.944 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:29:54.946 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:29:54.947 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:29:54.947 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:29:54.948 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:29:54.961 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:29:54.964 | INFO     | api.reviews:get_reviews_for_content:123 - Content not found
+2025-07-10 15:29:54.999 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:29:55.001 | INFO     | api.reviews:get_user_reviews:184 - Getting reviews for user
+2025-07-10 15:29:55.001 | INFO     | api.reviews:get_user_reviews:193 - Counting total count
+2025-07-10 15:29:55.003 | INFO     | api.reviews:get_user_reviews:197 - Applying pagination
+2025-07-10 15:29:55.005 | INFO     | api.reviews:get_user_reviews:201 - Forming response
+2025-07-10 15:29:55.019 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:29:55.021 | WARNING  | api.reviews:get_user_reviews:180 - User not found
+2025-07-10 15:29:55.054 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:29:55.055 | INFO     | api.reviews:get_user_reviews:184 - Getting reviews for user
+2025-07-10 15:29:55.056 | INFO     | api.reviews:get_user_reviews:193 - Counting total count
+2025-07-10 15:29:55.056 | INFO     | api.reviews:get_user_reviews:197 - Applying pagination
+2025-07-10 15:29:55.057 | INFO     | api.reviews:get_user_reviews:201 - Forming response
+2025-07-10 15:29:55.076 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-10 15:29:55.095 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-10 15:29:55.098 | WARNING  | api.users:register_user:32 - User existing already exists
+2025-07-10 15:30:38.285 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:30:38.294 | INFO     | api.reviews:get_user_reviews:184 - Getting reviews for user
+2025-07-10 15:30:38.295 | INFO     | api.reviews:get_user_reviews:193 - Counting total count
+2025-07-10 15:30:38.301 | INFO     | api.reviews:get_user_reviews:197 - Applying pagination
+2025-07-10 15:30:38.308 | INFO     | api.reviews:get_user_reviews:201 - Forming response
+2025-07-10 15:33:10.834 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-10 15:33:10.834 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-10 15:33:10.847 | INFO     | api.cities:get_cities:22 - Query to get cities
+2025-07-10 15:33:10.847 | INFO     | api.cities:get_cities:27 - Sent list of cities: ['spb', 'msk', 'ekb', 'nsk', 'nn']
+2025-07-10 15:33:10.898 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-10 15:33:10.904 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-10 15:33:10.918 | INFO     | api.feedback:create_feedback:22 - Feedback from TestUser: TestMessage
+2025-07-10 15:33:10.928 | INFO     | api.feedback:create_feedback:32 - Feedback saved
+2025-07-10 15:33:10.962 | INFO     | api.likes:set_like:53 - Like saved from TestUser for content 1
+2025-07-10 15:33:10.992 | INFO     | api.likes:set_dislike:87 - Dislike saved from TestUser for content 1
+2025-07-10 15:33:11.016 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-10 15:33:11.038 | WARNING  | api.likes:set_like:38 - Content 2 not found
+2025-07-10 15:33:11.059 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:33:11.061 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:33:11.062 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-10 15:33:11.063 | INFO     | api.ratings:create_or_update_rating:65 - Creating new rating
+2025-07-10 15:33:11.069 | INFO     | api.ratings:create_or_update_rating:76 - Creating response with username
+2025-07-10 15:33:11.096 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:33:11.098 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:33:11.098 | INFO     | api.ratings:create_or_update_rating:38 - Checking if rating already exists
+2025-07-10 15:33:11.099 | INFO     | api.ratings:create_or_update_rating:47 - Updating existing rating
+2025-07-10 15:33:11.104 | INFO     | api.ratings:create_or_update_rating:53 - Creating response with username
+2025-07-10 15:33:11.122 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:33:11.124 | INFO     | api.ratings:create_or_update_rating:23 - User not found
+2025-07-10 15:33:11.140 | INFO     | api.ratings:create_or_update_rating:20 - Checking if user exists
+2025-07-10 15:33:11.142 | INFO     | api.ratings:create_or_update_rating:29 - Checking if content exists
+2025-07-10 15:33:11.142 | INFO     | api.ratings:create_or_update_rating:32 - Content not found
+2025-07-10 15:33:11.175 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:33:11.176 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-10 15:33:11.177 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-10 15:33:11.179 | INFO     | api.ratings:get_content_rating_stats:131 - Getting rating distribution
+2025-07-10 15:33:11.181 | INFO     | api.ratings:get_content_rating_stats:139 - Setting rating distribution
+2025-07-10 15:33:11.202 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:33:11.204 | INFO     | api.ratings:get_content_rating_stats:108 - Getting all ratings for content
+2025-07-10 15:33:11.204 | INFO     | api.ratings:get_content_rating_stats:112 - Calculating average rating and total ratings
+2025-07-10 15:33:11.205 | INFO     | api.ratings:get_content_rating_stats:122 - No ratings found, returning zero values
+2025-07-10 15:33:11.226 | INFO     | api.ratings:get_content_rating_stats:99 - Checking if content exists
+2025-07-10 15:33:11.228 | INFO     | api.ratings:get_content_rating_stats:102 - Content not found
+2025-07-10 15:33:11.251 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-10 15:33:11.253 | INFO     | api.ratings:delete_rating:167 - Searching for rating
+2025-07-10 15:33:11.254 | INFO     | api.ratings:delete_rating:181 - Deleting rating
+2025-07-10 15:33:11.284 | INFO     | api.ratings:delete_rating:158 - Checking if user exists
+2025-07-10 15:33:11.286 | INFO     | api.ratings:delete_rating:161 - User not found
+2025-07-10 15:33:11.320 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:33:11.322 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:33:11.325 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:33:11.359 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:33:11.360 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:33:11.361 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:33:11.394 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:33:11.396 | INFO     | api.ratings:get_user_ratings:205 - Getting user ratings with pagination
+2025-07-10 15:33:11.397 | INFO     | api.ratings:get_user_ratings:213 - Formatting response with username
+2025-07-10 15:33:11.409 | INFO     | api.ratings:get_user_ratings:196 - Checking if user exists
+2025-07-10 15:33:11.411 | INFO     | api.ratings:get_user_ratings:199 - User not found
+2025-07-10 15:33:11.431 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:33:11.433 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-10 15:33:11.433 | INFO     | api.reviews:create_review:45 - Creating review
+2025-07-10 15:33:11.439 | INFO     | api.reviews:create_review:55 - Forming response with username
+2025-07-10 15:33:11.456 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:33:11.458 | INFO     | api.reviews:create_review:34 - User not found
+2025-07-10 15:33:11.475 | INFO     | api.reviews:create_review:31 - Checking if user exists
+2025-07-10 15:33:11.477 | INFO     | api.reviews:create_review:38 - Checking if content exists
+2025-07-10 15:33:11.477 | INFO     | api.reviews:create_review:41 - Content not found
+2025-07-10 15:33:11.498 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:33:11.501 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-10 15:33:11.502 | INFO     | api.reviews:delete_review:100 - Deleting review
+2025-07-10 15:33:11.519 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:33:11.521 | INFO     | api.reviews:delete_review:82 - User not found
+2025-07-10 15:33:11.539 | INFO     | api.reviews:delete_review:79 - Checking if user exists
+2025-07-10 15:33:11.541 | INFO     | api.reviews:delete_review:86 - Searching for review
+2025-07-10 15:33:11.541 | INFO     | api.reviews:delete_review:94 - Review not found or you don't have permission to delete it
+2025-07-10 15:33:11.575 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:33:11.576 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:33:11.577 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:33:11.578 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:33:11.580 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:33:11.614 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:33:11.616 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:33:11.616 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:33:11.617 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:33:11.617 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:33:11.652 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:33:11.654 | INFO     | api.reviews:get_reviews_for_content:127 - Getting reviews for content
+2025-07-10 15:33:11.654 | INFO     | api.reviews:get_reviews_for_content:136 - Counting total count
+2025-07-10 15:33:11.654 | INFO     | api.reviews:get_reviews_for_content:140 - Applying pagination
+2025-07-10 15:33:11.655 | INFO     | api.reviews:get_reviews_for_content:144 - Forming response
+2025-07-10 15:33:11.668 | INFO     | api.reviews:get_reviews_for_content:120 - Checking if content exists
+2025-07-10 15:33:11.670 | INFO     | api.reviews:get_reviews_for_content:123 - Content not found
+2025-07-10 15:33:11.705 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:33:11.707 | INFO     | api.reviews:get_user_reviews:184 - Getting reviews for user
+2025-07-10 15:33:11.707 | INFO     | api.reviews:get_user_reviews:193 - Counting total count
+2025-07-10 15:33:11.709 | INFO     | api.reviews:get_user_reviews:197 - Applying pagination
+2025-07-10 15:33:11.711 | INFO     | api.reviews:get_user_reviews:201 - Forming response
+2025-07-10 15:33:11.723 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:33:11.725 | WARNING  | api.reviews:get_user_reviews:180 - User not found
+2025-07-10 15:33:11.759 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:33:11.761 | INFO     | api.reviews:get_user_reviews:184 - Getting reviews for user
+2025-07-10 15:33:11.761 | INFO     | api.reviews:get_user_reviews:193 - Counting total count
+2025-07-10 15:33:11.762 | INFO     | api.reviews:get_user_reviews:197 - Applying pagination
+2025-07-10 15:33:11.763 | INFO     | api.reviews:get_user_reviews:201 - Forming response
+2025-07-10 15:33:11.795 | INFO     | api.reviews:get_user_reviews:177 - Checking if user exists
+2025-07-10 15:33:11.798 | INFO     | api.reviews:get_user_reviews:184 - Getting reviews for user
+2025-07-10 15:33:11.798 | INFO     | api.reviews:get_user_reviews:193 - Counting total count
+2025-07-10 15:33:11.799 | INFO     | api.reviews:get_user_reviews:197 - Applying pagination
+2025-07-10 15:33:11.799 | INFO     | api.reviews:get_user_reviews:201 - Forming response
+2025-07-10 15:33:11.819 | INFO     | api.users:register_user:40 - User testuser registered successfully
+2025-07-10 15:33:11.838 | INFO     | api.users:register_user:40 - User existing registered successfully
+2025-07-10 15:33:11.840 | WARNING  | api.users:register_user:32 - User existing already exists

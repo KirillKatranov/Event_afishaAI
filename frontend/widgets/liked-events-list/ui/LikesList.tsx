@@ -140,6 +140,7 @@ export const LikesList = React.memo(() => {
         {selectedEvent && (
           <EventCard
             event={selectedEvent}
+            liked={!!likes?.some((event) => event.id === selectedEvent.id)}
             onLike={() => handleEventAction("like", selectedEvent).then(() => setModalVisible(false))}
             onDislike={() => handleEventAction("dislike", selectedEvent).then(() => setModalVisible(false))}
           />

@@ -191,20 +191,6 @@ CELERY_BEAT_SCHEDULE = {
             },
         },
     },
-    "send_daily_event_notifications": {
-        "task": "event.tasks.send_event_notifications",
-        "schedule": crontab(hour=9, minute=0),  # Run daily at 9:00 AM
-        "options": {
-            "expires": 3600,  # Task expires after 1 hour
-            "retry": True,
-            "retry_policy": {
-                "max_retries": 3,
-                "interval_start": 0,
-                "interval_step": 0.2,
-                "interval_max": 0.8,
-            },
-        },
-    },
 }
 
 # Включаем логирование

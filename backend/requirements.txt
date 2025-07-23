@@ -194,4 +194,4 @@ yandexgptlite==0.1.7
     # via -r requirements.in
 yarl==1.15.5
     # via aiohttp
-pydantic_settings
+pydantic_settings==2.10.1
